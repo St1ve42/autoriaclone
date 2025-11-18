@@ -49,13 +49,13 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 
 export const ModelName = {
-  Users: 'Users',
-  Regions: 'Regions',
-  Roles: 'Roles',
-  Permissions: 'Permissions',
+  User: 'User',
+  Region: 'Region',
+  Role: 'Role',
+  Permission: 'Permission',
   RolePermission: 'RolePermission',
-  Tokens: 'Tokens',
-  Statistics: 'Statistics'
+  Token: 'Token',
+  Statistic: 'Statistic'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,7 +74,7 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const UsersScalarFieldEnum = {
+export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   surname: 'surname',
@@ -99,32 +99,32 @@ export const UsersScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
-export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const RegionsScalarFieldEnum = {
+export const RegionScalarFieldEnum = {
   id: 'id',
   name: 'name',
   code: 'code'
 } as const
 
-export type RegionsScalarFieldEnum = (typeof RegionsScalarFieldEnum)[keyof typeof RegionsScalarFieldEnum]
+export type RegionScalarFieldEnum = (typeof RegionScalarFieldEnum)[keyof typeof RegionScalarFieldEnum]
 
 
-export const RolesScalarFieldEnum = {
+export const RoleScalarFieldEnum = {
   id: 'id',
   name: 'name'
 } as const
 
-export type RolesScalarFieldEnum = (typeof RolesScalarFieldEnum)[keyof typeof RolesScalarFieldEnum]
+export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
 
 
-export const PermissionsScalarFieldEnum = {
+export const PermissionScalarFieldEnum = {
   id: 'id',
   name: 'name'
 } as const
 
-export type PermissionsScalarFieldEnum = (typeof PermissionsScalarFieldEnum)[keyof typeof PermissionsScalarFieldEnum]
+export type PermissionScalarFieldEnum = (typeof PermissionScalarFieldEnum)[keyof typeof PermissionScalarFieldEnum]
 
 
 export const RolePermissionScalarFieldEnum = {
@@ -135,7 +135,7 @@ export const RolePermissionScalarFieldEnum = {
 export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
 
 
-export const TokensScalarFieldEnum = {
+export const TokenScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
   access_token: 'access_token',
@@ -144,10 +144,10 @@ export const TokensScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
-export type TokensScalarFieldEnum = (typeof TokensScalarFieldEnum)[keyof typeof TokensScalarFieldEnum]
+export type TokenScalarFieldEnum = (typeof TokenScalarFieldEnum)[keyof typeof TokenScalarFieldEnum]
 
 
-export const StatisticsScalarFieldEnum = {
+export const StatisticScalarFieldEnum = {
   id: 'id',
   total_views: 'total_views',
   views_per_day: 'views_per_day',
@@ -157,7 +157,7 @@ export const StatisticsScalarFieldEnum = {
   average_country_price: 'average_country_price'
 } as const
 
-export type StatisticsScalarFieldEnum = (typeof StatisticsScalarFieldEnum)[keyof typeof StatisticsScalarFieldEnum]
+export type StatisticScalarFieldEnum = (typeof StatisticScalarFieldEnum)[keyof typeof StatisticScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -176,7 +176,7 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
-export const UsersOrderByRelevanceFieldEnum = {
+export const UserOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
   surname: 'surname',
@@ -187,43 +187,44 @@ export const UsersOrderByRelevanceFieldEnum = {
   city: 'city'
 } as const
 
-export type UsersOrderByRelevanceFieldEnum = (typeof UsersOrderByRelevanceFieldEnum)[keyof typeof UsersOrderByRelevanceFieldEnum]
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
-export const RegionsOrderByRelevanceFieldEnum = {
+export const RegionOrderByRelevanceFieldEnum = {
   name: 'name',
   code: 'code'
 } as const
 
-export type RegionsOrderByRelevanceFieldEnum = (typeof RegionsOrderByRelevanceFieldEnum)[keyof typeof RegionsOrderByRelevanceFieldEnum]
+export type RegionOrderByRelevanceFieldEnum = (typeof RegionOrderByRelevanceFieldEnum)[keyof typeof RegionOrderByRelevanceFieldEnum]
 
 
-export const RolesOrderByRelevanceFieldEnum = {
+export const RoleOrderByRelevanceFieldEnum = {
   name: 'name'
 } as const
 
-export type RolesOrderByRelevanceFieldEnum = (typeof RolesOrderByRelevanceFieldEnum)[keyof typeof RolesOrderByRelevanceFieldEnum]
+export type RoleOrderByRelevanceFieldEnum = (typeof RoleOrderByRelevanceFieldEnum)[keyof typeof RoleOrderByRelevanceFieldEnum]
 
 
-export const PermissionsOrderByRelevanceFieldEnum = {
+export const PermissionOrderByRelevanceFieldEnum = {
   name: 'name'
 } as const
 
-export type PermissionsOrderByRelevanceFieldEnum = (typeof PermissionsOrderByRelevanceFieldEnum)[keyof typeof PermissionsOrderByRelevanceFieldEnum]
+export type PermissionOrderByRelevanceFieldEnum = (typeof PermissionOrderByRelevanceFieldEnum)[keyof typeof PermissionOrderByRelevanceFieldEnum]
 
 
-export const TokensOrderByRelevanceFieldEnum = {
+export const TokenOrderByRelevanceFieldEnum = {
   id: 'id',
+  user_id: 'user_id',
   access_token: 'access_token',
   refresh_token: 'refresh_token'
 } as const
 
-export type TokensOrderByRelevanceFieldEnum = (typeof TokensOrderByRelevanceFieldEnum)[keyof typeof TokensOrderByRelevanceFieldEnum]
+export type TokenOrderByRelevanceFieldEnum = (typeof TokenOrderByRelevanceFieldEnum)[keyof typeof TokenOrderByRelevanceFieldEnum]
 
 
-export const StatisticsOrderByRelevanceFieldEnum = {
+export const StatisticOrderByRelevanceFieldEnum = {
   id: 'id'
 } as const
 
-export type StatisticsOrderByRelevanceFieldEnum = (typeof StatisticsOrderByRelevanceFieldEnum)[keyof typeof StatisticsOrderByRelevanceFieldEnum]
+export type StatisticOrderByRelevanceFieldEnum = (typeof StatisticOrderByRelevanceFieldEnum)[keyof typeof StatisticOrderByRelevanceFieldEnum]
 

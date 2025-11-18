@@ -18,37 +18,37 @@ export { Prisma }
 export * as $Enums from './enums.ts'
 export * from './enums.ts';
 /**
- * Model Users
+ * Model User
  * 
  */
-export type Users = Prisma.UsersModel
+export type User = Prisma.UserModel
 /**
- * Model Regions
+ * Model Region
  * 
  */
-export type Regions = Prisma.RegionsModel
+export type Region = Prisma.RegionModel
 /**
- * Model Roles
+ * Model Role
  * 
  */
-export type Roles = Prisma.RolesModel
+export type Role = Prisma.RoleModel
 /**
- * Model Permissions
+ * Model Permission
  * 
  */
-export type Permissions = Prisma.PermissionsModel
+export type Permission = Prisma.PermissionModel
 /**
  * Model RolePermission
  * 
  */
 export type RolePermission = Prisma.RolePermissionModel
 /**
- * Model Tokens
+ * Model Token
  * 
  */
-export type Tokens = Prisma.TokensModel
+export type Token = Prisma.TokenModel
 /**
- * Model Statistics
+ * Model Statistic
  * 
  */
-export type Statistics = Prisma.StatisticsModel
+export type Statistic = Prisma.StatisticModel

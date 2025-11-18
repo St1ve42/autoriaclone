@@ -1,7 +1,6 @@
 generator client {
-  provider        = "prisma-client"
-  output          = "../src/generated/prisma"
-  previewFeatures = ["multiSchema"]
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -9,7 +8,7 @@ datasource db {
   url      = env("MYSQL_URI")
 }
 
-model Users {
+model User {
   id            String          @id @default(uuid(7))
   name          String          @db.VarChar(100)
   surname       String          @db.VarChar(100)
@@ -32,8 +31,11 @@ model Users {
   is_deleted    Boolean         @default(false)
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
-  role          Roles           @relation(references: [id], fields: [role_id])
-  region        Regions         @relation(references: [id], fields: [region_id])
+  role          Role            @relation(references: [id], fields: [role_id])
+  region        Region          @relation(references: [id], fields: [region_id])
+  token         Token[]
+
+  @@map("users")
 }
 
 enum AccountTypeEnum {
@@ -52,45 +54,54 @@ enum GenderEnum {
   female
 }
 
-model Regions {
-  id   Int     @id @default(autoincrement())
-  name String  @db.VarChar(100)
-  code String  @db.VarChar(50)
-  User Users[]
+model Region {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(100)
+  code String @db.VarChar(50)
+  User User[]
+
+  @@map("regions")
 }
 
-model Roles {
+model Role {
   id             Int              @id @default(autoincrement())
   name           String           @db.VarChar(100)
-  User           Users[]
+  User           User[]
   RolePermission RolePermission[]
+
+  @@map("roles")
 }
 
-model Permissions {
+model Permission {
   id             Int              @id @default(autoincrement())
   name           String           @db.VarChar(50)
   RolePermission RolePermission[]
+
+  @@map("permissions")
 }
 
 model RolePermission {
   role_id       Int
   permission_id Int
-  role          Roles       @relation(references: [id], fields: [role_id])
-  permission    Permissions @relation(references: [id], fields: [permission_id])
+  role          Role       @relation(references: [id], fields: [role_id])
+  permission    Permission @relation(references: [id], fields: [permission_id])
 
   @@id([role_id, permission_id])
 }
 
-model Tokens {
+model Token {
   id            String   @id @default(uuid(7))
-  user_id       Int
+  user_id       String
   access_token  String   @db.VarChar(512)
   refresh_token String   @db.VarChar(512)
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
+  user          User     @relation(references: [id], fields: [user_id])
+
+  @@map("tokens")
 }
 
-model Statistics {
+model Statistic {
   id                    String  @id @default(uuid(7))
   total_views           Int     @default(0)
   views_per_day         Int     @default(0)
@@ -98,4 +109,6 @@ model Statistics {
   views_per_month       Int     @default(0)
   average_region_price  Decimal @db.Decimal(10, 2)
   average_country_price Decimal @db.Decimal(10, 2)
+
+  @@map("statistics")
 }

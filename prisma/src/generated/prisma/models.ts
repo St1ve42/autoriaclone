@@ -8,11 +8,11 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Users.ts'
-export type * from './models/Regions.ts'
-export type * from './models/Roles.ts'
-export type * from './models/Permissions.ts'
+export type * from './models/User.ts'
+export type * from './models/Region.ts'
+export type * from './models/Role.ts'
+export type * from './models/Permission.ts'
 export type * from './models/RolePermission.ts'
-export type * from './models/Tokens.ts'
-export type * from './models/Statistics.ts'
+export type * from './models/Token.ts'
+export type * from './models/Statistic.ts'
 export type * from './commonInputTypes.ts'

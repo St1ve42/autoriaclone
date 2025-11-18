@@ -1,28 +1,14 @@
 {
   "compilerOptions": {
-
-    "rootDir": "./src",
-//    "outDir": "./dist",
-
     "module": "nodenext",
     "target": "esnext",
-//    "lib": ["esnext"],
+    "moduleResolution": "node",
     "types": [],
-    // and npm install -D @types/node
 
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-
     "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
 
     "strict": true,
     "allowImportingTsExtensions": true,
@@ -32,6 +18,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   }
 }
+

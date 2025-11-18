@@ -47,3 +47,4 @@ export const Vehicle = model("vehicles", VehicleSchema)
 
 //TODO commit after making schemas
 //TODO types for models
+//TODO fetch API and dump dbs

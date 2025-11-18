@@ -30,7 +30,7 @@ export * from "./enums.ts"
  * ```
  * const prisma = new PrismaClient()
  * // Fetch zero or more Users
- * const users = await prisma.users.findMany()
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -45,37 +45,37 @@ path.join(__dirname, "query_engine-windows.dll.node")
 path.join(process.cwd(), "prisma/src/generated/prisma/query_engine-windows.dll.node")
 
 /**
- * Model Users
+ * Model User
  * 
  */
-export type Users = Prisma.UsersModel
+export type User = Prisma.UserModel
 /**
- * Model Regions
+ * Model Region
  * 
  */
-export type Regions = Prisma.RegionsModel
+export type Region = Prisma.RegionModel
 /**
- * Model Roles
+ * Model Role
  * 
  */
-export type Roles = Prisma.RolesModel
+export type Role = Prisma.RoleModel
 /**
- * Model Permissions
+ * Model Permission
  * 
  */
-export type Permissions = Prisma.PermissionsModel
+export type Permission = Prisma.PermissionModel
 /**
  * Model RolePermission
  * 
  */
 export type RolePermission = Prisma.RolePermissionModel
 /**
- * Model Tokens
+ * Model Token
  * 
  */
-export type Tokens = Prisma.TokensModel
+export type Token = Prisma.TokenModel
 /**
- * Model Statistics
+ * Model Statistic
  * 
  */
-export type Statistics = Prisma.StatisticsModel
+export type Statistic = Prisma.StatisticModel
