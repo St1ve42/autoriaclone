@@ -1,6 +1,6 @@
 import express from "express"
 import {apiRouter} from "./routers/api.router.ts";
-import {configs} from "./config/configs.ts";
+import {configs} from "./configs/configs.ts";
 import {errorController} from "./controllers/error.controller.ts";
 import fileUpload from "express-fileupload";
 

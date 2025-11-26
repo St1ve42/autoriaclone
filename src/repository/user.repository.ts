@@ -1,4 +1,4 @@
-import type {UserCreateInput} from "../../prisma/src/generated/prisma/models/User.ts";
+import type {UserCreateInput, UserUpdateInput} from "../../prisma/src/generated/prisma/models/User.ts";
 import {prisma} from "../../prisma/prisma.client.ts";
 import type {User} from "../../prisma/src/generated/prisma/client.ts";
 import type {UserUpdateDTOType} from "../types/UserType.ts";
@@ -20,7 +20,7 @@ class UserRepository{
         return await prisma.user.create({data: dto})
     }
 
-    public async updateUserByIdAndParams(id: string, dto: UserUpdateDTOType){
+    public async updateUserByIdAndParams(id: string, dto: UserUpdateInput){
         return await prisma.user.update({where: {id}, data: dto})
     }
 

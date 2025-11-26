@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "nodenext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "types": [],
 
     "sourceMap": true,
@@ -12,13 +12,22 @@
 
     "strict": true,
     "allowImportingTsExtensions": true,
+    "noEmit": true,
     "esModuleInterop": true,
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
+  },
+
+  "ts-node": {
+    "swc": true,
+    "esm": true,
+    "experimentalResolver": true
   }
 }
+
+
 

@@ -11,6 +11,6 @@ router.get('/', userController.getUsers)
 router.get('/:userId', commonMiddleware.validateId("userId", "mysql"), userMiddleware.checkUserExists, userController.getUser)
 router.post('/', commonMiddleware.validateBody(UserValidator.createUser), regionMiddleware.validateRegion, userController.createUser)
 router.delete('/:userId', commonMiddleware.validateId("userId", "mysql"), userMiddleware.checkUserExists, userController.deleteUser)
-router.patch('/:userId', commonMiddleware.validateId("userId", "mysql"), userMiddleware.checkUserExists, commonMiddleware.validateBody(UserValidator.updateUser), regionMiddleware.validateRegion, userController.updateUser)
+// router.patch('/:userId', commonMiddleware.validateId("userId", "mysql"), userMiddleware.checkUserExists, commonMiddleware.validateBody(UserValidator.updateUser), regionMiddleware.validateRegion, userController.updateUser)
 
 export const userRouter = router

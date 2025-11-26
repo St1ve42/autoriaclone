@@ -83,6 +83,11 @@ export class UserValidator{
         phone: this.phone
     })
 
+    public static signIn = joi.object({
+        email: this.email.required(),
+        password: this.password.required()
+    })
+
 }
 
 //TODO Fix message where is not allowed field

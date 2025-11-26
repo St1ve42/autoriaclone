@@ -1,6 +1,7 @@
 import type {User} from "../../prisma/src/generated/prisma/client.ts";
-import {regionService} from "../service/region.service.ts";
-import {roleService} from "../service/role.service.ts";
+import {regionService} from "../services/region.service.ts";
+import {roleService} from "../services/role.service.ts";
+import {TokenPairType} from "../types/TokenType.js";
 
 class UsersPresenter{
     public async toListResDto(
@@ -17,25 +18,36 @@ class UsersPresenter{
             "surname": user.surname,
             "age": user.age,
             "email": user.email,
-            "password": user.password,
             "phone": user.phone,
             "gender": user.gender,
             "photo": user.photo,
             "city": user.city,
             "region": region,
             "role": role,
-            "account_type": user.account_type,
+            "accountType": user.account_type,
             "balance": user.balance,
             "currency": user.currency,
             "premium_since": user.premium_since,
             "premium_until": user.premium_until,
-            "is_verified": user.is_verified,
-            "is_active": user.is_active,
-            "is_deleted": user.is_deleted,
-            "created_at": "2025-11-18T13:27:00.516Z",
-            "updated_at": "2025-11-18T13:27:00.516Z",
+            "isVerified": user.is_verified,
+            "isActive": user.is_active,
+            "isDeleted": user.is_deleted,
         }
     }
+
+    public resToken(tokenPair: TokenPairType){
+        return {
+            "accessToken": tokenPair.access_token,
+            "refreshToken": tokenPair.refresh_token
+        }
+    }
+
+
+    public async resUserWithTokenPair(user: User, tokenPair: TokenPairType) {
+        return {user: await this.resUser(user), tokenPair: this.resToken(tokenPair)}
+    }
+
+
 }
 
 export const userPresenter = new UsersPresenter();

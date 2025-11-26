@@ -1,9 +1,10 @@
 import type {Request, Response, NextFunction} from "express"
 import {ApiError} from "../errors/api.error.ts";
+import {StatusCodeEnum} from "../enums/status.code.enum.ts";
 class ErrorController{
     public async showError(error: Error | ApiError, req: Request, res: Response, next: NextFunction){
         console.log(error)
-        const status = error instanceof ApiError ? error.status : 500
+        const status = error instanceof ApiError ? error.status : StatusCodeEnum.INTERNAL_SERVER_ERROR
         res.status(status).json({
             status,
             message: error.message
@@ -11,8 +12,8 @@ class ErrorController{
     }
 
     public async showNonExistentApiError (req: Request, res: Response, next: NextFunction){
-        res.status(400).json({
-            status: 400,
+        res.status(StatusCodeEnum.BAD_REQUEST).json({
+            status: StatusCodeEnum.BAD_REQUEST,
             message: "No existent API route or method"
         })
     }
