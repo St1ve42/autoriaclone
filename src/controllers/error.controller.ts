@@ -1,6 +1,6 @@
 import type {Request, Response, NextFunction} from "express"
 import {ApiError} from "../errors/api.error.ts";
-import {StatusCodeEnum} from "../enums/status.code.enum.ts";
+import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 class ErrorController{
     public async showError(error: Error | ApiError, req: Request, res: Response, next: NextFunction){
         console.log(error)

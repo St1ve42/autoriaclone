@@ -5,10 +5,11 @@ dotenv.config()
 export default defineConfig({
   schema: "prisma/schema/schema.prisma",
   migrations: {
-    path: "prisma/migrations",
+      path: "prisma/migrations",
+      seed: "prisma/seed.ts"
   },
   engine: "classic",
   datasource: {
-    url: env("MYSQL_URI"),
+      url: env("MYSQL_URI"),
   },
 });

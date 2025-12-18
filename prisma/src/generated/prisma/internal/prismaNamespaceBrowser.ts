@@ -55,7 +55,10 @@ export const ModelName = {
   Permission: 'Permission',
   RolePermission: 'RolePermission',
   Token: 'Token',
-  Statistic: 'Statistic'
+  AnnouncementStatistics: 'AnnouncementStatistics',
+  AnnouncementViewsDay: 'AnnouncementViewsDay',
+  AveragePrices: 'AveragePrices',
+  PremiumPurchase: 'PremiumPurchase'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,10 +93,11 @@ export const UserScalarFieldEnum = {
   account_type: 'account_type',
   balance: 'balance',
   currency: 'currency',
-  premium_since: 'premium_since',
-  premium_until: 'premium_until',
-  is_verified: 'is_verified',
   is_active: 'is_active',
+  is_verified: 'is_verified',
+  is_banned: 'is_banned',
+  ban_reason: 'ban_reason',
+  banned_until: 'banned_until',
   is_deleted: 'is_deleted',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -104,8 +108,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const RegionScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  code: 'code'
+  name: 'name'
 } as const
 
 export type RegionScalarFieldEnum = (typeof RegionScalarFieldEnum)[keyof typeof RegionScalarFieldEnum]
@@ -147,17 +150,49 @@ export const TokenScalarFieldEnum = {
 export type TokenScalarFieldEnum = (typeof TokenScalarFieldEnum)[keyof typeof TokenScalarFieldEnum]
 
 
-export const StatisticScalarFieldEnum = {
+export const AnnouncementStatisticsScalarFieldEnum = {
   id: 'id',
+  announcement_id: 'announcement_id',
   total_views: 'total_views',
-  views_per_day: 'views_per_day',
-  views_per_week: 'views_per_week',
-  views_per_month: 'views_per_month',
-  average_region_price: 'average_region_price',
-  average_country_price: 'average_country_price'
+  updated_at: 'updated_at'
 } as const
 
-export type StatisticScalarFieldEnum = (typeof StatisticScalarFieldEnum)[keyof typeof StatisticScalarFieldEnum]
+export type AnnouncementStatisticsScalarFieldEnum = (typeof AnnouncementStatisticsScalarFieldEnum)[keyof typeof AnnouncementStatisticsScalarFieldEnum]
+
+
+export const AnnouncementViewsDayScalarFieldEnum = {
+  id: 'id',
+  announcement_id: 'announcement_id',
+  view_date: 'view_date',
+  views: 'views'
+} as const
+
+export type AnnouncementViewsDayScalarFieldEnum = (typeof AnnouncementViewsDayScalarFieldEnum)[keyof typeof AnnouncementViewsDayScalarFieldEnum]
+
+
+export const AveragePricesScalarFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  model: 'model',
+  region_id: 'region_id',
+  avg_price: 'avg_price',
+  cars_count: 'cars_count',
+  calculated_at: 'calculated_at'
+} as const
+
+export type AveragePricesScalarFieldEnum = (typeof AveragePricesScalarFieldEnum)[keyof typeof AveragePricesScalarFieldEnum]
+
+
+export const PremiumPurchaseScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  price_paid: 'price_paid',
+  currency: 'currency',
+  purchased_at: 'purchased_at',
+  expires_at: 'expires_at'
+} as const
+
+export type PremiumPurchaseScalarFieldEnum = (typeof PremiumPurchaseScalarFieldEnum)[keyof typeof PremiumPurchaseScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -184,15 +219,15 @@ export const UserOrderByRelevanceFieldEnum = {
   password: 'password',
   phone: 'phone',
   photo: 'photo',
-  city: 'city'
+  city: 'city',
+  ban_reason: 'ban_reason'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
 export const RegionOrderByRelevanceFieldEnum = {
-  name: 'name',
-  code: 'code'
+  name: 'name'
 } as const
 
 export type RegionOrderByRelevanceFieldEnum = (typeof RegionOrderByRelevanceFieldEnum)[keyof typeof RegionOrderByRelevanceFieldEnum]
@@ -222,9 +257,35 @@ export const TokenOrderByRelevanceFieldEnum = {
 export type TokenOrderByRelevanceFieldEnum = (typeof TokenOrderByRelevanceFieldEnum)[keyof typeof TokenOrderByRelevanceFieldEnum]
 
 
-export const StatisticOrderByRelevanceFieldEnum = {
-  id: 'id'
+export const AnnouncementStatisticsOrderByRelevanceFieldEnum = {
+  id: 'id',
+  announcement_id: 'announcement_id'
 } as const
 
-export type StatisticOrderByRelevanceFieldEnum = (typeof StatisticOrderByRelevanceFieldEnum)[keyof typeof StatisticOrderByRelevanceFieldEnum]
+export type AnnouncementStatisticsOrderByRelevanceFieldEnum = (typeof AnnouncementStatisticsOrderByRelevanceFieldEnum)[keyof typeof AnnouncementStatisticsOrderByRelevanceFieldEnum]
+
+
+export const AnnouncementViewsDayOrderByRelevanceFieldEnum = {
+  id: 'id',
+  announcement_id: 'announcement_id'
+} as const
+
+export type AnnouncementViewsDayOrderByRelevanceFieldEnum = (typeof AnnouncementViewsDayOrderByRelevanceFieldEnum)[keyof typeof AnnouncementViewsDayOrderByRelevanceFieldEnum]
+
+
+export const AveragePricesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  model: 'model'
+} as const
+
+export type AveragePricesOrderByRelevanceFieldEnum = (typeof AveragePricesOrderByRelevanceFieldEnum)[keyof typeof AveragePricesOrderByRelevanceFieldEnum]
+
+
+export const PremiumPurchaseOrderByRelevanceFieldEnum = {
+  id: 'id',
+  user_id: 'user_id'
+} as const
+
+export type PremiumPurchaseOrderByRelevanceFieldEnum = (typeof PremiumPurchaseOrderByRelevanceFieldEnum)[keyof typeof PremiumPurchaseOrderByRelevanceFieldEnum]
 

@@ -1,31 +1,59 @@
-import type {UserCreateInput, UserUpdateInput} from "../../prisma/src/generated/prisma/models/User.ts";
+import type {UserCreateInput, UserOrderByWithRelationInput, UserUpdateInput, UserWhereInput} from "../../prisma/src/generated/prisma/models/User.ts";
 import {prisma} from "../../prisma/prisma.client.ts";
 import type {User} from "../../prisma/src/generated/prisma/client.ts";
-import type {UserUpdateDTOType} from "../types/UserType.ts";
+import type {UserQueryType} from "../types/QueryType.ts";
 
 class UserRepository{
-    public async getUsers(){
-        return await prisma.user.findMany()
+    public async getList(query: UserQueryType){
+        const {page, limit, skip, search, search_by, order_by, order} = query
+        let filter: UserWhereInput = {}
+        let sort: UserOrderByWithRelationInput = {}
+        if(search && search_by){
+            filter[search_by] = {contains: search}
+        }
+        if(order_by && order){
+            sort[order_by] = order
+        }
+        return await prisma.user.findMany({take: limit, skip: limit*(page-1) + skip, where: filter, orderBy: sort})
     }
 
-    public async getUserById(id: string){
-        return await prisma.user.findUnique({where: {id}})
+    public async getById(id: string){
+        return await prisma.user.findUnique({where: {id}, include: {role: {include: {}}}})
     }
 
-    public async getUserByParams(params: Partial<User>){
+    public async getByParams(params: Partial<User>){
         return await prisma.user.findFirst({where: params})
     }
 
-    public async createUser(dto: UserCreateInput){
+    public async create(dto: UserCreateInput){
         return await prisma.user.create({data: dto})
     }
 
-    public async updateUserByIdAndParams(id: string, dto: UserUpdateInput){
+    public async updateByIdAndParams(id: string, dto: UserUpdateInput){
         return await prisma.user.update({where: {id}, data: dto})
     }
 
-    public async deleteUserById(id: string){
-        return await prisma.user.delete({where: {id}})
+    public async deleteById(id: string){
+        return await prisma.user.update({where: {id}, data: {is_deleted: true}})
+    }
+
+    public async getNestedPermissions(id: string){
+        return await prisma.user.findUnique({
+            where: {
+                id
+            },
+            include: {
+                role: {
+                    include: {
+                        RolePermission: {
+                            include: {
+                                permission: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 
 }

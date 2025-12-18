@@ -56,10 +56,11 @@ export type UserMinAggregateOutputType = {
   account_type: $Enums.AccountTypeEnum | null
   balance: number | null
   currency: $Enums.CurrencyEnum | null
-  premium_since: Date | null
-  premium_until: Date | null
-  is_verified: boolean | null
   is_active: boolean | null
+  is_verified: boolean | null
+  is_banned: boolean | null
+  ban_reason: string | null
+  banned_until: Date | null
   is_deleted: boolean | null
   created_at: Date | null
   updated_at: Date | null
@@ -81,10 +82,11 @@ export type UserMaxAggregateOutputType = {
   account_type: $Enums.AccountTypeEnum | null
   balance: number | null
   currency: $Enums.CurrencyEnum | null
-  premium_since: Date | null
-  premium_until: Date | null
-  is_verified: boolean | null
   is_active: boolean | null
+  is_verified: boolean | null
+  is_banned: boolean | null
+  ban_reason: string | null
+  banned_until: Date | null
   is_deleted: boolean | null
   created_at: Date | null
   updated_at: Date | null
@@ -106,10 +108,11 @@ export type UserCountAggregateOutputType = {
   account_type: number
   balance: number
   currency: number
-  premium_since: number
-  premium_until: number
-  is_verified: number
   is_active: number
+  is_verified: number
+  is_banned: number
+  ban_reason: number
+  banned_until: number
   is_deleted: number
   created_at: number
   updated_at: number
@@ -147,10 +150,11 @@ export type UserMinAggregateInputType = {
   account_type?: true
   balance?: true
   currency?: true
-  premium_since?: true
-  premium_until?: true
-  is_verified?: true
   is_active?: true
+  is_verified?: true
+  is_banned?: true
+  ban_reason?: true
+  banned_until?: true
   is_deleted?: true
   created_at?: true
   updated_at?: true
@@ -172,10 +176,11 @@ export type UserMaxAggregateInputType = {
   account_type?: true
   balance?: true
   currency?: true
-  premium_since?: true
-  premium_until?: true
-  is_verified?: true
   is_active?: true
+  is_verified?: true
+  is_banned?: true
+  ban_reason?: true
+  banned_until?: true
   is_deleted?: true
   created_at?: true
   updated_at?: true
@@ -197,10 +202,11 @@ export type UserCountAggregateInputType = {
   account_type?: true
   balance?: true
   currency?: true
-  premium_since?: true
-  premium_until?: true
-  is_verified?: true
   is_active?: true
+  is_verified?: true
+  is_banned?: true
+  ban_reason?: true
+  banned_until?: true
   is_deleted?: true
   created_at?: true
   updated_at?: true
@@ -309,10 +315,11 @@ export type UserGroupByOutputType = {
   account_type: $Enums.AccountTypeEnum
   balance: number
   currency: $Enums.CurrencyEnum
-  premium_since: Date | null
-  premium_until: Date | null
-  is_verified: boolean
   is_active: boolean
+  is_verified: boolean
+  is_banned: boolean
+  ban_reason: string | null
+  banned_until: Date | null
   is_deleted: boolean
   created_at: Date
   updated_at: Date
@@ -357,15 +364,17 @@ export type UserWhereInput = {
   account_type?: Prisma.EnumAccountTypeEnumFilter<"User"> | $Enums.AccountTypeEnum
   balance?: Prisma.IntFilter<"User"> | number
   currency?: Prisma.EnumCurrencyEnumFilter<"User"> | $Enums.CurrencyEnum
-  premium_since?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  premium_until?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  is_verified?: Prisma.BoolFilter<"User"> | boolean
   is_active?: Prisma.BoolFilter<"User"> | boolean
+  is_verified?: Prisma.BoolFilter<"User"> | boolean
+  is_banned?: Prisma.BoolFilter<"User"> | boolean
+  ban_reason?: Prisma.StringNullableFilter<"User"> | string | null
+  banned_until?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
   role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
   region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  premiumPurchase?: Prisma.PremiumPurchaseListRelationFilter
   token?: Prisma.TokenListRelationFilter
 }
 
@@ -385,15 +394,17 @@ export type UserOrderByWithRelationInput = {
   account_type?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  premium_since?: Prisma.SortOrderInput | Prisma.SortOrder
-  premium_until?: Prisma.SortOrderInput | Prisma.SortOrder
-  is_verified?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
+  is_banned?: Prisma.SortOrder
+  ban_reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned_until?: Prisma.SortOrderInput | Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   role?: Prisma.RoleOrderByWithRelationInput
   region?: Prisma.RegionOrderByWithRelationInput
+  premiumPurchase?: Prisma.PremiumPurchaseOrderByRelationAggregateInput
   token?: Prisma.TokenOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
@@ -417,15 +428,17 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   account_type?: Prisma.EnumAccountTypeEnumFilter<"User"> | $Enums.AccountTypeEnum
   balance?: Prisma.IntFilter<"User"> | number
   currency?: Prisma.EnumCurrencyEnumFilter<"User"> | $Enums.CurrencyEnum
-  premium_since?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  premium_until?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  is_verified?: Prisma.BoolFilter<"User"> | boolean
   is_active?: Prisma.BoolFilter<"User"> | boolean
+  is_verified?: Prisma.BoolFilter<"User"> | boolean
+  is_banned?: Prisma.BoolFilter<"User"> | boolean
+  ban_reason?: Prisma.StringNullableFilter<"User"> | string | null
+  banned_until?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
   role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
   region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  premiumPurchase?: Prisma.PremiumPurchaseListRelationFilter
   token?: Prisma.TokenListRelationFilter
 }, "id" | "email">
 
@@ -445,10 +458,11 @@ export type UserOrderByWithAggregationInput = {
   account_type?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  premium_since?: Prisma.SortOrderInput | Prisma.SortOrder
-  premium_until?: Prisma.SortOrderInput | Prisma.SortOrder
-  is_verified?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
+  is_banned?: Prisma.SortOrder
+  ban_reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned_until?: Prisma.SortOrderInput | Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -478,10 +492,11 @@ export type UserScalarWhereWithAggregatesInput = {
   account_type?: Prisma.EnumAccountTypeEnumWithAggregatesFilter<"User"> | $Enums.AccountTypeEnum
   balance?: Prisma.IntWithAggregatesFilter<"User"> | number
   currency?: Prisma.EnumCurrencyEnumWithAggregatesFilter<"User"> | $Enums.CurrencyEnum
-  premium_since?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  premium_until?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  is_verified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   is_active?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  is_verified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  is_banned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  ban_reason?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  banned_until?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   is_deleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -501,15 +516,17 @@ export type UserCreateInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   role: Prisma.RoleCreateNestedOneWithoutUserInput
   region: Prisma.RegionCreateNestedOneWithoutUserInput
+  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
   token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
@@ -529,13 +546,15 @@ export type UserUncheckedCreateInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
   token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -553,15 +572,17 @@ export type UserUpdateInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
   region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
   token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
@@ -581,13 +602,15 @@ export type UserUncheckedUpdateInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
   token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -607,10 +630,11 @@ export type UserCreateManyInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -630,10 +654,11 @@ export type UserUpdateManyMutationInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -655,10 +680,11 @@ export type UserUncheckedUpdateManyInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -686,10 +712,11 @@ export type UserCountOrderByAggregateInput = {
   account_type?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  premium_since?: Prisma.SortOrder
-  premium_until?: Prisma.SortOrder
-  is_verified?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
+  is_banned?: Prisma.SortOrder
+  ban_reason?: Prisma.SortOrder
+  banned_until?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -718,10 +745,11 @@ export type UserMaxOrderByAggregateInput = {
   account_type?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  premium_since?: Prisma.SortOrder
-  premium_until?: Prisma.SortOrder
-  is_verified?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
+  is_banned?: Prisma.SortOrder
+  ban_reason?: Prisma.SortOrder
+  banned_until?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -743,10 +771,11 @@ export type UserMinOrderByAggregateInput = {
   account_type?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  premium_since?: Prisma.SortOrder
-  premium_until?: Prisma.SortOrder
-  is_verified?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
+  is_banned?: Prisma.SortOrder
+  ban_reason?: Prisma.SortOrder
+  banned_until?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -802,12 +831,12 @@ export type EnumCurrencyEnumFieldUpdateOperationsInput = {
   set?: $Enums.CurrencyEnum
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -912,6 +941,20 @@ export type UserUpdateOneRequiredWithoutTokenNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTokenInput, Prisma.UserUpdateWithoutTokenInput>, Prisma.UserUncheckedUpdateWithoutTokenInput>
 }
 
+export type UserCreateNestedOneWithoutPremiumPurchaseInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPremiumPurchaseInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPremiumPurchaseNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPremiumPurchaseInput
+  upsert?: Prisma.UserUpsertWithoutPremiumPurchaseInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPremiumPurchaseInput, Prisma.UserUpdateWithoutPremiumPurchaseInput>, Prisma.UserUncheckedUpdateWithoutPremiumPurchaseInput>
+}
+
 export type UserCreateWithoutRegionInput = {
   id?: string
   name: string
@@ -926,14 +969,16 @@ export type UserCreateWithoutRegionInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   role: Prisma.RoleCreateNestedOneWithoutUserInput
+  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
   token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
@@ -952,13 +997,15 @@ export type UserUncheckedCreateWithoutRegionInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
   token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1007,10 +1054,11 @@ export type UserScalarWhereInput = {
   account_type?: Prisma.EnumAccountTypeEnumFilter<"User"> | $Enums.AccountTypeEnum
   balance?: Prisma.IntFilter<"User"> | number
   currency?: Prisma.EnumCurrencyEnumFilter<"User"> | $Enums.CurrencyEnum
-  premium_since?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  premium_until?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  is_verified?: Prisma.BoolFilter<"User"> | boolean
   is_active?: Prisma.BoolFilter<"User"> | boolean
+  is_verified?: Prisma.BoolFilter<"User"> | boolean
+  is_banned?: Prisma.BoolFilter<"User"> | boolean
+  ban_reason?: Prisma.StringNullableFilter<"User"> | string | null
+  banned_until?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1030,14 +1078,16 @@ export type UserCreateWithoutRoleInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   region: Prisma.RegionCreateNestedOneWithoutUserInput
+  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
   token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
@@ -1056,13 +1106,15 @@ export type UserUncheckedCreateWithoutRoleInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
   token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1106,15 +1158,17 @@ export type UserCreateWithoutTokenInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   role: Prisma.RoleCreateNestedOneWithoutUserInput
   region: Prisma.RegionCreateNestedOneWithoutUserInput
+  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTokenInput = {
@@ -1133,13 +1187,15 @@ export type UserUncheckedCreateWithoutTokenInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTokenInput = {
@@ -1172,15 +1228,17 @@ export type UserUpdateWithoutTokenInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
   region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTokenInput = {
@@ -1199,13 +1257,139 @@ export type UserUncheckedUpdateWithoutTokenInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPremiumPurchaseInput = {
+  id?: string
+  name: string
+  surname: string
+  age: number
+  email: string
+  password: string
+  phone?: string | null
+  gender?: $Enums.GenderEnum | null
+  photo?: string | null
+  city: string
+  account_type?: $Enums.AccountTypeEnum
+  balance?: number
+  currency?: $Enums.CurrencyEnum
+  is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
+  is_deleted?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  role: Prisma.RoleCreateNestedOneWithoutUserInput
+  region: Prisma.RegionCreateNestedOneWithoutUserInput
+  token?: Prisma.TokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPremiumPurchaseInput = {
+  id?: string
+  name: string
+  surname: string
+  age: number
+  email: string
+  password: string
+  phone?: string | null
+  gender?: $Enums.GenderEnum | null
+  photo?: string | null
+  role_id: number
+  region_id: number
+  city: string
+  account_type?: $Enums.AccountTypeEnum
+  balance?: number
+  currency?: $Enums.CurrencyEnum
+  is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
+  is_deleted?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPremiumPurchaseInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
+}
+
+export type UserUpsertWithoutPremiumPurchaseInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPremiumPurchaseInput, Prisma.UserUncheckedUpdateWithoutPremiumPurchaseInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPremiumPurchaseInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPremiumPurchaseInput, Prisma.UserUncheckedUpdateWithoutPremiumPurchaseInput>
+}
+
+export type UserUpdateWithoutPremiumPurchaseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  surname?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableEnumGenderEnumFieldUpdateOperationsInput | $Enums.GenderEnum | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
+  balance?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
+  region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  token?: Prisma.TokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPremiumPurchaseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  surname?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableEnumGenderEnumFieldUpdateOperationsInput | $Enums.GenderEnum | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role_id?: Prisma.IntFieldUpdateOperationsInput | number
+  region_id?: Prisma.IntFieldUpdateOperationsInput | number
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
+  balance?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyRegionInput = {
@@ -1223,10 +1407,11 @@ export type UserCreateManyRegionInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -1246,14 +1431,16 @@ export type UserUpdateWithoutRegionInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
+  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
   token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
@@ -1272,13 +1459,15 @@ export type UserUncheckedUpdateWithoutRegionInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
   token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1297,10 +1486,11 @@ export type UserUncheckedUpdateManyWithoutRegionInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1321,10 +1511,11 @@ export type UserCreateManyRoleInput = {
   account_type?: $Enums.AccountTypeEnum
   balance?: number
   currency?: $Enums.CurrencyEnum
-  premium_since?: Date | string | null
-  premium_until?: Date | string | null
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: string | null
+  banned_until?: Date | string | null
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -1344,14 +1535,16 @@ export type UserUpdateWithoutRoleInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
   token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
@@ -1370,13 +1563,15 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
   token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1395,10 +1590,11 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
   account_type?: Prisma.EnumAccountTypeEnumFieldUpdateOperationsInput | $Enums.AccountTypeEnum
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.EnumCurrencyEnumFieldUpdateOperationsInput | $Enums.CurrencyEnum
-  premium_since?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  premium_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ban_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1410,10 +1606,12 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
  */
 
 export type UserCountOutputType = {
+  premiumPurchase: number
   token: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  premiumPurchase?: boolean | UserCountOutputTypeCountPremiumPurchaseArgs
   token?: boolean | UserCountOutputTypeCountTokenArgs
 }
 
@@ -1425,6 +1623,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPremiumPurchaseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PremiumPurchaseWhereInput
 }
 
 /**
@@ -1451,15 +1656,17 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   account_type?: boolean
   balance?: boolean
   currency?: boolean
-  premium_since?: boolean
-  premium_until?: boolean
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: boolean
+  banned_until?: boolean
   is_deleted?: boolean
   created_at?: boolean
   updated_at?: boolean
   role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
   region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  premiumPurchase?: boolean | Prisma.User$premiumPurchaseArgs<ExtArgs>
   token?: boolean | Prisma.User$tokenArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1482,19 +1689,21 @@ export type UserSelectScalar = {
   account_type?: boolean
   balance?: boolean
   currency?: boolean
-  premium_since?: boolean
-  premium_until?: boolean
-  is_verified?: boolean
   is_active?: boolean
+  is_verified?: boolean
+  is_banned?: boolean
+  ban_reason?: boolean
+  banned_until?: boolean
   is_deleted?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "surname" | "age" | "email" | "password" | "phone" | "gender" | "photo" | "role_id" | "region_id" | "city" | "account_type" | "balance" | "currency" | "premium_since" | "premium_until" | "is_verified" | "is_active" | "is_deleted" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "surname" | "age" | "email" | "password" | "phone" | "gender" | "photo" | "role_id" | "region_id" | "city" | "account_type" | "balance" | "currency" | "is_active" | "is_verified" | "is_banned" | "ban_reason" | "banned_until" | "is_deleted" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
   region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  premiumPurchase?: boolean | Prisma.User$premiumPurchaseArgs<ExtArgs>
   token?: boolean | Prisma.User$tokenArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1504,6 +1713,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     role: Prisma.$RolePayload<ExtArgs>
     region: Prisma.$RegionPayload<ExtArgs>
+    premiumPurchase: Prisma.$PremiumPurchasePayload<ExtArgs>[]
     token: Prisma.$TokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1522,10 +1732,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     account_type: $Enums.AccountTypeEnum
     balance: number
     currency: $Enums.CurrencyEnum
-    premium_since: Date | null
-    premium_until: Date | null
-    is_verified: boolean
     is_active: boolean
+    is_verified: boolean
+    is_banned: boolean
+    ban_reason: string | null
+    banned_until: Date | null
     is_deleted: boolean
     created_at: Date
     updated_at: Date
@@ -1871,6 +2082,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   role<T extends Prisma.RoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoleDefaultArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   region<T extends Prisma.RegionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RegionDefaultArgs<ExtArgs>>): Prisma.Prisma__RegionClient<runtime.Types.Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  premiumPurchase<T extends Prisma.User$premiumPurchaseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$premiumPurchaseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PremiumPurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   token<T extends Prisma.User$tokenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tokenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1916,10 +2128,11 @@ export interface UserFieldRefs {
   readonly account_type: Prisma.FieldRef<"User", 'AccountTypeEnum'>
   readonly balance: Prisma.FieldRef<"User", 'Int'>
   readonly currency: Prisma.FieldRef<"User", 'CurrencyEnum'>
-  readonly premium_since: Prisma.FieldRef<"User", 'DateTime'>
-  readonly premium_until: Prisma.FieldRef<"User", 'DateTime'>
-  readonly is_verified: Prisma.FieldRef<"User", 'Boolean'>
   readonly is_active: Prisma.FieldRef<"User", 'Boolean'>
+  readonly is_verified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly is_banned: Prisma.FieldRef<"User", 'Boolean'>
+  readonly ban_reason: Prisma.FieldRef<"User", 'String'>
+  readonly banned_until: Prisma.FieldRef<"User", 'DateTime'>
   readonly is_deleted: Prisma.FieldRef<"User", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"User", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"User", 'DateTime'>
@@ -2263,6 +2476,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.premiumPurchase
+ */
+export type User$premiumPurchaseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PremiumPurchase
+   */
+  select?: Prisma.PremiumPurchaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PremiumPurchase
+   */
+  omit?: Prisma.PremiumPurchaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PremiumPurchaseInclude<ExtArgs> | null
+  where?: Prisma.PremiumPurchaseWhereInput
+  orderBy?: Prisma.PremiumPurchaseOrderByWithRelationInput | Prisma.PremiumPurchaseOrderByWithRelationInput[]
+  cursor?: Prisma.PremiumPurchaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PremiumPurchaseScalarFieldEnum | Prisma.PremiumPurchaseScalarFieldEnum[]
 }
 
 /**

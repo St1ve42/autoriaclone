@@ -396,7 +396,10 @@ export const ModelName = {
   Permission: 'Permission',
   RolePermission: 'RolePermission',
   Token: 'Token',
-  Statistic: 'Statistic'
+  AnnouncementStatistics: 'AnnouncementStatistics',
+  AnnouncementViewsDay: 'AnnouncementViewsDay',
+  AveragePrices: 'AveragePrices',
+  PremiumPurchase: 'PremiumPurchase'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "region" | "role" | "permission" | "rolePermission" | "token" | "statistic"
+    modelProps: "user" | "region" | "role" | "permission" | "rolePermission" | "token" | "announcementStatistics" | "announcementViewsDay" | "averagePrices" | "premiumPurchase"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -812,69 +815,267 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Statistic: {
-      payload: Prisma.$StatisticPayload<ExtArgs>
-      fields: Prisma.StatisticFieldRefs
+    AnnouncementStatistics: {
+      payload: Prisma.$AnnouncementStatisticsPayload<ExtArgs>
+      fields: Prisma.AnnouncementStatisticsFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.StatisticFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload> | null
+          args: Prisma.AnnouncementStatisticsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.StatisticFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>
+          args: Prisma.AnnouncementStatisticsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>
         }
         findFirst: {
-          args: Prisma.StatisticFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload> | null
+          args: Prisma.AnnouncementStatisticsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.StatisticFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>
+          args: Prisma.AnnouncementStatisticsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>
         }
         findMany: {
-          args: Prisma.StatisticFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>[]
+          args: Prisma.AnnouncementStatisticsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>[]
         }
         create: {
-          args: Prisma.StatisticCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>
+          args: Prisma.AnnouncementStatisticsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>
         }
         createMany: {
-          args: Prisma.StatisticCreateManyArgs<ExtArgs>
+          args: Prisma.AnnouncementStatisticsCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         delete: {
-          args: Prisma.StatisticDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>
+          args: Prisma.AnnouncementStatisticsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>
         }
         update: {
-          args: Prisma.StatisticUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>
+          args: Prisma.AnnouncementStatisticsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>
         }
         deleteMany: {
-          args: Prisma.StatisticDeleteManyArgs<ExtArgs>
+          args: Prisma.AnnouncementStatisticsDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.StatisticUpdateManyArgs<ExtArgs>
+          args: Prisma.AnnouncementStatisticsUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         upsert: {
-          args: Prisma.StatisticUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatisticPayload>
+          args: Prisma.AnnouncementStatisticsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementStatisticsPayload>
         }
         aggregate: {
-          args: Prisma.StatisticAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateStatistic>
+          args: Prisma.AnnouncementStatisticsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnnouncementStatistics>
         }
         groupBy: {
-          args: Prisma.StatisticGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.StatisticGroupByOutputType>[]
+          args: Prisma.AnnouncementStatisticsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnnouncementStatisticsGroupByOutputType>[]
         }
         count: {
-          args: Prisma.StatisticCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.StatisticCountAggregateOutputType> | number
+          args: Prisma.AnnouncementStatisticsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnnouncementStatisticsCountAggregateOutputType> | number
+        }
+      }
+    }
+    AnnouncementViewsDay: {
+      payload: Prisma.$AnnouncementViewsDayPayload<ExtArgs>
+      fields: Prisma.AnnouncementViewsDayFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnnouncementViewsDayFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnnouncementViewsDayFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>
+        }
+        findFirst: {
+          args: Prisma.AnnouncementViewsDayFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnnouncementViewsDayFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>
+        }
+        findMany: {
+          args: Prisma.AnnouncementViewsDayFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>[]
+        }
+        create: {
+          args: Prisma.AnnouncementViewsDayCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>
+        }
+        createMany: {
+          args: Prisma.AnnouncementViewsDayCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AnnouncementViewsDayDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>
+        }
+        update: {
+          args: Prisma.AnnouncementViewsDayUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnnouncementViewsDayDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnnouncementViewsDayUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AnnouncementViewsDayUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnouncementViewsDayPayload>
+        }
+        aggregate: {
+          args: Prisma.AnnouncementViewsDayAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnnouncementViewsDay>
+        }
+        groupBy: {
+          args: Prisma.AnnouncementViewsDayGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnnouncementViewsDayGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnnouncementViewsDayCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnnouncementViewsDayCountAggregateOutputType> | number
+        }
+      }
+    }
+    AveragePrices: {
+      payload: Prisma.$AveragePricesPayload<ExtArgs>
+      fields: Prisma.AveragePricesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AveragePricesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AveragePricesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>
+        }
+        findFirst: {
+          args: Prisma.AveragePricesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AveragePricesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>
+        }
+        findMany: {
+          args: Prisma.AveragePricesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>[]
+        }
+        create: {
+          args: Prisma.AveragePricesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>
+        }
+        createMany: {
+          args: Prisma.AveragePricesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AveragePricesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>
+        }
+        update: {
+          args: Prisma.AveragePricesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>
+        }
+        deleteMany: {
+          args: Prisma.AveragePricesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AveragePricesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AveragePricesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AveragePricesPayload>
+        }
+        aggregate: {
+          args: Prisma.AveragePricesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAveragePrices>
+        }
+        groupBy: {
+          args: Prisma.AveragePricesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AveragePricesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AveragePricesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AveragePricesCountAggregateOutputType> | number
+        }
+      }
+    }
+    PremiumPurchase: {
+      payload: Prisma.$PremiumPurchasePayload<ExtArgs>
+      fields: Prisma.PremiumPurchaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PremiumPurchaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PremiumPurchaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>
+        }
+        findFirst: {
+          args: Prisma.PremiumPurchaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PremiumPurchaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>
+        }
+        findMany: {
+          args: Prisma.PremiumPurchaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>[]
+        }
+        create: {
+          args: Prisma.PremiumPurchaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>
+        }
+        createMany: {
+          args: Prisma.PremiumPurchaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PremiumPurchaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>
+        }
+        update: {
+          args: Prisma.PremiumPurchaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>
+        }
+        deleteMany: {
+          args: Prisma.PremiumPurchaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PremiumPurchaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PremiumPurchaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPurchasePayload>
+        }
+        aggregate: {
+          args: Prisma.PremiumPurchaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePremiumPurchase>
+        }
+        groupBy: {
+          args: Prisma.PremiumPurchaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PremiumPurchaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PremiumPurchaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PremiumPurchaseCountAggregateOutputType> | number
         }
       }
     }
@@ -933,10 +1134,11 @@ export const UserScalarFieldEnum = {
   account_type: 'account_type',
   balance: 'balance',
   currency: 'currency',
-  premium_since: 'premium_since',
-  premium_until: 'premium_until',
-  is_verified: 'is_verified',
   is_active: 'is_active',
+  is_verified: 'is_verified',
+  is_banned: 'is_banned',
+  ban_reason: 'ban_reason',
+  banned_until: 'banned_until',
   is_deleted: 'is_deleted',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -947,8 +1149,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const RegionScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  code: 'code'
+  name: 'name'
 } as const
 
 export type RegionScalarFieldEnum = (typeof RegionScalarFieldEnum)[keyof typeof RegionScalarFieldEnum]
@@ -990,17 +1191,49 @@ export const TokenScalarFieldEnum = {
 export type TokenScalarFieldEnum = (typeof TokenScalarFieldEnum)[keyof typeof TokenScalarFieldEnum]
 
 
-export const StatisticScalarFieldEnum = {
+export const AnnouncementStatisticsScalarFieldEnum = {
   id: 'id',
+  announcement_id: 'announcement_id',
   total_views: 'total_views',
-  views_per_day: 'views_per_day',
-  views_per_week: 'views_per_week',
-  views_per_month: 'views_per_month',
-  average_region_price: 'average_region_price',
-  average_country_price: 'average_country_price'
+  updated_at: 'updated_at'
 } as const
 
-export type StatisticScalarFieldEnum = (typeof StatisticScalarFieldEnum)[keyof typeof StatisticScalarFieldEnum]
+export type AnnouncementStatisticsScalarFieldEnum = (typeof AnnouncementStatisticsScalarFieldEnum)[keyof typeof AnnouncementStatisticsScalarFieldEnum]
+
+
+export const AnnouncementViewsDayScalarFieldEnum = {
+  id: 'id',
+  announcement_id: 'announcement_id',
+  view_date: 'view_date',
+  views: 'views'
+} as const
+
+export type AnnouncementViewsDayScalarFieldEnum = (typeof AnnouncementViewsDayScalarFieldEnum)[keyof typeof AnnouncementViewsDayScalarFieldEnum]
+
+
+export const AveragePricesScalarFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  model: 'model',
+  region_id: 'region_id',
+  avg_price: 'avg_price',
+  cars_count: 'cars_count',
+  calculated_at: 'calculated_at'
+} as const
+
+export type AveragePricesScalarFieldEnum = (typeof AveragePricesScalarFieldEnum)[keyof typeof AveragePricesScalarFieldEnum]
+
+
+export const PremiumPurchaseScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  price_paid: 'price_paid',
+  currency: 'currency',
+  purchased_at: 'purchased_at',
+  expires_at: 'expires_at'
+} as const
+
+export type PremiumPurchaseScalarFieldEnum = (typeof PremiumPurchaseScalarFieldEnum)[keyof typeof PremiumPurchaseScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1027,15 +1260,15 @@ export const UserOrderByRelevanceFieldEnum = {
   password: 'password',
   phone: 'phone',
   photo: 'photo',
-  city: 'city'
+  city: 'city',
+  ban_reason: 'ban_reason'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
 export const RegionOrderByRelevanceFieldEnum = {
-  name: 'name',
-  code: 'code'
+  name: 'name'
 } as const
 
 export type RegionOrderByRelevanceFieldEnum = (typeof RegionOrderByRelevanceFieldEnum)[keyof typeof RegionOrderByRelevanceFieldEnum]
@@ -1065,11 +1298,37 @@ export const TokenOrderByRelevanceFieldEnum = {
 export type TokenOrderByRelevanceFieldEnum = (typeof TokenOrderByRelevanceFieldEnum)[keyof typeof TokenOrderByRelevanceFieldEnum]
 
 
-export const StatisticOrderByRelevanceFieldEnum = {
-  id: 'id'
+export const AnnouncementStatisticsOrderByRelevanceFieldEnum = {
+  id: 'id',
+  announcement_id: 'announcement_id'
 } as const
 
-export type StatisticOrderByRelevanceFieldEnum = (typeof StatisticOrderByRelevanceFieldEnum)[keyof typeof StatisticOrderByRelevanceFieldEnum]
+export type AnnouncementStatisticsOrderByRelevanceFieldEnum = (typeof AnnouncementStatisticsOrderByRelevanceFieldEnum)[keyof typeof AnnouncementStatisticsOrderByRelevanceFieldEnum]
+
+
+export const AnnouncementViewsDayOrderByRelevanceFieldEnum = {
+  id: 'id',
+  announcement_id: 'announcement_id'
+} as const
+
+export type AnnouncementViewsDayOrderByRelevanceFieldEnum = (typeof AnnouncementViewsDayOrderByRelevanceFieldEnum)[keyof typeof AnnouncementViewsDayOrderByRelevanceFieldEnum]
+
+
+export const AveragePricesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  model: 'model'
+} as const
+
+export type AveragePricesOrderByRelevanceFieldEnum = (typeof AveragePricesOrderByRelevanceFieldEnum)[keyof typeof AveragePricesOrderByRelevanceFieldEnum]
+
+
+export const PremiumPurchaseOrderByRelevanceFieldEnum = {
+  id: 'id',
+  user_id: 'user_id'
+} as const
+
+export type PremiumPurchaseOrderByRelevanceFieldEnum = (typeof PremiumPurchaseOrderByRelevanceFieldEnum)[keyof typeof PremiumPurchaseOrderByRelevanceFieldEnum]
 
 
 
@@ -1114,16 +1373,16 @@ export type EnumCurrencyEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
- * Reference to a field of type 'DateTime'
+ * Reference to a field of type 'Boolean'
  */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
 /**
- * Reference to a field of type 'Boolean'
+ * Reference to a field of type 'DateTime'
  */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
@@ -1233,7 +1492,10 @@ export type GlobalOmitConfig = {
   permission?: Prisma.PermissionOmit
   rolePermission?: Prisma.RolePermissionOmit
   token?: Prisma.TokenOmit
-  statistic?: Prisma.StatisticOmit
+  announcementStatistics?: Prisma.AnnouncementStatisticsOmit
+  announcementViewsDay?: Prisma.AnnouncementViewsDayOmit
+  averagePrices?: Prisma.AveragePricesOmit
+  premiumPurchase?: Prisma.PremiumPurchaseOmit
 }
 
 /* Types for Logging */

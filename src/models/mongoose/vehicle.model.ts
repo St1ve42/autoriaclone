@@ -1,11 +1,16 @@
-import mongoose, {model} from "mongoose";
-import {VehicleTypeEnum} from "../../enums/vehicle.type.enum.js";
-import {TransmissionTypeEnum} from "../../enums/transmission.type.enum.js";
-import {FuelTypeEnum} from "../../enums/fuel.type.enum.js";
-import {EnvironmentalStandardEnum} from "../../enums/environmental.standard.enum.js";
-import {DriveTypeEnum} from "../../enums/drive.type.enum.js";
-import {PaintConditionEnum} from "../../enums/paint.condition.enum.js";
-import {TechnicalConditionEnum} from "../../enums/technical.condition.enum.js";
+import mongoose, {CallbackError, model, Query} from "mongoose";
+import {VehicleTypeEnum} from "../../enums/vehicleEnums/vehicle.type.enum.js";
+import {TransmissionTypeEnum} from "../../enums/vehicleEnums/transmission.type.enum.js";
+import {FuelTypeEnum} from "../../enums/vehicleEnums/fuel.type.enum.js";
+import {EnvironmentalStandardEnum} from "../../enums/vehicleEnums/environmental.standard.enum.js";
+import {DriveTypeEnum} from "../../enums/vehicleEnums/drive.type.enum.js";
+import {PaintConditionEnum} from "../../enums/vehicleEnums/paint.condition.enum.js";
+import {TechnicalConditionEnum} from "../../enums/vehicleEnums/technical.condition.enum.js";
+import {VehicleType} from "../../types/VehicleType.ts";
+import {AnnouncementType} from "../../types/AnnouncementType.ts";
+import {announcementService} from "../../services/announcement.service.ts";
+import {vehicleRepository} from "../../repository/vehicle.repository.ts";
+import {announcementRepository} from "../../repository/announcement.repository.ts";
 
 const VehicleSchema = new mongoose.Schema(
     {
@@ -43,8 +48,17 @@ const VehicleSchema = new mongoose.Schema(
     }
 )
 
-export const Vehicle = model("vehicles", VehicleSchema)
+// VehicleSchema.pre<Query<any, VehicleType>>("findOneAndDelete", async function(next) {
+//     try{
+//         const vehicleId = this.getFilter()._id as string
+//         const {vehicle_id} = await announcementRepository.findByParams({vehicle_id: vehicleId}) as AnnouncementType
+//         await announcementService.delete(vehicle_id)
+//         next()
+//     }
+//     catch (err){
+//         next(err as CallbackError)
+//     }
+// })
 
-//TODO commit after making schemas
-//TODO types for models
-//TODO fetch API and dump dbs
+export const Vehicle = model<VehicleType>("vehicles", VehicleSchema)
+

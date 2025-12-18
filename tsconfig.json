@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "nodenext",
     "target": "esnext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "types": [],
 
     "sourceMap": true,
@@ -26,7 +26,8 @@
     "swc": true,
     "esm": true,
     "experimentalResolver": true
-  }
+  },
+  "include": ["**/*.ts"]
 }
 
 

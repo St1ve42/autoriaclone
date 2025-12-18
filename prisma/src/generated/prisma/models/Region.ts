@@ -37,19 +37,16 @@ export type RegionSumAggregateOutputType = {
 export type RegionMinAggregateOutputType = {
   id: number | null
   name: string | null
-  code: string | null
 }
 
 export type RegionMaxAggregateOutputType = {
   id: number | null
   name: string | null
-  code: string | null
 }
 
 export type RegionCountAggregateOutputType = {
   id: number
   name: number
-  code: number
   _all: number
 }
 
@@ -65,19 +62,16 @@ export type RegionSumAggregateInputType = {
 export type RegionMinAggregateInputType = {
   id?: true
   name?: true
-  code?: true
 }
 
 export type RegionMaxAggregateInputType = {
   id?: true
   name?: true
-  code?: true
 }
 
 export type RegionCountAggregateInputType = {
   id?: true
   name?: true
-  code?: true
   _all?: true
 }
 
@@ -170,7 +164,6 @@ export type RegionGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type RegionGroupByOutputType = {
   id: number
   name: string
-  code: string
   _count: RegionCountAggregateOutputType | null
   _avg: RegionAvgAggregateOutputType | null
   _sum: RegionSumAggregateOutputType | null
@@ -199,32 +192,31 @@ export type RegionWhereInput = {
   NOT?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
   id?: Prisma.IntFilter<"Region"> | number
   name?: Prisma.StringFilter<"Region"> | string
-  code?: Prisma.StringFilter<"Region"> | string
   User?: Prisma.UserListRelationFilter
+  averagePrices?: Prisma.AveragePricesListRelationFilter
 }
 
 export type RegionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
   User?: Prisma.UserOrderByRelationAggregateInput
+  averagePrices?: Prisma.AveragePricesOrderByRelationAggregateInput
   _relevance?: Prisma.RegionOrderByRelevanceInput
 }
 
 export type RegionWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  name?: string
   AND?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
   OR?: Prisma.RegionWhereInput[]
   NOT?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
-  name?: Prisma.StringFilter<"Region"> | string
-  code?: Prisma.StringFilter<"Region"> | string
   User?: Prisma.UserListRelationFilter
-}, "id">
+  averagePrices?: Prisma.AveragePricesListRelationFilter
+}, "id" | "name">
 
 export type RegionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
   _count?: Prisma.RegionCountOrderByAggregateInput
   _avg?: Prisma.RegionAvgOrderByAggregateInput
   _max?: Prisma.RegionMaxOrderByAggregateInput
@@ -238,50 +230,46 @@ export type RegionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.RegionScalarWhereWithAggregatesInput | Prisma.RegionScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Region"> | number
   name?: Prisma.StringWithAggregatesFilter<"Region"> | string
-  code?: Prisma.StringWithAggregatesFilter<"Region"> | string
 }
 
 export type RegionCreateInput = {
   name: string
-  code: string
   User?: Prisma.UserCreateNestedManyWithoutRegionInput
+  averagePrices?: Prisma.AveragePricesCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateInput = {
   id?: number
   name: string
-  code: string
   User?: Prisma.UserUncheckedCreateNestedManyWithoutRegionInput
+  averagePrices?: Prisma.AveragePricesUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
   User?: Prisma.UserUpdateManyWithoutRegionNestedInput
+  averagePrices?: Prisma.AveragePricesUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
   User?: Prisma.UserUncheckedUpdateManyWithoutRegionNestedInput
+  averagePrices?: Prisma.AveragePricesUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionCreateManyInput = {
   id?: number
   name: string
-  code: string
 }
 
 export type RegionUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RegionUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RegionScalarRelationFilter = {
@@ -298,7 +286,6 @@ export type RegionOrderByRelevanceInput = {
 export type RegionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
 }
 
 export type RegionAvgOrderByAggregateInput = {
@@ -308,17 +295,20 @@ export type RegionAvgOrderByAggregateInput = {
 export type RegionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
 }
 
 export type RegionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
 }
 
 export type RegionSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+}
+
+export type RegionNullableScalarRelationFilter = {
+  is?: Prisma.RegionWhereInput | null
+  isNot?: Prisma.RegionWhereInput | null
 }
 
 export type RegionCreateNestedOneWithoutUserInput = {
@@ -335,15 +325,31 @@ export type RegionUpdateOneRequiredWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutUserInput, Prisma.RegionUpdateWithoutUserInput>, Prisma.RegionUncheckedUpdateWithoutUserInput>
 }
 
+export type RegionCreateNestedOneWithoutAveragePricesInput = {
+  create?: Prisma.XOR<Prisma.RegionCreateWithoutAveragePricesInput, Prisma.RegionUncheckedCreateWithoutAveragePricesInput>
+  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutAveragePricesInput
+  connect?: Prisma.RegionWhereUniqueInput
+}
+
+export type RegionUpdateOneWithoutAveragePricesNestedInput = {
+  create?: Prisma.XOR<Prisma.RegionCreateWithoutAveragePricesInput, Prisma.RegionUncheckedCreateWithoutAveragePricesInput>
+  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutAveragePricesInput
+  upsert?: Prisma.RegionUpsertWithoutAveragePricesInput
+  disconnect?: Prisma.RegionWhereInput | boolean
+  delete?: Prisma.RegionWhereInput | boolean
+  connect?: Prisma.RegionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutAveragePricesInput, Prisma.RegionUpdateWithoutAveragePricesInput>, Prisma.RegionUncheckedUpdateWithoutAveragePricesInput>
+}
+
 export type RegionCreateWithoutUserInput = {
   name: string
-  code: string
+  averagePrices?: Prisma.AveragePricesCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateWithoutUserInput = {
   id?: number
   name: string
-  code: string
+  averagePrices?: Prisma.AveragePricesUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionCreateOrConnectWithoutUserInput = {
@@ -364,13 +370,51 @@ export type RegionUpdateToOneWithWhereWithoutUserInput = {
 
 export type RegionUpdateWithoutUserInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  averagePrices?: Prisma.AveragePricesUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  averagePrices?: Prisma.AveragePricesUncheckedUpdateManyWithoutRegionNestedInput
+}
+
+export type RegionCreateWithoutAveragePricesInput = {
+  name: string
+  User?: Prisma.UserCreateNestedManyWithoutRegionInput
+}
+
+export type RegionUncheckedCreateWithoutAveragePricesInput = {
+  id?: number
+  name: string
+  User?: Prisma.UserUncheckedCreateNestedManyWithoutRegionInput
+}
+
+export type RegionCreateOrConnectWithoutAveragePricesInput = {
+  where: Prisma.RegionWhereUniqueInput
+  create: Prisma.XOR<Prisma.RegionCreateWithoutAveragePricesInput, Prisma.RegionUncheckedCreateWithoutAveragePricesInput>
+}
+
+export type RegionUpsertWithoutAveragePricesInput = {
+  update: Prisma.XOR<Prisma.RegionUpdateWithoutAveragePricesInput, Prisma.RegionUncheckedUpdateWithoutAveragePricesInput>
+  create: Prisma.XOR<Prisma.RegionCreateWithoutAveragePricesInput, Prisma.RegionUncheckedCreateWithoutAveragePricesInput>
+  where?: Prisma.RegionWhereInput
+}
+
+export type RegionUpdateToOneWithWhereWithoutAveragePricesInput = {
+  where?: Prisma.RegionWhereInput
+  data: Prisma.XOR<Prisma.RegionUpdateWithoutAveragePricesInput, Prisma.RegionUncheckedUpdateWithoutAveragePricesInput>
+}
+
+export type RegionUpdateWithoutAveragePricesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  User?: Prisma.UserUpdateManyWithoutRegionNestedInput
+}
+
+export type RegionUncheckedUpdateWithoutAveragePricesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  User?: Prisma.UserUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 
@@ -380,10 +424,12 @@ export type RegionUncheckedUpdateWithoutUserInput = {
 
 export type RegionCountOutputType = {
   User: number
+  averagePrices: number
 }
 
 export type RegionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   User?: boolean | RegionCountOutputTypeCountUserArgs
+  averagePrices?: boolean | RegionCountOutputTypeCountAveragePricesArgs
 }
 
 /**
@@ -403,12 +449,19 @@ export type RegionCountOutputTypeCountUserArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.UserWhereInput
 }
 
+/**
+ * RegionCountOutputType without action
+ */
+export type RegionCountOutputTypeCountAveragePricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AveragePricesWhereInput
+}
+
 
 export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  code?: boolean
   User?: boolean | Prisma.Region$UserArgs<ExtArgs>
+  averagePrices?: boolean | Prisma.Region$averagePricesArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["region"]>
 
@@ -417,12 +470,12 @@ export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type RegionSelectScalar = {
   id?: boolean
   name?: boolean
-  code?: boolean
 }
 
-export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code", ExtArgs["result"]["region"]>
+export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name", ExtArgs["result"]["region"]>
 export type RegionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   User?: boolean | Prisma.Region$UserArgs<ExtArgs>
+  averagePrices?: boolean | Prisma.Region$averagePricesArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -430,11 +483,11 @@ export type $RegionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Region"
   objects: {
     User: Prisma.$UserPayload<ExtArgs>[]
+    averagePrices: Prisma.$AveragePricesPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
-    code: string
   }, ExtArgs["result"]["region"]>
   composites: {}
 }
@@ -776,6 +829,7 @@ readonly fields: RegionFieldRefs;
 export interface Prisma__RegionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   User<T extends Prisma.Region$UserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$UserArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  averagePrices<T extends Prisma.Region$averagePricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$averagePricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AveragePricesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -807,7 +861,6 @@ export interface Prisma__RegionClient<T, Null = never, ExtArgs extends runtime.T
 export interface RegionFieldRefs {
   readonly id: Prisma.FieldRef<"Region", 'Int'>
   readonly name: Prisma.FieldRef<"Region", 'String'>
-  readonly code: Prisma.FieldRef<"Region", 'String'>
 }
     
 
@@ -1172,6 +1225,30 @@ export type Region$UserArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
+}
+
+/**
+ * Region.averagePrices
+ */
+export type Region$averagePricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AveragePrices
+   */
+  select?: Prisma.AveragePricesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AveragePrices
+   */
+  omit?: Prisma.AveragePricesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AveragePricesInclude<ExtArgs> | null
+  where?: Prisma.AveragePricesWhereInput
+  orderBy?: Prisma.AveragePricesOrderByWithRelationInput | Prisma.AveragePricesOrderByWithRelationInput[]
+  cursor?: Prisma.AveragePricesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AveragePricesScalarFieldEnum | Prisma.AveragePricesScalarFieldEnum[]
 }
 
 /**

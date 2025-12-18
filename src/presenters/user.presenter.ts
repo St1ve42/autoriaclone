@@ -1,9 +1,9 @@
 import type {User} from "../../prisma/src/generated/prisma/client.ts";
 import {regionService} from "../services/region.service.ts";
 import {roleService} from "../services/role.service.ts";
-import {TokenPairType} from "../types/TokenType.js";
+import {TokenPairType} from "../types/TokenType.ts";
 
-class UsersPresenter{
+class UserPresenter{
     public async toListResDto(
         users: User[],
     ) {
@@ -11,7 +11,7 @@ class UsersPresenter{
     }
 
     public async resUser(user: User){
-        const [region, role] = await Promise.all([await regionService.getRegionName(user.region_id), await roleService.getRoleName(user.role_id)])
+        const [region, role] = await Promise.all([await regionService.getNameById(user.region_id), await roleService.getNameById(user.role_id)])
         return {
             "id": user.id,
             "name": user.name,
@@ -24,21 +24,24 @@ class UsersPresenter{
             "city": user.city,
             "region": region,
             "role": role,
-            "accountType": user.account_type,
+            "account_type": user.account_type,
             "balance": user.balance,
             "currency": user.currency,
             "premium_since": user.premium_since,
             "premium_until": user.premium_until,
-            "isVerified": user.is_verified,
-            "isActive": user.is_active,
-            "isDeleted": user.is_deleted,
+            "is_active": user.is_active,
+            "is_verified": user.is_verified,
+            "is_banned": user.is_banned,
+            "ban_reason": user.ban_reason,
+            "banned_until": user.banned_until,
+            "is_deleted": user.is_deleted,
         }
     }
 
     public resToken(tokenPair: TokenPairType){
         return {
-            "accessToken": tokenPair.access_token,
-            "refreshToken": tokenPair.refresh_token
+            "access_token": tokenPair.access_token,
+            "refresh_token": tokenPair.refresh_token
         }
     }
 
@@ -50,4 +53,4 @@ class UsersPresenter{
 
 }
 
-export const userPresenter = new UsersPresenter();
+export const userPresenter = new UserPresenter();

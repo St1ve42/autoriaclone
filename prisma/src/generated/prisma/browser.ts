@@ -48,7 +48,22 @@ export type RolePermission = Prisma.RolePermissionModel
  */
 export type Token = Prisma.TokenModel
 /**
- * Model Statistic
+ * Model AnnouncementStatistics
  * 
  */
-export type Statistic = Prisma.StatisticModel
+export type AnnouncementStatistics = Prisma.AnnouncementStatisticsModel
+/**
+ * Model AnnouncementViewsDay
+ * 
+ */
+export type AnnouncementViewsDay = Prisma.AnnouncementViewsDayModel
+/**
+ * Model AveragePrices
+ * 
+ */
+export type AveragePrices = Prisma.AveragePricesModel
+/**
+ * Model PremiumPurchase
+ * 
+ */
+export type PremiumPurchase = Prisma.PremiumPurchaseModel

@@ -206,16 +206,16 @@ export type TokenOrderByWithRelationInput = {
 
 export type TokenWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  access_token?: string
+  refresh_token?: string
   AND?: Prisma.TokenWhereInput | Prisma.TokenWhereInput[]
   OR?: Prisma.TokenWhereInput[]
   NOT?: Prisma.TokenWhereInput | Prisma.TokenWhereInput[]
   user_id?: Prisma.StringFilter<"Token"> | string
-  access_token?: Prisma.StringFilter<"Token"> | string
-  refresh_token?: Prisma.StringFilter<"Token"> | string
   created_at?: Prisma.DateTimeFilter<"Token"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Token"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "access_token" | "refresh_token">
 
 export type TokenOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

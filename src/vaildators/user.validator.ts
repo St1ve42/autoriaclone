@@ -1,14 +1,15 @@
 import joi from "joi"
-import {RegexpEnum} from "../enums/regexp.enum.ts";
+import {UserRegexpEnum} from "../enums/userEnums/user.regexp.enum.ts";
 import {GenderEnum} from "../../prisma/src/generated/prisma/enums.ts";
+
 export class UserValidator{
-    private static name = joi.string().regex(RegexpEnum.NAME).trim().messages({
+    private static name = joi.string().regex(UserRegexpEnum.NAME).trim().messages({
         "any.required": "name is required",
         "string.empty": "name must not be empty",
         "string.base": "name must be string type",
         "string.pattern.base": "name must contain only alphabet symbols and be 3-10 characters long"
     })
-    private static surname = joi.string().regex(RegexpEnum.SURNAME).trim().messages({
+    private static surname = joi.string().regex(UserRegexpEnum.SURNAME).trim().messages({
         "any.required": "surname is required",
         "string.empty": "surname must not be empty",
         "string.base": "surname must be string type",
@@ -21,14 +22,14 @@ export class UserValidator{
         "number.min": "age must be more than or equal to 1",
         "number.max": "age must be less than or equal to 100"
     })
-    private static email = joi.string().regex(RegexpEnum.EMAIL).email({minDomainSegments: 2, tlds: { allow: ['com', 'net'] }}).messages({
+    private static email = joi.string().regex(UserRegexpEnum.EMAIL).email({minDomainSegments: 2, tlds: { allow: ['com', 'net'] }}).messages({
         "any.required": "email is required",
         "string.empty": "email must not be empty",
         "string.base": "email must be string",
         "string.email": "Invalid email address. The email must look like 'username@example.com'. Only top-level domains .com and .net are allowed",
         "string.pattern.base": "email must contain only alpha-numeric characters and dot",
     })
-    private static password = joi.string().regex(RegexpEnum.PASSWORD).messages({
+    private static password = joi.string().regex(UserRegexpEnum.PASSWORD).messages({
         "any.required": "password is required",
         "string.empty": "password must not be empty",
         "string.base": "password must be string",
@@ -43,22 +44,28 @@ export class UserValidator{
         "string.base": "gender must be string type",
         "any.only": "gender must be either male or female"
     })
-    private static phone = joi.string().regex(RegexpEnum.PHONE).trim().messages({
+    private static phone = joi.string().regex(UserRegexpEnum.PHONE).trim().messages({
         "string.empty": "phone must not be empty",
         "string.base": "phone must be string type",
         "string.pattern.base": "phone must look like '+38 (000) 000 00 00'"
     })
-    private static city = joi.string().regex(RegexpEnum.CITY).trim().messages({
+    private static city = joi.string().regex(UserRegexpEnum.CITY).trim().messages({
         "any.required": "city is required",
         "string.empty": "city must not be empty",
         "string.base": "city must be string type",
         "string.pattern.base": "city must contain only cyrillic characters and be 3-30 characters long"
     })
-    private static region = joi.string().regex(RegexpEnum.REGION).trim().messages({
+    private static region = joi.string().regex(UserRegexpEnum.REGION).trim().messages({
         "any.required": "region is required",
         "string.empty": "region must not be empty",
         "string.base": "region must be string type",
         "string.pattern.base": "region must contain only cyrillic characters and be 3-30 characters long"
+    })
+    private static role = joi.string().messages({
+        "any.required": "role is required",
+        "string.empty": "role must not be empty",
+        "string.base": "role must be string type",
+        "string.pattern.base": "role must contain only cyrillic characters and be 3-30 characters long"
     })
 
     public static createUser = joi.object({
@@ -80,11 +87,25 @@ export class UserValidator{
         city: this.city,
         region: this.region,
         gender: this.gender,
-        phone: this.phone
+        phone: this.phone,
+        role: this.role
     })
 
     public static signIn = joi.object({
         email: this.email.required(),
+        password: this.password.required()
+    })
+
+    public static recoveryRequest = joi.object({
+        email: this.email.required()
+    })
+
+    public static recovery = joi.object({
+        password: this.password.required()
+    })
+
+    public static change = joi.object({
+        oldPassword: this.password.required(),
         password: this.password.required()
     })
 

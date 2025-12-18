@@ -1,5 +1,5 @@
 import type {Request, Response, NextFunction} from "express";
-import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
+import type {UserUpdateDTOType} from "../types/UserType.ts";
 import {regionService} from "../services/region.service.ts";
 
 class RegionMiddleware{
@@ -7,7 +7,7 @@ class RegionMiddleware{
         try{
             const body = req.body as UserUpdateDTOType
             if(body.region){
-                res.locals.region_id = await regionService.getRegionId(body.region + " область")
+                res.locals.region_id = await regionService.getIdByName(body.region + " область")
             }
             next()
         }
