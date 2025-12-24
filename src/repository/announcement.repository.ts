@@ -80,6 +80,7 @@ class AnnouncementRepository{
     }
 
     public async create(dto: CreateAnnouncementInRepositoryDTOType): Promise<AnnouncementType>{
+        console.log(dto)
         return await Announcement.create(dto)
     }
 

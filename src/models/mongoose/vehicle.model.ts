@@ -1,14 +1,14 @@
 import mongoose, {model} from "mongoose";
-import {VehicleTypeEnum} from "../../enums/vehicleEnums/vehicle.type.enum.js";
-import {TransmissionTypeEnum} from "../../enums/vehicleEnums/transmission.type.enum.js";
-import {FuelTypeEnum} from "../../enums/vehicleEnums/fuel.type.enum.js";
-import {EnvironmentalStandardEnum} from "../../enums/vehicleEnums/environmental.standard.enum.js";
-import {DriveTypeEnum} from "../../enums/vehicleEnums/drive.type.enum.js";
-import {PaintConditionEnum} from "../../enums/vehicleEnums/paint.condition.enum.js";
-import {TechnicalConditionEnum} from "../../enums/vehicleEnums/technical.condition.enum.js";
+import {VehicleTypeEnum} from "../../enums/vehicleEnums/vehicle.type.enum.ts";
+import {TransmissionTypeEnum} from "../../enums/vehicleEnums/transmission.type.enum.ts";
+import {FuelTypeEnum} from "../../enums/vehicleEnums/fuel.type.enum.ts";
+import {EnvironmentalStandardEnum} from "../../enums/vehicleEnums/environmental.standard.enum.ts";
+import {DriveTypeEnum} from "../../enums/vehicleEnums/drive.type.enum.ts";
+import {PaintConditionEnum} from "../../enums/vehicleEnums/paint.condition.enum.ts";
+import {TechnicalConditionEnum} from "../../enums/vehicleEnums/technical.condition.enum.ts";
 import {VehicleType} from "../../types/VehicleType.ts";
 
-const VehicleSchema = new mongoose.Schema(
+export const VehicleSchema = new mongoose.Schema(
     {
         brand: {type: String, required: true},
         model: {type: String, required: true},
@@ -37,10 +37,6 @@ const VehicleSchema = new mongoose.Schema(
             technical_condition: {type: String, required: false, enum: TechnicalConditionEnum},
             service_station_inspection_readiness: {type: Boolean, required: false}
         }
-    },
-    {
-        timestamps: true,
-        versionKey: false
     }
 )
 

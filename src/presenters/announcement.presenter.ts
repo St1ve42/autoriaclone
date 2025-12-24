@@ -29,7 +29,7 @@ class AnnouncementPresenter{
             rate_date: announcement.rate_date,
             approve_attempts: announcement.approve_attempts,
             status: announcement.status,
-            vehicle_id: announcement.vehicle_id,
+            vehicle: announcement.vehicle,
             user_id: announcement.user_id,
             dealershipId: announcement.dealershipId
         }

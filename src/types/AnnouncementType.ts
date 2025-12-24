@@ -17,13 +17,13 @@ type AnnouncementType = {
     rate_date: Date,
     approve_attempts: number,
     status: string,
-    vehicle_id: string,
+    vehicle: VehicleType,
     user_id: string,
     dealershipId?: string
 } & BaseType
 
 type CreateAnnouncementDTOType = Omit<AnnouncementType, 'user_id' | 'status' | "createdAt" | "updatedAt" | 'approve_attempts' | 'rate_date' | 'exchange_rate' | 'rate_source'>
 type CreateAnnouncementInRepositoryDTOType =  CreateAnnouncementDTOType & Pick<AnnouncementType, "exchange_rate" | "user_id" | "status" | "approve_attempts">
-type UpdateAnnouncementDTOType = Partial<Omit<AnnouncementType, 'user_id' | 'rate_date' | 'exchange_rate' | 'rate_source'>>
+type UpdateAnnouncementDTOType = Partial<Omit<AnnouncementType, 'user_id' | 'rate_date' | 'exchange_rate' | 'rate_source' | 'dealershipId'>>
 
 export type {AnnouncementType, CreateAnnouncementDTOType, CreateAnnouncementInRepositoryDTOType, UpdateAnnouncementDTOType}

@@ -5,7 +5,6 @@ import {DriveTypeEnum} from "../enums/vehicleEnums/drive.type.enum.ts";
 import {PaintConditionEnum} from "../enums/vehicleEnums/paint.condition.enum.ts";
 import {TechnicalConditionEnum} from "../enums/vehicleEnums/technical.condition.enum.ts";
 import {VehicleTypeEnum} from "../enums/vehicleEnums/vehicle.type.enum.ts";
-import {BaseType} from "./BaseType.ts";
 
 type FuelConsumptionType = {
     city?: number;
@@ -40,7 +39,7 @@ type VehicleType = {
     vehicle_type: VehicleTypeEnum;
     mileage: number;
     characteristics?: VehicleCharacteristicsType;
-} & BaseType
+}
 
 
 export type {VehicleType}
