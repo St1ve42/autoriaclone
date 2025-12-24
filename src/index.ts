@@ -4,6 +4,9 @@ import {configs} from "./configs/configs.ts";
 import {errorController} from "./controllers/error.controller.ts";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
+import {cronRunner} from "./crons";
+import {CalculateAveragePriceCron} from "./crons/average_price_cron.ts";
+import {CurrencyEnum, PlanSubscribeEnum} from "../prisma/src/generated/prisma/enums.ts";
 
 const app = express()
 app.use(express.json())
@@ -31,6 +34,7 @@ const connectMongoDB = async () => {
 }
 
 app.listen(configs.APP_PORT, async () => {
+    cronRunner()
     await connectMongoDB()
     console.log(`Server is running on http://${configs.APP_HOST}:${configs.APP_PORT}`)
 })

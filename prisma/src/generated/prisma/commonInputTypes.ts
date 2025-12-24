@@ -280,6 +280,36 @@ export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
 }
 
+export type EnumPlanSubscribeEnumFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanSubscribeEnum | Prisma.EnumPlanSubscribeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanSubscribeEnum[]
+  notIn?: $Enums.PlanSubscribeEnum[]
+  not?: Prisma.NestedEnumPlanSubscribeEnumFilter<$PrismaModel> | $Enums.PlanSubscribeEnum
+}
+
+export type BoolNullableFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type EnumPlanSubscribeEnumWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanSubscribeEnum | Prisma.EnumPlanSubscribeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanSubscribeEnum[]
+  notIn?: $Enums.PlanSubscribeEnum[]
+  not?: Prisma.NestedEnumPlanSubscribeEnumWithAggregatesFilter<$PrismaModel> | $Enums.PlanSubscribeEnum
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlanSubscribeEnumFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlanSubscribeEnumFilter<$PrismaModel>
+}
+
+export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[]
@@ -561,6 +591,36 @@ export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalFilter<$PrismaModel>
   _min?: Prisma.NestedDecimalFilter<$PrismaModel>
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
+}
+
+export type NestedEnumPlanSubscribeEnumFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanSubscribeEnum | Prisma.EnumPlanSubscribeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanSubscribeEnum[]
+  notIn?: $Enums.PlanSubscribeEnum[]
+  not?: Prisma.NestedEnumPlanSubscribeEnumFilter<$PrismaModel> | $Enums.PlanSubscribeEnum
+}
+
+export type NestedBoolNullableFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type NestedEnumPlanSubscribeEnumWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanSubscribeEnum | Prisma.EnumPlanSubscribeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanSubscribeEnum[]
+  notIn?: $Enums.PlanSubscribeEnum[]
+  not?: Prisma.NestedEnumPlanSubscribeEnumWithAggregatesFilter<$PrismaModel> | $Enums.PlanSubscribeEnum
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlanSubscribeEnumFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlanSubscribeEnumFilter<$PrismaModel>
+}
+
+export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
 

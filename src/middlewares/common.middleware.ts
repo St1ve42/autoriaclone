@@ -13,6 +13,9 @@ class CommonMiddleware{
     public validateBody(validator: joi.ObjectSchema){
         return async (req: Request, res: Response, next: NextFunction) => {
             try{
+                if(!req.body){
+                    throw new ApiError("Body is required", StatusCodeEnum.BAD_REQUEST)
+                }
                 req.body = await validator.validateAsync(req.body)
                 next()
             }

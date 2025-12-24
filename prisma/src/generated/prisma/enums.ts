@@ -32,3 +32,10 @@ export const GenderEnum = {
 } as const
 
 export type GenderEnum = (typeof GenderEnum)[keyof typeof GenderEnum]
+
+
+export const PlanSubscribeEnum = {
+  premium: 'premium'
+} as const
+
+export type PlanSubscribeEnum = (typeof PlanSubscribeEnum)[keyof typeof PlanSubscribeEnum]

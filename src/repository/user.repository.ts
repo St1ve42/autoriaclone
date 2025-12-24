@@ -2,9 +2,10 @@ import type {UserCreateInput, UserOrderByWithRelationInput, UserUpdateInput, Use
 import {prisma} from "../../prisma/prisma.client.ts";
 import type {User} from "../../prisma/src/generated/prisma/client.ts";
 import type {UserQueryType} from "../types/QueryType.ts";
+import type {UserListReturnType} from "../types/ListReturnType.ts";
 
 class UserRepository{
-    public async getList(query: UserQueryType){
+    public async getList(query: UserQueryType): Promise<UserListReturnType> {
         const {page, limit, skip, search, search_by, order_by, order} = query
         let filter: UserWhereInput = {}
         let sort: UserOrderByWithRelationInput = {}
@@ -14,7 +15,7 @@ class UserRepository{
         if(order_by && order){
             sort[order_by] = order
         }
-        return await prisma.user.findMany({take: limit, skip: limit*(page-1) + skip, where: filter, orderBy: sort})
+        return await Promise.all([prisma.user.findMany({take: limit, skip: limit*(page-1) + skip, where: filter, orderBy: sort}), prisma.user.count({where: filter})])
     }
 
     public async getById(id: string){

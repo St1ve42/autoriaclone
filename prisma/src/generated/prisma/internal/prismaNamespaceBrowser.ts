@@ -58,7 +58,8 @@ export const ModelName = {
   AnnouncementStatistics: 'AnnouncementStatistics',
   AnnouncementViewsDay: 'AnnouncementViewsDay',
   AveragePrices: 'AveragePrices',
-  PremiumPurchase: 'PremiumPurchase'
+  PremiumPurchase: 'PremiumPurchase',
+  PremiumPlan: 'PremiumPlan'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -195,6 +196,18 @@ export const PremiumPurchaseScalarFieldEnum = {
 export type PremiumPurchaseScalarFieldEnum = (typeof PremiumPurchaseScalarFieldEnum)[keyof typeof PremiumPurchaseScalarFieldEnum]
 
 
+export const PremiumPlanScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  price: 'price',
+  currency: 'currency',
+  duration_days: 'duration_days',
+  is_active: 'is_active'
+} as const
+
+export type PremiumPlanScalarFieldEnum = (typeof PremiumPlanScalarFieldEnum)[keyof typeof PremiumPlanScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -288,4 +301,12 @@ export const PremiumPurchaseOrderByRelevanceFieldEnum = {
 } as const
 
 export type PremiumPurchaseOrderByRelevanceFieldEnum = (typeof PremiumPurchaseOrderByRelevanceFieldEnum)[keyof typeof PremiumPurchaseOrderByRelevanceFieldEnum]
+
+
+export const PremiumPlanOrderByRelevanceFieldEnum = {
+  id: 'id',
+  currency: 'currency'
+} as const
+
+export type PremiumPlanOrderByRelevanceFieldEnum = (typeof PremiumPlanOrderByRelevanceFieldEnum)[keyof typeof PremiumPlanOrderByRelevanceFieldEnum]
 

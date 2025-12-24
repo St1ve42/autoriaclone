@@ -94,3 +94,8 @@ export type AveragePrices = Prisma.AveragePricesModel
  * 
  */
 export type PremiumPurchase = Prisma.PremiumPurchaseModel
+/**
+ * Model PremiumPlan
+ * 
+ */
+export type PremiumPlan = Prisma.PremiumPlanModel

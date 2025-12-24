@@ -2,15 +2,22 @@ import type {User} from "../../prisma/src/generated/prisma/client.ts";
 import {regionService} from "../services/region.service.ts";
 import {roleService} from "../services/role.service.ts";
 import {TokenPairType} from "../types/TokenType.ts";
+import {UserQueryType} from "../types/QueryType.ts";
 
 class UserPresenter{
-    public async toListResDto(
+    public async list(
         users: User[],
+        total: number,
+        query: UserQueryType
     ) {
-        return await Promise.all(users.map(async user => await this.resUser(user)))
+        return {
+            data: await Promise.all(users.map(this.res)),
+            total,
+            ...query
+        }
     }
 
-    public async resUser(user: User){
+    public async res(user: User){
         const [region, role] = await Promise.all([await regionService.getNameById(user.region_id), await roleService.getNameById(user.role_id)])
         return {
             "id": user.id,
@@ -27,8 +34,6 @@ class UserPresenter{
             "account_type": user.account_type,
             "balance": user.balance,
             "currency": user.currency,
-            "premium_since": user.premium_since,
-            "premium_until": user.premium_until,
             "is_active": user.is_active,
             "is_verified": user.is_verified,
             "is_banned": user.is_banned,
@@ -47,7 +52,7 @@ class UserPresenter{
 
 
     public async resUserWithTokenPair(user: User, tokenPair: TokenPairType) {
-        return {user: await this.resUser(user), tokenPair: this.resToken(tokenPair)}
+        return {user: await this.res(user), tokenPair: this.resToken(tokenPair)}
     }
 
 

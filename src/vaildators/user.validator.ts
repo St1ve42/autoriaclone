@@ -2,6 +2,17 @@ import joi from "joi"
 import {UserRegexpEnum} from "../enums/userEnums/user.regexp.enum.ts";
 import {GenderEnum} from "../../prisma/src/generated/prisma/enums.ts";
 
+const BASE_MESSAGES = {
+    'any.required': '{{#label}} is required',
+    'string.empty': '{{#label}} cannot be empty',
+    'number.base': '{{#label}} must be a number',
+    'number.min': '{{#label}} must be at least {{#limit}}',
+    'number.max': '{{#label}} must be at most {{#limit}}',
+    'string.min': '{{#label}} must be at least {{#limit}} characters',
+    'string.max': '{{#label}} must be at most {{#limit}} characters',
+    'any.only': '{{#label}} must be one of {{#valids}}'
+};
+
 export class UserValidator{
     private static name = joi.string().regex(UserRegexpEnum.NAME).trim().messages({
         "any.required": "name is required",
@@ -10,9 +21,7 @@ export class UserValidator{
         "string.pattern.base": "name must contain only alphabet symbols and be 3-10 characters long"
     })
     private static surname = joi.string().regex(UserRegexpEnum.SURNAME).trim().messages({
-        "any.required": "surname is required",
         "string.empty": "surname must not be empty",
-        "string.base": "surname must be string type",
         "string.pattern.base": "surname must contain only alphabet symbols and be 3-10 characters long"
     })
     private static age = joi.number().min(1).max(100).messages({

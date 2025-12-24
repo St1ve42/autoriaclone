@@ -2,7 +2,8 @@ import {userRepository} from "../repository/user.repository.ts";
 import type {UserCreateInput, UserUpdateInput} from "../../prisma/src/generated/prisma/models/User.ts";
 import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
 import {roleService} from "./role.service.ts";
-import type {User} from "../../prisma/src/generated/prisma/client.ts";
+import type {PlanSubscribeEnum, PremiumPlan, User} from "../../prisma/src/generated/prisma/client.ts";
+import {CurrencyEnum} from "../../prisma/src/generated/prisma/enums.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {RoleUpdateOneRequiredWithoutUserNestedInput} from "../../prisma/src/generated/prisma/models/Role.js";
 import {RegionUpdateOneRequiredWithoutUserNestedInput} from "../../prisma/src/generated/prisma/models/Region.js";
@@ -13,11 +14,14 @@ import {ApiError} from "../errors/api.error.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {UserGetNestedPermissionsWithoutNullType} from "../types/UserWithPermissionInclude.ts";
 import {BanType} from "../types/BanType.ts";
-import {Utils} from "../utils/utils.ts";
 import {ManipulateType} from "dayjs";
+import {TimeHelper} from "../timeHelper/time.helper.ts";
+import {subscribeRepository} from "../repository/subscribe.repository.ts";
+import {premiumPurchasesRepository} from "../repository/premium.purchases.repository.ts";
+import {UserListReturnType} from "../types/ListReturnType.ts";
 
 class UserService{
-    public async getAll(query: UserQueryType){
+    public async getList(query: UserQueryType): Promise<UserListReturnType>{
         return await userRepository.getList(query)
     }
 
@@ -108,11 +112,11 @@ class UserService{
 
     public async ban(id: string, body: BanType){
         const {time, reason} = body
-        const data: {is_banned: boolean, banned_until: Date, ban_reason?: string} = {is_banned: true, banned_until: Utils.addTime(100, "years")}
+        const data: {is_banned: boolean, banned_until: Date, ban_reason?: string} = {is_banned: true, banned_until: TimeHelper.addTime(100, "years")}
         if(time){
             const unit = time[time.length - 1] as ManipulateType
             const value = Number(time.slice(0, time.length - 1))
-            data.banned_until = Utils.addTime(value, unit)
+            data.banned_until = TimeHelper.addTime(value, unit)
         }
         if(reason){
             data.ban_reason = reason
@@ -127,6 +131,17 @@ class UserService{
     public async setManager(id: string){
         const managerId = await roleService.getIdByName("manager")
         return await userRepository.updateByIdAndParams(id, {role: {connect: {id: managerId}}})
+    }
+
+    public async buySubscribe(id: string, code: PlanSubscribeEnum){
+        const user = await userService.get(id)
+        const subscribe = await subscribeRepository.get(code) as PremiumPlan
+        const diff = user.balance - Number(subscribe.price)
+        if(diff < 0){
+            throw new ApiError("Transcation is failed. Not enough funds", StatusCodeEnum.PAYMENT_REQUIRED)
+        }
+        const updatedUser = await userRepository.updateByIdAndParams(id, {balance: diff})
+        return await premiumPurchasesRepository.create({price_paid: subscribe.price, currency: CurrencyEnum.UAH, User: {connect: {id}}, purchased_at: new Date(), expires_at: TimeHelper.addTime(subscribe.duration_days ?? 30, "days")})
     }
 
 }

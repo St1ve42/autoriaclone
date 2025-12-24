@@ -1,0 +1,16 @@
+export enum VehicleSearchByEnum{
+    BRAND = "brand",
+    MODEL = "model",
+    VEHICLE_TYPE = "vehicle_type",
+    TRANSMISSION = "characteristics.transmission",
+    FUEL_TYPE = "characteristics.fuel_type",
+    ENVIRONMENTAL_STANDARD = "characteristics.environmental_standard",
+    DRIVE_TYPE = "characteristics.drive_type",
+    COLOR = "characteristics.color",
+    METALLIC = "characteristics.metallic",
+    IMPORTED_FROM = "characteristics.imported_from",
+    ACCIDENT_HISTORY = "characteristics.accident_history",
+    PAINT_CONDITION = "characteristics.paint_condition",
+    TECHNICAL_CONDITION = "characteristics.technical_condition",
+    SERVICE_STATION_INSPECTION_READINESS = "characteristics.service_station_inspection_readiness",
+}

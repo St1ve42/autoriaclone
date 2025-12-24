@@ -399,7 +399,8 @@ export const ModelName = {
   AnnouncementStatistics: 'AnnouncementStatistics',
   AnnouncementViewsDay: 'AnnouncementViewsDay',
   AveragePrices: 'AveragePrices',
-  PremiumPurchase: 'PremiumPurchase'
+  PremiumPurchase: 'PremiumPurchase',
+  PremiumPlan: 'PremiumPlan'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "region" | "role" | "permission" | "rolePermission" | "token" | "announcementStatistics" | "announcementViewsDay" | "averagePrices" | "premiumPurchase"
+    modelProps: "user" | "region" | "role" | "permission" | "rolePermission" | "token" | "announcementStatistics" | "announcementViewsDay" | "averagePrices" | "premiumPurchase" | "premiumPlan"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1079,6 +1080,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PremiumPlan: {
+      payload: Prisma.$PremiumPlanPayload<ExtArgs>
+      fields: Prisma.PremiumPlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PremiumPlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PremiumPlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>
+        }
+        findFirst: {
+          args: Prisma.PremiumPlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PremiumPlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>
+        }
+        findMany: {
+          args: Prisma.PremiumPlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>[]
+        }
+        create: {
+          args: Prisma.PremiumPlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>
+        }
+        createMany: {
+          args: Prisma.PremiumPlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PremiumPlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>
+        }
+        update: {
+          args: Prisma.PremiumPlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.PremiumPlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PremiumPlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PremiumPlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PremiumPlanPayload>
+        }
+        aggregate: {
+          args: Prisma.PremiumPlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePremiumPlan>
+        }
+        groupBy: {
+          args: Prisma.PremiumPlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PremiumPlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PremiumPlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PremiumPlanCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1236,6 +1303,18 @@ export const PremiumPurchaseScalarFieldEnum = {
 export type PremiumPurchaseScalarFieldEnum = (typeof PremiumPurchaseScalarFieldEnum)[keyof typeof PremiumPurchaseScalarFieldEnum]
 
 
+export const PremiumPlanScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  price: 'price',
+  currency: 'currency',
+  duration_days: 'duration_days',
+  is_active: 'is_active'
+} as const
+
+export type PremiumPlanScalarFieldEnum = (typeof PremiumPlanScalarFieldEnum)[keyof typeof PremiumPlanScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1331,6 +1410,14 @@ export const PremiumPurchaseOrderByRelevanceFieldEnum = {
 export type PremiumPurchaseOrderByRelevanceFieldEnum = (typeof PremiumPurchaseOrderByRelevanceFieldEnum)[keyof typeof PremiumPurchaseOrderByRelevanceFieldEnum]
 
 
+export const PremiumPlanOrderByRelevanceFieldEnum = {
+  id: 'id',
+  currency: 'currency'
+} as const
+
+export type PremiumPlanOrderByRelevanceFieldEnum = (typeof PremiumPlanOrderByRelevanceFieldEnum)[keyof typeof PremiumPlanOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -1390,6 +1477,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'PlanSubscribeEnum'
+ */
+export type EnumPlanSubscribeEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanSubscribeEnum'>
     
 
 
@@ -1496,6 +1590,7 @@ export type GlobalOmitConfig = {
   announcementViewsDay?: Prisma.AnnouncementViewsDayOmit
   averagePrices?: Prisma.AveragePricesOmit
   premiumPurchase?: Prisma.PremiumPurchaseOmit
+  premiumPlan?: Prisma.PremiumPlanOmit
 }
 
 /* Types for Logging */

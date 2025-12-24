@@ -114,7 +114,7 @@ model AnnouncementStatistics {
 
 model AnnouncementViewsDay {
   id              String   @id @default(uuid(7))
-  announcement_id String   @unique @db.VarChar(100)
+  announcement_id String   @db.VarChar(100)
   view_date       DateTime
   views           Int      @default(0)
 
@@ -147,4 +147,19 @@ model PremiumPurchase {
 
   @@index([user_id])
   @@map("premium_purchases")
+}
+
+model PremiumPlan {
+  id            String            @id @default(uuid(7))
+  code          PlanSubscribeEnum @unique
+  price         Decimal           @db.Decimal(10, 2)
+  currency      String?           @default("UAH")
+  duration_days Int?              @default(30)
+  is_active     Boolean?          @default(true)
+
+  @@map("premium_plans")
+}
+
+enum PlanSubscribeEnum {
+  premium
 }
