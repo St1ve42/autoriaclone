@@ -8,8 +8,8 @@ type AnnouncementType = {
     title: string,
     description: string,
     city: string,
-    region: string,
-    images?: string[],
+    region: number,
+    images: string[],
     price: number,
     currency: CurrencyEnum,
     exchange_rate: ExchangeCurrencyMap

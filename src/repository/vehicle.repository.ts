@@ -8,7 +8,7 @@ import {VehicleListReturnType} from "../types/ListReturnType.ts";
 
 class VehicleRepository{
     public async getList(query: VehicleQueryType): Promise<VehicleListReturnType>{
-        const {page, limit, skip, search, search_by, order_by, order} = query
+        const {page, limit, skip, search, searchBy, orderBy, order} = query
         let filter: FilterQuery<VehicleType> = {}
         let sort: SortQuery<typeof VehicleOrderByEnum> = {}
         if(search && search_by){

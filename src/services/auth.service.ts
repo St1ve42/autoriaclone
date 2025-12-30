@@ -41,6 +41,9 @@ class AuthService{
         if(!await userService.isActive(user.id)){
             throw new ApiError("User is not active", StatusCodeEnum.FORBIDDEN)
         }
+        if(await userService.isDeleted(user.id)){
+            throw new ApiError("User is deleted", StatusCodeEnum.FORBIDDEN)
+        }
         const tokenPair = tokenService.generateTokenPair({user_id: user.id, role_id: user.role_id})
         await tokenRepository.create({...tokenPair, user: {connect: {id: user.id}}})
         return {user, tokenPair}
@@ -64,7 +67,7 @@ class AuthService{
 
     public async activate(token: string): Promise<User> {
         const {user_id} = tokenService.verify(token, TokenTypeEnum.ACTIVATE)
-        return await userService.activate(user_id)
+        return await userRepository.updateByIdAndParams(user_id, {is_active: true, is_verified: true, role: {connect: {name: "seller"}}})
     }
 
     public async recoveryRequest(email: string): Promise<void> {

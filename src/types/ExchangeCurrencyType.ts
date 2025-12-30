@@ -7,6 +7,6 @@ type ExchangeCurrencyType = {
   sale: string;
 }
 
-type ExchangeCurrencyMap = Record<string, {buy: number, sale: number}> //fix
+type ExchangeCurrencyMap = Map<CurrencyEnum, {buy: number, sale: number}> //fix
 
 export type {ExchangeCurrencyType, ExchangeCurrencyMap}

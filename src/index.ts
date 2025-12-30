@@ -5,8 +5,6 @@ import {errorController} from "./controllers/error.controller.ts";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 import {cronRunner} from "./crons";
-import {CalculateAveragePriceCron} from "./crons/average_price_cron.ts";
-import {CurrencyEnum, PlanSubscribeEnum} from "../prisma/src/generated/prisma/enums.ts";
 
 const app = express()
 app.use(express.json())
@@ -40,5 +38,4 @@ app.listen(configs.APP_PORT, async () => {
 })
 
 //TODO oldpassword table and repository
-//TODO cron for deleting old tokens
 

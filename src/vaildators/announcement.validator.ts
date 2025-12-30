@@ -3,12 +3,18 @@ import joi from "joi"
 import {AnnouncementRegexpEnum} from "../enums/announcementEnums/announcement.regexp.enum.ts";
 import {isObjectIdOrHexString} from "mongoose";
 import {VehicleValidator} from "./vehicle.validator.ts";
+import {regionRepository} from "../repository/region.repository.ts";
 
 export class AnnouncementValidator {
     private static title = joi.string().pattern(AnnouncementRegexpEnum.TITLE)
     private static description = joi.string().min(30).max(2000)
     private static city = joi.string().pattern(AnnouncementRegexpEnum.CITY)
-    private static region = joi.string().pattern(AnnouncementRegexpEnum.REGION)
+    private static region = joi.number().min(1).integer().external(async (value, helpers) => {
+        const region = await regionRepository.getById(value)
+        if(!region){
+            return helpers.error("any.existent")
+        }
+    })
     private static price = joi.number().min(0)
     private static currency = joi.string().valid(...Object.values(CurrencyEnum))
     private static dealershipId = joi.string().custom((value, helpers) => {
@@ -37,5 +43,5 @@ export class AnnouncementValidator {
         price: this.price,
         currency: this.currency,
         vehicle: VehicleValidator.updateVehicle
-    })
+    }).min(1)
 }

@@ -10,9 +10,8 @@ import {userService} from "./user.service.ts";
 import {AnnouncementQueryType} from "../types/QueryType.ts";
 import {Utils} from "../utils/utils.ts";
 import {AnnouncementStatusEnum} from "../enums/announcementEnums/announcement.status.enum.ts";
-import {announcementStatisticsRepository} from "../repository/announcement.statistics.repository.ts";
-import {announcementViewsDayRepository} from "../repository/announcement.views.day.repository.ts";
 import {AnnouncementListReturnType} from "../types/ListReturnType.ts";
+import {announcementStatisticsService} from "./announcement.statistics.service.ts";
 
 class AnnouncementService{
     public async getList(query: AnnouncementQueryType): Promise<AnnouncementListReturnType>{
@@ -26,10 +25,10 @@ class AnnouncementService{
     public async create(dto: CreateAnnouncementDTOType, userId: string){
         const {account_type} = await userService.get(userId)
         const announcements = await announcementRepository.findByParams({user_id: userId})
-        let approve_attempts = 0
-        if(account_type === 'basic' && announcements && announcements.length >= 1){
+        if(account_type === 'basic' && announcements.length !== 0 && announcements.length >= 1){
             throw new ApiError("User with basic account can create only one announcement", StatusCodeEnum.FORBIDDEN)
         }
+        let approve_attempts = 0
         const isObsceneLanguage = Utils.isObsceneLanguage(dto.description)
         if(isObsceneLanguage){
             approve_attempts += 1
@@ -39,8 +38,7 @@ class AnnouncementService{
         const data: CreateAnnouncementInRepositoryDTOType = {...dto, exchange_rate: exchangeRate, user_id: userId, status, approve_attempts}
         const announcement = await announcementRepository.create(data)
         if(status === AnnouncementStatusEnum.ACTIVE){
-            await announcementStatisticsRepository.create(announcement._id)
-            await announcementViewsDayRepository.create(announcement._id)
+            await announcementStatisticsService.create(announcement._id)
         }
         return announcement
     }
@@ -58,17 +56,16 @@ class AnnouncementService{
                 dto.status = announcementService.getStatus(dto.approve_attempts)
                 delete dto.description
             }
+            else{
+                dto.status = AnnouncementStatusEnum.ACTIVE
+            }
         }
-        if(dto.status === AnnouncementStatusEnum.ACTIVE){
-            await announcementStatisticsRepository.create(id)
-            await announcementViewsDayRepository.create(id)
-        } //!!!
-        return await announcementRepository.update(id, dto) as AnnouncementType
+        return await announcementRepository.update(id, dto) as AnnouncementType //TODO status according to approve_attempts?
     }
 
     public async upload(id: string, images: UploadedFile[]){
         const {images: announcementImages} = await announcementService.get(id)
-        if(announcementImages){
+        if(announcementImages.length !== 0){
             await Promise.all(announcementImages.map(async (image) => await s3Service.deleteFile(image)))
         }
         const paths = await Promise.all(images.map(async (image) => await s3Service.uploadFile(FileItemTypeEnum.ANNOUNCEMENT, id, image)))
@@ -78,12 +75,12 @@ class AnnouncementService{
     public async deleteImages(id: string, imageNames: string[]){
         const imagePaths = imageNames.map(imageName => `announcement/${id}/${imageName}`)
         const {images: announcementImages} = await announcementService.get(id)
-        if(!announcementImages){
-            throw new ApiError("Announcement doesn't have images", StatusCodeEnum.NOT_FOUND)
+        if(announcementImages.length === 0){
+            throw new ApiError("Announcement doesn't contain images", StatusCodeEnum.NOT_FOUND)
         }
         imagePaths.forEach(imagePath => {
             if(!announcementImages.includes(imagePath)){
-                throw new ApiError(`Image ${imagePath} not found`, StatusCodeEnum.NOT_FOUND)
+                throw new ApiError(`Image ${imagePath.split('/').at(-1)} not found`, StatusCodeEnum.NOT_FOUND)
             }
         })
         await Promise.all(imagePaths.map(async (fullPath) => await s3Service.deleteFile(fullPath)))

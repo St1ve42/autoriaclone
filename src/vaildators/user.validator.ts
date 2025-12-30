@@ -1,17 +1,7 @@
 import joi from "joi"
 import {UserRegexpEnum} from "../enums/userEnums/user.regexp.enum.ts";
 import {GenderEnum} from "../../prisma/src/generated/prisma/enums.ts";
-
-const BASE_MESSAGES = {
-    'any.required': '{{#label}} is required',
-    'string.empty': '{{#label}} cannot be empty',
-    'number.base': '{{#label}} must be a number',
-    'number.min': '{{#label}} must be at least {{#limit}}',
-    'number.max': '{{#label}} must be at most {{#limit}}',
-    'string.min': '{{#label}} must be at least {{#limit}} characters',
-    'string.max': '{{#label}} must be at most {{#limit}} characters',
-    'any.only': '{{#label}} must be one of {{#valids}}'
-};
+import {regionRepository} from "../repository/region.repository.ts";
 
 export class UserValidator{
     private static name = joi.string().regex(UserRegexpEnum.NAME).trim().messages({
@@ -24,7 +14,7 @@ export class UserValidator{
         "string.empty": "surname must not be empty",
         "string.pattern.base": "surname must contain only alphabet symbols and be 3-10 characters long"
     })
-    private static age = joi.number().min(1).max(100).messages({
+    private static age = joi.number().min(1).integer().max(100).messages({
         "any.required": "age is required",
         "number.empty": "age must not be empty",
         "number.base": "age must be number type",
@@ -64,17 +54,16 @@ export class UserValidator{
         "string.base": "city must be string type",
         "string.pattern.base": "city must contain only cyrillic characters and be 3-30 characters long"
     })
-    private static region = joi.string().regex(UserRegexpEnum.REGION).trim().messages({
+    private static region = joi.number().min(1).integer().messages({
         "any.required": "region is required",
         "string.empty": "region must not be empty",
         "string.base": "region must be string type",
         "string.pattern.base": "region must contain only cyrillic characters and be 3-30 characters long"
-    })
-    private static role = joi.string().messages({
-        "any.required": "role is required",
-        "string.empty": "role must not be empty",
-        "string.base": "role must be string type",
-        "string.pattern.base": "role must contain only cyrillic characters and be 3-30 characters long"
+    }).external(async (value, helpers) => {
+        const region = await regionRepository.getById(value)
+        if(!region){
+            return helpers.error("any.existent")
+        }
     })
 
     public static createUser = joi.object({
@@ -97,8 +86,7 @@ export class UserValidator{
         region: this.region,
         gender: this.gender,
         phone: this.phone,
-        role: this.role
-    })
+    }).min(1)
 
     public static signIn = joi.object({
         email: this.email.required(),
@@ -120,4 +108,3 @@ export class UserValidator{
 
 }
 
-//TODO Fix message where is not allowed field

@@ -6,14 +6,14 @@ import type {UserListReturnType} from "../types/ListReturnType.ts";
 
 class UserRepository{
     public async getList(query: UserQueryType): Promise<UserListReturnType> {
-        const {page, limit, skip, search, search_by, order_by, order} = query
+        const {page, limit, skip, search, searchBy, orderBy, order} = query
         let filter: UserWhereInput = {}
         let sort: UserOrderByWithRelationInput = {}
-        if(search && search_by){
-            filter[search_by] = {contains: search}
+        if(search && searchBy){
+            filter[searchBy] = {contains: search}
         }
-        if(order_by && order){
-            sort[order_by] = order
+        if(orderBy && order){
+            sort[orderBy] = order
         }
         return await Promise.all([prisma.user.findMany({take: limit, skip: limit*(page-1) + skip, where: filter, orderBy: sort}), prisma.user.count({where: filter})])
     }

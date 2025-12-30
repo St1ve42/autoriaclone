@@ -1,4 +1,4 @@
-export enum AnnouncementOrderByEnum{
+export enum AnnouncementRangeByEnum{
     PRICE = "price",
     YEAR = "vehicle.year",
     MILEAGE = "vehicle.mileage",

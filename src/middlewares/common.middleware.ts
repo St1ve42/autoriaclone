@@ -8,6 +8,7 @@ import {Utils} from "../utils/utils.ts";
 import {TokenPayloadType} from "../types/TokenType.ts";
 import {userService} from "../services/user.service.ts";
 import {ReadableServiceType} from "../types/ReadableServiceType.ts";
+import {joiOptions} from "../constants/joi.constants.ts";
 
 class CommonMiddleware{
     public validateBody(validator: joi.ObjectSchema){
@@ -16,7 +17,7 @@ class CommonMiddleware{
                 if(!req.body){
                     throw new ApiError("Body is required", StatusCodeEnum.BAD_REQUEST)
                 }
-                req.body = await validator.validateAsync(req.body)
+                req.body = await validator.validateAsync(req.body, joiOptions)
                 next()
             }
             catch(e){
@@ -79,7 +80,7 @@ class CommonMiddleware{
         return async (req: Request, res: Response, next: NextFunction) => {
             try{
                 const id = req.params[idParamName] as string
-                const entity = await service.get(id) //TODO come up with how to correctly change signature service to entity | null
+                const entity = await service.get(id)
                 if(!entity){
                     throw new ApiError(`${entityName} not found`, StatusCodeEnum.NOT_FOUND)
                 }

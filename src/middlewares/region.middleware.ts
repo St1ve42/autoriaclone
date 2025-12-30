@@ -7,7 +7,7 @@ class RegionMiddleware{
         try{
             const body = req.body as UserUpdateDTOType
             if(body.region){
-                res.locals.region_id = await regionService.getIdByName(body.region + " область")
+                res.locals.region_id = await regionService.getIdByName(body.region)
             }
             next()
         }

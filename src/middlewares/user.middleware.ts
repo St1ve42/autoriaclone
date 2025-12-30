@@ -43,6 +43,18 @@ class UserMiddleware{
         }
     }
 
+    public async checkUserIsBanned (req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
+            if(await userService.isBanned(user_id)){
+                throw new ApiError("User is banned", StatusCodeEnum.FORBIDDEN)
+            }
+            next()
+        }
+        catch(e){
+            next(e)
+        }
+    }
 
 }
 

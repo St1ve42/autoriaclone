@@ -37,9 +37,20 @@ class UserController{
     public async create(req: Request, res: Response, next: NextFunction){
         try{
             const body = req.body as UserCreateDTOType
-            const {region_id} = res.locals as {region_id: number}
-            const user = await userService.create(body, region_id)
+            const user = await userService.create(body)
             res.status(StatusCodeEnum.CREATED).json(await userPresenter.res(user))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+    public async update(req: Request, res: Response, next: NextFunction){
+        try{
+            const {userId} = req.params as {userId: string}
+            const body = req.body as UserUpdateDTOType
+            const user = await userService.update(userId, body)
+            res.status(200).json(await userPresenter.res(user))
         }
         catch(e){
             next(e)
@@ -57,13 +68,34 @@ class UserController{
         }
     }
 
-    public async update(req: Request, res: Response, next: NextFunction){
+    public async getMe (_req: Request, res: Response, next: NextFunction){
         try{
-            const {userId} = req.params as {userId: string}
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const user = await userService.get(user_id)
+            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+    public async updateMe (req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
             const body = req.body as UserUpdateDTOType
-            const locals = res.locals as Partial<Record<"role_id" | "region_id", number>>
-            const user = await userService.update(userId, body, locals)
-            res.status(200).json(await userPresenter.res(user))
+            const user = await userService.update(user_id, body)
+            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+    public async deleteMe (_req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const user = await userService.deleteMe(user_id)
+            res.status(StatusCodeEnum.OK).json(user)
         }
         catch(e){
             next(e)
@@ -82,7 +114,7 @@ class UserController{
         }
     }
 
-    public async deleteAvatar (req: Request, res: Response, next: NextFunction){
+    public async deleteAvatar (_req: Request, res: Response, next: NextFunction){
         try{
             const {user_id} = res.locals.payload as TokenPayloadType
             const user = await userService.deleteAvatar(user_id)
@@ -153,15 +185,13 @@ class UserController{
         try{
             const {user_id} = res.locals.payload as TokenPayloadType
             const {code} = req.body as {code: PlanSubscribeEnum}
-            const purchase = await userService.buySubscribe(user_id, code)
-            res.status(StatusCodeEnum.OK).json(purchase)
+            const subscribeInfo = await userService.buySubscribe(user_id, code)
+            res.status(StatusCodeEnum.OK).json(await userPresenter.WithSubscriptionRes(subscribeInfo))
         }
         catch(e){
             next(e)
         }
     }
-
-
 
 }
 

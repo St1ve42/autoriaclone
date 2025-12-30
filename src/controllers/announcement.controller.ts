@@ -14,7 +14,7 @@ class AnnouncementController{
         try{
             const query = req.query as unknown as AnnouncementQueryType
             const [announcements, total] = await announcementService.getList(query)
-            res.status(StatusCodeEnum.OK).json(announcementPresenter.list(announcements, total, query))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.list(announcements, total, query))
         }
         catch(e){
             next(e)
@@ -25,7 +25,7 @@ class AnnouncementController{
         try{
             const announcementId = req.params.announcementId as string
             const announcement = await announcementService.get(announcementId)
-            res.status(StatusCodeEnum.OK).json(announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
         }
         catch(e){
             next(e)
@@ -37,7 +37,7 @@ class AnnouncementController{
             const body = req.body as CreateAnnouncementDTOType
             const {user_id} = res.locals.payload as TokenPayloadType
             const announcement = await announcementService.create(body, user_id)
-            res.status(StatusCodeEnum.CREATED).json(announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.CREATED).json(await announcementPresenter.res(announcement))
         }
         catch(e){
             next(e)
@@ -48,7 +48,7 @@ class AnnouncementController{
         try{
             const announcementId = req.params.announcementId as string
             const announcement = await announcementService.delete(announcementId)
-            res.status(StatusCodeEnum.OK).json(announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
         }
         catch(e){
             next(e)
@@ -60,7 +60,7 @@ class AnnouncementController{
             const announcementId = req.params.announcementId as string
             const body = req.body as AnnouncementType
             const announcement = await announcementService.update(announcementId, body)
-            res.status(200).json(announcementPresenter.res(announcement))
+            res.status(200).json(await announcementPresenter.res(announcement))
         }
         catch(e){
             next(e)
@@ -72,7 +72,7 @@ class AnnouncementController{
             const announcementId = req.params.announcementId as string
             const files = req.files?.images as UploadedFile[] | UploadedFile
             const announcement = await announcementService.upload(announcementId, Array.isArray(files) ? files : [files])
-            res.status(StatusCodeEnum.OK).json(announcement)
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
 
         }
         catch(e){
@@ -85,7 +85,7 @@ class AnnouncementController{
             const announcementId = req.params.announcementId as string
             const {images} = req.body as {images: string[]}
             const announcement = await announcementService.deleteImages(announcementId, images)
-            res.status(StatusCodeEnum.OK).json(announcement)
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
 
         }
         catch(e){
@@ -96,7 +96,7 @@ class AnnouncementController{
     public async getStatistics (req: Request, res: Response, next: NextFunction){
         try{
             const announcementId = req.params.announcementId as string
-            const statistics = await announcementStatisticsService.getAnnouncementStatistics(announcementId)
+            const statistics = await announcementStatisticsService.get(announcementId)
             res.status(StatusCodeEnum.OK).json(statisticsPresenter.res(statistics))
         }
         catch(e){

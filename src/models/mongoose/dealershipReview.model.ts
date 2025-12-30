@@ -1,12 +1,14 @@
 import mongoose, {model} from "mongoose";
-import {Dealership} from "./dealership.model.js";
+import {Dealership} from "./dealership.model.ts";
+import {DealershipReviewType} from "../../types/DealershipReviewType.ts";
 
 const DealershipReviewSchema = new mongoose.Schema(
     {
-        dealershipId: {type: mongoose.Types.ObjectId, required: true, ref: Dealership},
-        authorId: {type: String, require: true},
-        rating: {type: Number, required: true, enum: [1,2,3,4,5]},
+        dealership_id: {type: mongoose.Types.ObjectId, required: true, ref: Dealership},
+        author_id: {type: String, required: true},
+        rating: {type: Number, required: true},
         text: {type: String, required: true},
+
     },
     {
         timestamps: true,
@@ -14,4 +16,6 @@ const DealershipReviewSchema = new mongoose.Schema(
     }
 )
 
-export const DealershipReview = model("dealer_reviews", DealershipReviewSchema)
+DealershipReviewSchema.index({dealership_id: 1, author_id: 1}, {unique: true})
+
+export const DealershipReview = model<DealershipReviewType>("dealer_reviews", DealershipReviewSchema)

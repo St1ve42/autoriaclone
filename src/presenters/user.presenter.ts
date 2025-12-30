@@ -1,4 +1,4 @@
-import type {User} from "../../prisma/src/generated/prisma/client.ts";
+import type {PremiumPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
 import {regionService} from "../services/region.service.ts";
 import {roleService} from "../services/role.service.ts";
 import {TokenPairType} from "../types/TokenType.ts";
@@ -55,7 +55,42 @@ class UserPresenter{
         return {user: await this.res(user), tokenPair: this.resToken(tokenPair)}
     }
 
+    public async toAnnouncementRes(user: User){
+        const region = await regionService.getNameById(user.region_id)
+        return {
+            "name": user.name,
+            "surname": user.surname,
+            "email": user.email,
+            "phone": user.phone,
+            "photo": user.photo,
+            "city": user.city,
+            "region": region,
+            "account_type": user.account_type,
+        }
+    }
 
+    public async WithSubscriptionRes(dto: [User, PremiumPurchase]){
+        const [user, subscription] = dto
+        const region = await regionService.getNameById(user.region_id)
+        return {
+            user: {
+                "name": user.name,
+                "surname": user.surname,
+                "email": user.email,
+                "phone": user.phone,
+                "photo": user.photo,
+                "city": user.city,
+                "region": region,
+                "account_type": user.account_type,
+            },
+            subscription: {
+                "price_paid": subscription.price_paid,
+                "currency": subscription.currency,
+                "purchased_at": subscription.purchased_at,
+                "expires_at": subscription.expires_at
+            }
+        }
+    }
 }
 
 export const userPresenter = new UserPresenter();

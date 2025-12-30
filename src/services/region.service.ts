@@ -1,8 +1,13 @@
 import {ApiError} from "../errors/api.error.ts";
 import {regionRepository} from "../repository/region.repository.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
+import {Region} from "../../prisma/src/generated/prisma/client.ts";
 
 class RegionService{
+    public async getList(): Promise<Region[]>{
+        return await regionRepository.getList()
+    }
+
     public async getNameById(id: number): Promise<string>{
         const regionRecord = await regionRepository.getById(id)
         if(!regionRecord) throw new Error("Region not found")
@@ -18,4 +23,3 @@ class RegionService{
 }
 
 export const regionService = new RegionService()
-//TODO come up with how to dump sql db from API of ukrainian cities

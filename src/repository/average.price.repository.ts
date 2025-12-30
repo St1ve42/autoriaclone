@@ -1,7 +1,6 @@
 import {AveragePricesCreateInput} from "../../prisma/src/generated/prisma/models/AveragePrices.ts";
 import {prisma} from "../../prisma/prisma.client.ts";
 import {AveragePrices} from "../../prisma/src/generated/prisma/client.ts";
-import {TimeHelper} from "../timeHelper/time.helper.ts";
 
 class AveragePriceRepository{
     public async getInRegion(dto: Pick<AveragePricesCreateInput, "brand" | "model"> & {region_id: number}): Promise<AveragePrices | null>{

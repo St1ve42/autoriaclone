@@ -34,5 +34,10 @@ export class TimeHelper{
         ))
     }
 
+    public static parseTime(time: string): {value: number, unit: ManipulateType}{
+        const startIndexOfLetter = time.search(/[a-zA-z]/g)
+        return {value: Number(time.slice(0,startIndexOfLetter)), unit: time.slice(startIndexOfLetter) as ManipulateType}
+    }
+
 
 }

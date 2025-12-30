@@ -19,6 +19,14 @@ class TokenRepository{
         await prisma.token.deleteMany({where: token})
     }
 
+    public async deleteBeforeDate(date: Date): Promise<{count: number}>{
+        return await prisma.token.deleteMany({
+            where: {
+                created_at: {lt: date}
+            }
+        })
+    }
+
 }
 
 export const tokenRepository = new TokenRepository()

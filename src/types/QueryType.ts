@@ -5,15 +5,19 @@ import {UserSearchByEnum} from "../enums/userEnums/user.search.by.enum.ts";
 import {VehicleOrderByEnum} from "../enums/vehicleEnums/vehicle.order.by.enum.ts";
 import {AnnouncementSearchByEnum} from "../enums/announcementEnums/announcement.search.by.enum.ts";
 import {AnnouncementOrderByEnum} from "../enums/announcementEnums/announcement.order.by.enum.ts";
+import {AnnouncementRangeByEnum} from "../enums/announcementEnums/announcement.range.by.enum.ts";
 
 export type QueryType<T,K> = {
     page: number
     limit: number
     skip: number
     search?: string
-    search_by?: T
+    searchBy?: T
     order: OrderEnum
-    order_by?: K
+    orderBy?: K,
+    rangeBy?: AnnouncementRangeByEnum
+    from?: number,
+    to?: number
 }
 
 type UserQueryType = QueryType<UserSearchByEnum, UserOrderByEnum>

@@ -32,17 +32,6 @@ class AuthController{
         }
     }
 
-    public async me (_req: Request, res: Response, next: NextFunction){
-        try{
-            const {user_id} = res.locals.payload as TokenPayloadType
-            const user = await userService.get(user_id)
-            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
-        }
-        catch(e){
-            next(e)
-        }
-    }
-
     public async refresh (_req: Request, res: Response, next: NextFunction){
         try{
             const {payload, token_id} = res.locals as {payload: TokenPayloadType} & {token_id: string }
@@ -129,4 +118,3 @@ class AuthController{
 }
 
 export const authController = new AuthController()
-//TODO handle banned user authorization

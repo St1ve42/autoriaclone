@@ -1,4 +1,5 @@
 import mongoose, {model} from "mongoose";
+import {DealershipType} from "../../types/DealershipType.ts";
 
 const DealershipSchema = new mongoose.Schema(
     {
@@ -8,9 +9,10 @@ const DealershipSchema = new mongoose.Schema(
         phone: {type: String, required: true},
         email: {type: String, required: true, unique: true},
         website: {type: String, required: false},
-        is_verified: {type: Boolean, default: false},
-        rating: {type: Number, default: 0},
-        logo: {type: String, required: false}
+        owner_id: {type: String, required: true, unique: true},
+        is_verified: {type: Boolean, required: true, default: false},
+        rating: {type: Number, required: true, default: 0},
+        logo: {type: String, required: false},
     },
     {
         timestamps: true,
@@ -18,4 +20,4 @@ const DealershipSchema = new mongoose.Schema(
     }
 )
 
-export const Dealership = model("dealerships", DealershipSchema)
+export const Dealership = model<DealershipType>("dealerships", DealershipSchema)

@@ -1,4 +1,5 @@
 export enum FileItemTypeEnum {
     USER = "user",
-    ANNOUNCEMENT = "announcement"
+    ANNOUNCEMENT = "announcement",
+    DEALERSHIP = "dealership"
 }

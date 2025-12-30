@@ -12,14 +12,25 @@ type AnnouncementJoinVehicleType = AnnouncementType & {vehicle: VehicleType[]}
 
 class AnnouncementRepository{
     public async getList(query: AnnouncementQueryType): Promise<AnnouncementListReturnType>{
-        const {page, limit, skip, search_by, search, order_by, order} = query
+        const {page, limit, skip, searchBy, search, orderBy, order, rangeBy, from, to} = query
         let filter: FilterQuery<AnnouncementType> = {}
         let sort: {[key: string]: 1 | -1} = {}
-        if(search && search_by){
-            filter[search_by] = {$regex: search, $options: "i"}
+        if(search && searchBy){
+            filter[searchBy] = {$regex: search, $options: "i"}
         }
-        if(order_by){
-            sort[order_by] = order === OrderEnum.ASC ? 1 : -1
+        if(rangeBy){
+            if(from && !to){
+                filter[rangeBy] = {$gte: from}
+            }
+            else if(!from && to){
+                filter[rangeBy] = {$lte: to}
+            }
+            else if(from && to){
+                filter[rangeBy] = {$gte: from, $lte: to}
+            }
+        }
+        if(orderBy){
+            sort[orderBy] = order === OrderEnum.ASC ? 1 : -1
         }
         const pricePipeline: PipelineStage[] =  [
             {
@@ -68,11 +79,14 @@ class AnnouncementRepository{
                 }
             }
         ]
-        if(order_by === AnnouncementOrderByEnum.PRICE){
+        if(orderBy === AnnouncementOrderByEnum.PRICE){
             return await Promise.all([Announcement.aggregate(pricePipeline).limit(limit).skip((page-1)*limit + skip), Announcement.countDocuments(filter)])
-
         }
         return await Promise.all([Announcement.find(filter).sort(sort).limit(limit).skip((page-1)*limit + skip), Announcement.countDocuments(filter)])
+    }
+
+    public async getAll(): Promise<AnnouncementType[]>{
+        return await Announcement.find({})
     }
 
     public async get(id: string): Promise<AnnouncementType | null>{
@@ -80,23 +94,25 @@ class AnnouncementRepository{
     }
 
     public async create(dto: CreateAnnouncementInRepositoryDTOType): Promise<AnnouncementType>{
-        console.log(dto)
         return await Announcement.create(dto)
     }
 
     public async delete(id: string): Promise<AnnouncementType | null>{
-        return await Announcement.findByIdAndDelete(id)
+        return await Announcement.findByIdAndDelete(id, {new: true})
     }
 
     public async update(id: string, dto: UpdateAnnouncementDTOType): Promise<AnnouncementType | null>{
-        return await Announcement.findByIdAndUpdate(id, dto, {new: true})
+        const {vehicle, ...rest} = dto
+        const update: {[key: string]: unknown} = {...rest}
+        if(vehicle){
+            for(const key in vehicle){
+                update[`vehicle.${key}`] = vehicle[key as keyof VehicleType]
+            }
+        }
+        return await Announcement.findByIdAndUpdate(id, {$set: update}, {new: true})
     }
 
-    public async findByVehicleId(id: string): Promise<AnnouncementType| null>{
-        return await Announcement.findOne({vehicle_id: id})
-    }
-
-    public async findByParams(params: FilterQuery<AnnouncementType>): Promise<AnnouncementType[] | null> {
+    public async findByParams(params: FilterQuery<AnnouncementType>): Promise<AnnouncementType[]> {
         return await Announcement.find(params)
     }
 
@@ -107,3 +123,4 @@ class AnnouncementRepository{
 }
 
 export const announcementRepository = new AnnouncementRepository()
+

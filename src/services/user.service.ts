@@ -2,7 +2,7 @@ import {userRepository} from "../repository/user.repository.ts";
 import type {UserCreateInput, UserUpdateInput} from "../../prisma/src/generated/prisma/models/User.ts";
 import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
 import {roleService} from "./role.service.ts";
-import type {PlanSubscribeEnum, PremiumPlan, User} from "../../prisma/src/generated/prisma/client.ts";
+import {AccountTypeEnum, PlanSubscribeEnum, PremiumPlan, PremiumPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
 import {CurrencyEnum} from "../../prisma/src/generated/prisma/enums.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {RoleUpdateOneRequiredWithoutUserNestedInput} from "../../prisma/src/generated/prisma/models/Role.js";
@@ -14,11 +14,11 @@ import {ApiError} from "../errors/api.error.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {UserGetNestedPermissionsWithoutNullType} from "../types/UserWithPermissionInclude.ts";
 import {BanType} from "../types/BanType.ts";
-import {ManipulateType} from "dayjs";
 import {TimeHelper} from "../timeHelper/time.helper.ts";
 import {subscribeRepository} from "../repository/subscribe.repository.ts";
 import {premiumPurchasesRepository} from "../repository/premium.purchases.repository.ts";
 import {UserListReturnType} from "../types/ListReturnType.ts";
+import {tokenRepository} from "../repository/token.repository.ts";
 
 class UserService{
     public async getList(query: UserQueryType): Promise<UserListReturnType>{
@@ -33,9 +33,9 @@ class UserService{
         return await userRepository.getByParams({email})
     }
 
-    public async create(userDTO: UserCreateDTOType, regionId: number){
+    public async create(dto: UserCreateDTOType){
         const roleId = await roleService.getCustomerId()
-        const userCreateData: UserCreateInput = {...userDTO, role: {connect: {id: roleId}}, region: {connect: {id: regionId}}}
+        const userCreateData: UserCreateInput = {...dto, role: {connect: {id: roleId}}, region: {connect: {id: dto.region}}}
         return await userRepository.create(userCreateData)
     }
 
@@ -60,15 +60,15 @@ class UserService{
         return (await userRepository.getById(id) as User).is_active
     }
 
-    public async update(id: string, dto: UserUpdateDTOType, locals: Partial<Record<"role_id" | "region_id", number>>){
-        const {region, role, ...restDTO} = dto
-        const {role_id, region_id} = locals
+    public async isBanned(id: string): Promise<boolean>{
+        return (await userRepository.getById(id) as User).is_banned
+    }
+
+    public async update(id: string, dto: UserUpdateDTOType){
+        const {region, ...restDTO} = dto
         const connection: {role?: RoleUpdateOneRequiredWithoutUserNestedInput, region?: RegionUpdateOneRequiredWithoutUserNestedInput} = {}
-        if(role && role_id){
-            connection.role = {connect: {id: role_id}}
-        }
-        if(region && region_id){
-            connection.region = {connect: {id: region_id}}
+        if(region){
+            connection.region = {connect: {id: region}}
         }
         const input: UserUpdateInput = {...restDTO, ...connection}
         return await userRepository.updateByIdAndParams(id, input) as User
@@ -103,19 +103,11 @@ class UserService{
         return rolepermissions.some(rolepermission => rolepermission.permission.name === permissionName)
     }
 
-    public async isAdmin(id: string){
-        const user = await userService.get(id) as User
-        const role = await roleService.getNameById(user.role_id)
-        console.log(role === "admin")
-        return role === "admin"
-    }
-
     public async ban(id: string, body: BanType){
         const {time, reason} = body
         const data: {is_banned: boolean, banned_until: Date, ban_reason?: string} = {is_banned: true, banned_until: TimeHelper.addTime(100, "years")}
         if(time){
-            const unit = time[time.length - 1] as ManipulateType
-            const value = Number(time.slice(0, time.length - 1))
+            const {value, unit} = TimeHelper.parseTime(time)
             data.banned_until = TimeHelper.addTime(value, unit)
         }
         if(reason){
@@ -133,15 +125,23 @@ class UserService{
         return await userRepository.updateByIdAndParams(id, {role: {connect: {id: managerId}}})
     }
 
-    public async buySubscribe(id: string, code: PlanSubscribeEnum){
+    public async buySubscribe(id: string, code: PlanSubscribeEnum): Promise<[User, PremiumPurchase]>{
+        const subscription = await premiumPurchasesRepository.findByUserId(id)
+        if(subscription){
+            throw new ApiError("User has already active subscribe", StatusCodeEnum.CONFLICT)
+        }
         const user = await userService.get(id)
         const subscribe = await subscribeRepository.get(code) as PremiumPlan
         const diff = user.balance - Number(subscribe.price)
         if(diff < 0){
             throw new ApiError("Transcation is failed. Not enough funds", StatusCodeEnum.PAYMENT_REQUIRED)
         }
-        const updatedUser = await userRepository.updateByIdAndParams(id, {balance: diff})
-        return await premiumPurchasesRepository.create({price_paid: subscribe.price, currency: CurrencyEnum.UAH, User: {connect: {id}}, purchased_at: new Date(), expires_at: TimeHelper.addTime(subscribe.duration_days ?? 30, "days")})
+        return await Promise.all([await userRepository.updateByIdAndParams(id, {balance: diff, account_type: AccountTypeEnum.premium}), await premiumPurchasesRepository.create({price_paid: subscribe.price, currency: CurrencyEnum.UAH, User: {connect: {id}}, purchased_at: new Date(), expires_at: TimeHelper.addTime(subscribe.duration_days ?? 30, "days")})])
+    }
+
+    public async deleteMe(id: string){
+        await tokenRepository.deleteManyByParams({user_id: id})
+        return await userRepository.deleteById(id)
     }
 
 }

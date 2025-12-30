@@ -4,16 +4,13 @@ import {commonMiddleware} from "../middlewares/common.middleware.ts";
 import {userMiddleware} from "../middlewares/user.middleware.ts";
 import {regionMiddleware} from "../middlewares/region.middleware.ts";
 import {authController} from "../controllers/auth.controller.ts";
-import {authMiddleware} from "../middlewares/auth.middleware.js";
-import {AuthValidator} from "../vaildators/auth.validator.js";
-import {fileMiddleware} from "../middlewares/file.middleware.ts";
-import {avatarConfig} from "../constants/avatar.constants.ts";
+import {authMiddleware} from "../middlewares/auth.middleware.ts";
+import {AuthValidator} from "../vaildators/auth.validator.ts";
 
 const router = Router()
 
 router.post('/sign-up', commonMiddleware.validateBody(UserValidator.createUser), userMiddleware.checkEmailTaken, regionMiddleware.validateRegion, authController.signUp)
 router.post('/sign-in', commonMiddleware.validateBody(UserValidator.signIn), authController.signIn)
-router.get('/me', authMiddleware.validateAccessToken, authController.me)
 router.post('/refresh', commonMiddleware.validateBody(AuthValidator.refreshToken), authMiddleware.validateRefreshToken, authController.refresh)
 router.post('/log-out', authMiddleware.validateAccessToken, authController.logOut)
 router.post('/log-out-all', authMiddleware.validateAccessToken, authController.logOutAll)

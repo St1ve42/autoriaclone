@@ -1,26 +1,31 @@
 import {AnnouncementType} from "../types/AnnouncementType.ts";
 import {AnnouncementQueryType} from "../types/QueryType.ts";
+import {userService} from "../services/user.service.ts";
+import {userPresenter} from "./user.presenter.ts";
+import {regionService} from "../services/region.service.ts";
 
 class AnnouncementPresenter{
-    public list(
+    public async list(
         announcements: AnnouncementType[],
         total: number,
         query: AnnouncementQueryType
     ) {
         return {
-            data: announcements.map(this.res),
+            data: await Promise.all(announcements.map(this.res)),
             total,
             ...query
         }
     }
 
-    public res(announcement: AnnouncementType){
+    public async res(announcement: AnnouncementType){
+        const user = await userService.get(announcement.user_id)
+        const region = await regionService.getNameById(announcement.region)
         return {
             id: announcement._id,
             title: announcement.title,
             description: announcement.description,
             city: announcement.city,
-            region: announcement.region,
+            region: region,
             images: announcement.images,
             price: announcement.price,
             currency: announcement.currency,
@@ -30,7 +35,7 @@ class AnnouncementPresenter{
             approve_attempts: announcement.approve_attempts,
             status: announcement.status,
             vehicle: announcement.vehicle,
-            user_id: announcement.user_id,
+            user: await userPresenter.toAnnouncementRes(user),
             dealershipId: announcement.dealershipId
         }
     }

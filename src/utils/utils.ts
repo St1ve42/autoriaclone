@@ -2,6 +2,7 @@ import type {Request} from "express"
 import {RegExpression} from "../regExp/regExp.ts";
 import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
 import {ExchangeCurrencyMap} from "../types/ExchangeCurrencyType.ts";
+import {whitelist} from "../constants/general.constants.ts";
 
 
 export class Utils{
@@ -21,25 +22,19 @@ export class Utils{
     }
 
     public static isObsceneLanguage(text: string){
-        return !!text.split(' ').find(word => RegExpression.obsceneLanguagePattern().test(word))
+        return !!text.toLowerCase().split(' ').find(word => RegExpression.obsceneLanguagePattern().test(word) && !whitelist.includes(word))
     }
 
     public static normalizeToUSD(value: number, currency: CurrencyEnum, exchange_rate: ExchangeCurrencyMap){
-        const USDSale = exchange_rate["USD"].sale
+        const USDSale = exchange_rate.get(CurrencyEnum.USD)?.sale as number
         if(currency === CurrencyEnum.UAH){
             return value / USDSale
         }
         else if(currency === CurrencyEnum.EUR){
-            return value * exchange_rate["EUR"].buy / USDSale
+            return value * exchange_rate.get(CurrencyEnum.EUR)?.buy as number / USDSale
         }
         return value
     }
 
 }
 
-//TODO give seller when user is activated or come up with how to do that
-//TODO forbid banned user to do some actions
-//TODO Before logging user must log out
-//TODO route that allows to buy premium account
-//TODO verifying announcement
-//TODO Include role and region in user output

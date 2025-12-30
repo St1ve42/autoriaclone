@@ -1,12 +1,13 @@
 import mongoose, {model} from "mongoose";
-import {Dealership} from "./dealership.model.js";
-import {DealershipRoleEnum} from "../../enums/vehicleEnums/dealership.enum.js";
+import {Dealership} from "./dealership.model.ts";
+import {DealershipRoleEnum} from "../../enums/vehicleEnums/dealership.enum.ts";
+import {DealershipMemberType} from "../../types/DealershipMemberType.ts";
 
 const DealershipMemberSchema = new mongoose.Schema({
-        dealershipId: {type: mongoose.Types.ObjectId, required: true, ref: Dealership},
-        vehicleId: {type: String, required: true},
+        dealership_id: {type: mongoose.Types.ObjectId, required: true, ref: Dealership},
+        user_id: {type: String, required: true, unique: true},
         role: {type: String, required: true, enum: DealershipRoleEnum},
-        joinedAt: {type: Date, required: true}
+        joinedAt: {type: Date, required: true, default: Date.now}
     },
     {
         timestamps: true,
@@ -14,4 +15,4 @@ const DealershipMemberSchema = new mongoose.Schema({
     }
 )
 
-export const DealershipMember = model("dealership_members", DealershipMemberSchema)
+export const DealershipMember = model<DealershipMemberType>("dealership_members", DealershipMemberSchema)
