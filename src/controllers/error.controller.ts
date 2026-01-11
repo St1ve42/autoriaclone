@@ -12,8 +12,8 @@ class ErrorController{
     }
 
     public async showNonExistentApiError (req: Request, res: Response, next: NextFunction){
-        res.status(StatusCodeEnum.BAD_REQUEST).json({
-            status: StatusCodeEnum.BAD_REQUEST,
+        res.status(StatusCodeEnum.NOT_FOUND).json({
+            status: StatusCodeEnum.NOT_FOUND,
             message: "No existent API route or method"
         })
     }

@@ -14,7 +14,7 @@ class AuthController{
             const body = req.body as UserCreateDTOType
             const {region_id} = res.locals as {region_id: number}
             const {user, tokenPair} = await authService.signUp(body, region_id)
-            res.status(StatusCodeEnum.CREATED).json(await userPresenter.resUserWithTokenPair(user, tokenPair))
+            res.status(StatusCodeEnum.CREATED).json(await userPresenter.resWithTokenPair(user, tokenPair))
         }
         catch(e){
             next(e)
@@ -25,7 +25,7 @@ class AuthController{
         try{
             const body = req.body as SignInType
             const {user, tokenPair} = await authService.signIn(body)
-            res.status(StatusCodeEnum.OK).json(await userPresenter.resUserWithTokenPair(user, tokenPair))
+            res.status(StatusCodeEnum.OK).json(await userPresenter.resWithTokenPair(user, tokenPair))
         }
         catch(e){
             next(e)

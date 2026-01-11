@@ -5,15 +5,18 @@ import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {UploadedFile} from "express-fileupload";
 import {s3Service} from "./s3.service.ts";
 import {FileItemTypeEnum} from "../enums/generalEnums/FileEnum.ts";
-import {undefined} from "effect/Match";
+import {dealershipMemberRepository} from "../repository/dealership.member.repository.ts";
+import {DealershipRoleEnum} from "../enums/vehicleEnums/dealership.enum.ts";
 
 class DealershipService{
     public async create(dto: DealershipCreateWithInputDTOType, user_id: string): Promise<DealershipType>{
-        const dealership = await dealershipRepository.findByParams({owner_id: user_id})
+        let dealership: DealershipType[] | DealershipType = await dealershipRepository.findByParams({owner_id: user_id})
         if(dealership.length !== 0){
             throw new ApiError("User has already dealership", StatusCodeEnum.CONFLICT)
         }
-        return await dealershipRepository.create({...dto, owner_id: user_id})
+        dealership = await dealershipRepository.create({...dto, owner_id: user_id})
+        await dealershipMemberRepository.create({dealership_id: dealership._id, user_id, role: DealershipRoleEnum.OWNER})
+        return dealership
     }
 
     public async get(id: string): Promise<DealershipType>{
@@ -61,6 +64,8 @@ class DealershipService{
     public async unverify(id: string): Promise<DealershipType>{
         return await dealershipRepository.update(id, {is_verified: false}) as DealershipType
     }
+
+
 
 }
 

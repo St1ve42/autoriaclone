@@ -11,8 +11,7 @@ class StatisticsPresenter{
         return {
             total_views: statistics.total_views,
             views: statistics.views,
-            average_price: statistics.average_price,
-            currency: statistics.currency,
+            average_price: statistics.average_price
         }
     }
 

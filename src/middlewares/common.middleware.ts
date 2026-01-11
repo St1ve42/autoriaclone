@@ -9,6 +9,8 @@ import {TokenPayloadType} from "../types/TokenType.ts";
 import {userService} from "../services/user.service.ts";
 import {ReadableServiceType} from "../types/ReadableServiceType.ts";
 import {joiOptions} from "../constants/joi.constants.ts";
+import {dealershipMemberService} from "../services/dealership.member.service.ts";
+import {DealershipMemberPermissionsEnum} from "../constants/dealership.member.role.permissions.ts";
 
 class CommonMiddleware{
     public validateBody(validator: joi.ObjectSchema){
@@ -60,13 +62,30 @@ class CommonMiddleware{
 
     }
 
-    public validatePermission(permission: string){
+    public validateUserPermission(permission: string){
         return async (req: Request, res: Response, next: NextFunction) => {
             try{
                 const {user_id} = res.locals.payload as TokenPayloadType
                 const isHasPermission = await userService.isHasPermission(user_id, permission)
                 if(!isHasPermission){
-                    throw new ApiError("Not authorized", StatusCodeEnum.FORBIDDEN)
+                    throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
+                }
+                next()
+            }
+            catch(e){
+                next(e)
+            }
+        }
+    }
+
+    public validateDealershipMemberPermission(permission: DealershipMemberPermissionsEnum){
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try{
+                const {user_id} = res.locals.payload as TokenPayloadType
+                const dealershipId = req.params.dealershipId
+                const isHasPermission = await dealershipMemberService.isHasPermission(permission, user_id, dealershipId)
+                if(!isHasPermission){
+                    throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
                 }
                 next()
             }

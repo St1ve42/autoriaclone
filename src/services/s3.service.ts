@@ -33,6 +33,10 @@ class S3Service{
         return path
     }
 
+    public async uploadManyFiles(itemType: FileItemTypeEnum, itemId: string, files: UploadedFile[]): Promise<string[]>{
+        return await Promise.all(files.map(async (image) => this.uploadFile(itemType, itemId, image)))
+    }
+
     public async deleteFile(filePath: string): Promise<void>{
         await this.client.send(
             new DeleteObjectCommand({
@@ -40,6 +44,10 @@ class S3Service{
                 Key: filePath,
             })
         )
+    }
+
+    public async deleteManyFiles(filePaths: string[]): Promise<void>{
+        await Promise.all(filePaths.map(async (filePath) => this.deleteFile(filePath)))
     }
 
     private buildPath(itemType: FileItemTypeEnum, itemId: string, fileName: string){

@@ -3,15 +3,21 @@ import {userService} from "../services/user.service.ts";
 import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
 import {userPresenter} from "../presenters/user.presenter.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
-import {UserQueryType} from "../types/QueryType.ts";
+import {AnnouncementQueryType, UserQueryType} from "../types/QueryType.ts";
 import {UploadedFile} from "express-fileupload";
 import {TokenPayloadType} from "../types/TokenType.ts";
 import {BanType} from "../types/BanType.ts";
 import {PlanSubscribeEnum} from "../../prisma/src/generated/prisma/enums.ts";
+import {dealershipMemberService} from "../services/dealership.member.service.ts";
+import {dealershipMemberPresenter} from "../presenters/dealership.member.presenter.ts";
+import {announcementService} from "../services/announcement.service.ts";
+import {announcementPresenter} from "../presenters/announcement.presenter.ts";
+import {Announcement} from "../models/mongoose/announcement.model.ts";
+import {AnnouncementStatusEnum} from "../enums/announcementEnums/announcement.status.enum.ts";
 
 
 class UserController{
-    public async getAll(req: Request, res: Response, next: NextFunction){
+    public async getList(req: Request, res: Response, next: NextFunction){
         try{
             const query = req.query as unknown as UserQueryType
             const [users, total] = await userService.getList(query)
@@ -24,7 +30,7 @@ class UserController{
 
     public async get(req: Request, res: Response, next: NextFunction){
         try{
-            const {userId} = req.params as {userId: string}
+            const userId = req.params.userId as string
             const user = await userService.get(userId)
             console.log(user)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
@@ -47,7 +53,7 @@ class UserController{
 
     public async update(req: Request, res: Response, next: NextFunction){
         try{
-            const {userId} = req.params as {userId: string}
+            const userId = req.params.userId as string
             const body = req.body as UserUpdateDTOType
             const user = await userService.update(userId, body)
             res.status(200).json(await userPresenter.res(user))
@@ -59,7 +65,7 @@ class UserController{
 
     public async delete(req: Request, res: Response, next: NextFunction){
         try{
-            const {userId} = req.params as {userId: string}
+            const userId = req.params.userId as string
             const user = await userService.delete(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         }
@@ -127,7 +133,7 @@ class UserController{
 
     public async ban (req: Request, res: Response, next: NextFunction){
         try{
-            const {userId} = req.params as {userId: string}
+            const userId = req.params.userId as string
             const body = req.body as BanType
             const user = await userService.ban(userId, body)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
@@ -139,7 +145,7 @@ class UserController{
 
     public async unban (req: Request, res: Response, next: NextFunction){
         try{
-            const {userId} = req.params as {userId: string}
+            const userId = req.params.userId as string
             const user = await userService.unban(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         }
@@ -150,7 +156,7 @@ class UserController{
 
     public async activate (req: Request, res: Response, next: NextFunction) {
         try {
-            const {userId} = req.params as { userId: string }
+            const userId = req.params.userId as string
             const user = await userService.activate(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         } catch (e) {
@@ -161,7 +167,7 @@ class UserController{
 
     public async deactivate (req: Request, res: Response, next: NextFunction) {
         try {
-            const {userId} = req.params as { userId: string }
+            const userId = req.params.userId as string
             const user = await userService.deactivate(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         } catch (e) {
@@ -170,10 +176,10 @@ class UserController{
 
     }
 
-    public async setManager (req: Request, res: Response, next: NextFunction) {
+    public async verify (req: Request, res: Response, next: NextFunction) {
         try {
-            const {userId} = req.params as { userId: string }
-            const user = await userService.setManager(userId)
+            const userId = req.params.userId as string
+            const user = await userService.verify(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         } catch (e) {
             next(e)
@@ -181,18 +187,77 @@ class UserController{
 
     }
 
+    public async unverify (req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.userId as string
+            const user = await userService.unverify(userId)
+            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
+        } catch (e) {
+            next(e)
+        }
+
+    }
+
+    public async assignManager (req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.userId as string
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const user = await userService.assignManager(userId, user_id)
+            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async unassignManager (req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.userId as string
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const user = await userService.unassignManager(userId, user_id)
+            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
+        } catch (e) {
+            next(e)
+        }
+    }
+
     public async buySubscribe (req: Request, res: Response, next: NextFunction){
         try{
             const {user_id} = res.locals.payload as TokenPayloadType
             const {code} = req.body as {code: PlanSubscribeEnum}
             const subscribeInfo = await userService.buySubscribe(user_id, code)
-            res.status(StatusCodeEnum.OK).json(await userPresenter.WithSubscriptionRes(subscribeInfo))
+            res.status(StatusCodeEnum.OK).json(await userPresenter.resWithSubscription(subscribeInfo))
         }
         catch(e){
             next(e)
         }
     }
 
+    public async getMemberships (req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const membership = await dealershipMemberService.getUserMembership(user_id)
+            res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.resToUser(membership))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+    public async getAnnouncementList (req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const query = req.query as unknown as AnnouncementQueryType
+            const [announcements, total] = await announcementService.getList(query, {user_id})
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.userList(announcements, total, query))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+
 }
 
 export const userController = new UserController()
+
+//TODO think about using populate and types' change

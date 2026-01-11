@@ -12,7 +12,7 @@ import {s3Service} from "./s3.service.ts";
 import {FileItemTypeEnum} from "../enums/generalEnums/FileEnum.ts";
 import {ApiError} from "../errors/api.error.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
-import {UserGetNestedPermissionsWithoutNullType} from "../types/UserWithPermissionInclude.ts";
+import {UserWithIncludedPermissionType, UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
 import {BanType} from "../types/BanType.ts";
 import {TimeHelper} from "../timeHelper/time.helper.ts";
 import {subscribeRepository} from "../repository/subscribe.repository.ts";
@@ -25,35 +25,43 @@ class UserService{
         return await userRepository.getList(query)
     }
 
-    public async get(id: string){
-        return await userRepository.getById(id) as User
+    public async get(id: string): Promise<UserWithIncludedRegionAndRoleType>{
+        return await userRepository.getById(id) as UserWithIncludedRegionAndRoleType
     }
 
-    public async getByEmail(email: string): Promise<User | null>{
+    public async getByEmail(email: string): Promise<UserWithIncludedRegionAndRoleType | null>{
         return await userRepository.getByParams({email})
     }
 
-    public async create(dto: UserCreateDTOType){
+    public async create(dto: UserCreateDTOType): Promise<UserWithIncludedRegionAndRoleType>{
         const roleId = await roleService.getCustomerId()
         const userCreateData: UserCreateInput = {...dto, role: {connect: {id: roleId}}, region: {connect: {id: dto.region}}}
         return await userRepository.create(userCreateData)
     }
 
-    public async delete(id: string){
-        return await userRepository.deleteById(id) as User
+    public async delete(id: string): Promise<UserWithIncludedRegionAndRoleType>{
+        return await userRepository.deleteById(id) as UserWithIncludedRegionAndRoleType
     }
 
-    public async isDeleted(id: string){
+    public async isDeleted(id: string): Promise<boolean>{
         const user = await userService.get(id)
         return user.is_deleted
     }
 
-    public async activate(id: string){
-        return await userRepository.updateByIdAndParams(id, {is_active: true})
+    public async activate(id: string): Promise<UserWithIncludedRegionAndRoleType>{
+        return await userRepository.updateByIdAndParams(id, {is_active: true}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async deactivate(id: string){
-        return await userRepository.updateByIdAndParams(id, {is_active: false})
+    public async deactivate(id: string): Promise<UserWithIncludedRegionAndRoleType>{
+        return await userRepository.updateByIdAndParams(id, {is_active: false}) as UserWithIncludedRegionAndRoleType
+    }
+
+    public async verify(id: string): Promise<UserWithIncludedRegionAndRoleType>{
+        return await userRepository.updateByIdAndParams(id, {is_verified: true}) as UserWithIncludedRegionAndRoleType
+    }
+
+    public async unverify(id: string): Promise<UserWithIncludedRegionAndRoleType>{
+        return await userRepository.updateByIdAndParams(id, {is_verified: false}) as UserWithIncludedRegionAndRoleType
     }
 
     public async isActive(id: string): Promise<boolean>{
@@ -64,43 +72,38 @@ class UserService{
         return (await userRepository.getById(id) as User).is_banned
     }
 
-    public async update(id: string, dto: UserUpdateDTOType){
+    public async update(id: string, dto: UserUpdateDTOType): Promise<UserWithIncludedRegionAndRoleType>{
         const {region, ...restDTO} = dto
         const connection: {role?: RoleUpdateOneRequiredWithoutUserNestedInput, region?: RegionUpdateOneRequiredWithoutUserNestedInput} = {}
         if(region){
             connection.region = {connect: {id: region}}
         }
         const input: UserUpdateInput = {...restDTO, ...connection}
-        return await userRepository.updateByIdAndParams(id, input) as User
+        return await userRepository.updateByIdAndParams(id, input) as UserWithIncludedRegionAndRoleType
     }
 
 
-    public async uploadAvatar(file: UploadedFile, id: string): Promise<User>{
+    public async uploadAvatar(file: UploadedFile, id: string): Promise<UserWithIncludedRegionAndRoleType>{
         const avatarPath = await s3Service.uploadFile(FileItemTypeEnum.USER, id, file)
-        const user = await userRepository.getById(id) as User
+        const user = await userRepository.getById(id) as UserWithIncludedRegionAndRoleType
         if(user.photo){
             await s3Service.deleteFile(user.photo)
         }
-        return await userRepository.updateByIdAndParams(id, {photo: avatarPath})
+        return await userRepository.updateByIdAndParams(id, {photo: avatarPath}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async deleteAvatar(id: string): Promise<User>{
+    public async deleteAvatar(id: string): Promise<UserWithIncludedRegionAndRoleType>{
         const user = await userRepository.getById(id) as User
         if(!user.photo){
             throw new ApiError('Avatar not found', StatusCodeEnum.NOT_FOUND)
         }
         await s3Service.deleteFile(user.photo)
-        return await userRepository.updateByIdAndParams(id, {photo: null})
-    }
-
-    public async getPermissions(id: string){
-        const user = await userRepository.getNestedPermissions(id) as UserGetNestedPermissionsWithoutNullType
-        return user.role.RolePermission
+        return await userRepository.updateByIdAndParams(id, {photo: null}) as UserWithIncludedRegionAndRoleType
     }
 
     public async isHasPermission(id: string, permissionName: string){
-        const rolepermissions = await userService.getPermissions(id)
-        return rolepermissions.some(rolepermission => rolepermission.permission.name === permissionName)
+        const user = await userRepository.getNestedPermissions(id) as UserWithIncludedPermissionType
+        return user.role.RolePermission.some(rolePermission => rolePermission.permission.name === permissionName)
     }
 
     public async ban(id: string, body: BanType){
@@ -113,19 +116,30 @@ class UserService{
         if(reason){
             data.ban_reason = reason
         }
-        return await userRepository.updateByIdAndParams(id, data)
+        return await userRepository.updateByIdAndParams(id, data) as UserWithIncludedRegionAndRoleType
     }
 
     public async unban(id: string){
-        return await userRepository.updateByIdAndParams(id, {is_banned: false, banned_until: null, ban_reason: null})
+        return await userRepository.updateByIdAndParams(id, {is_banned: false, banned_until: null, ban_reason: null}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async setManager(id: string){
+    public async assignManager(id: string, user_id: string){
+        if(id === user_id){
+            throw new ApiError("User can not update itself", StatusCodeEnum.FORBIDDEN)
+        }
         const managerId = await roleService.getIdByName("manager")
-        return await userRepository.updateByIdAndParams(id, {role: {connect: {id: managerId}}})
+        return await userRepository.updateByIdAndParams(id, {role: {connect: {id: managerId}}}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async buySubscribe(id: string, code: PlanSubscribeEnum): Promise<[User, PremiumPurchase]>{
+    public async unassignManager(id: string, user_id: string){
+        if(id === user_id){
+            throw new ApiError("User can not update itself", StatusCodeEnum.FORBIDDEN)
+        }
+        const sellerId = await roleService.getIdByName("seller")
+        return await userRepository.updateByIdAndParams(id, {role: {connect: {id: sellerId}}}) as UserWithIncludedRegionAndRoleType
+    }
+
+    public async buySubscribe(id: string, code: PlanSubscribeEnum): Promise<[UserWithIncludedRegionAndRoleType, PremiumPurchase]>{
         const subscription = await premiumPurchasesRepository.findByUserId(id)
         if(subscription){
             throw new ApiError("User has already active subscribe", StatusCodeEnum.CONFLICT)
@@ -136,12 +150,12 @@ class UserService{
         if(diff < 0){
             throw new ApiError("Transcation is failed. Not enough funds", StatusCodeEnum.PAYMENT_REQUIRED)
         }
-        return await Promise.all([await userRepository.updateByIdAndParams(id, {balance: diff, account_type: AccountTypeEnum.premium}), await premiumPurchasesRepository.create({price_paid: subscribe.price, currency: CurrencyEnum.UAH, User: {connect: {id}}, purchased_at: new Date(), expires_at: TimeHelper.addTime(subscribe.duration_days ?? 30, "days")})])
+        return await Promise.all([await userRepository.updateByIdAndParams(id, {balance: diff, account_type: AccountTypeEnum.premium}) as UserWithIncludedRegionAndRoleType, await premiumPurchasesRepository.create({price_paid: subscribe.price, currency: CurrencyEnum.UAH, User: {connect: {id}}, purchased_at: new Date(), expires_at: TimeHelper.addTime(subscribe.duration_days ?? 30, "days")})])
     }
 
     public async deleteMe(id: string){
         await tokenRepository.deleteManyByParams({user_id: id})
-        return await userRepository.deleteById(id)
+        return await userRepository.deleteById(id) as UserWithIncludedRegionAndRoleType
     }
 
 }

@@ -26,14 +26,23 @@ const AnnouncementSchema = new mongoose.Schema(
         status: {type: String, enum: AnnouncementStatusEnum},
         vehicle: {type: VehicleSchema, required: true, _id: false},
         user_id: {type: String, required: true},
-        dealershipId: {type: mongoose.Types.ObjectId, required: false, ref: Dealership},
+        dealership_id: {type: mongoose.Types.ObjectId, required: false, ref: Dealership},
         rate_date: {type: Date, required: true, default: Date.now},
     },
     {
         timestamps: true,
-        versionKey: false
+        versionKey: false,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
     }
 )
+
+AnnouncementSchema.virtual('dealership', {
+    ref: Dealership,
+    localField: 'dealership_id',
+    foreignField: '_id',
+    justOne: true
+})
 
 AnnouncementSchema.pre<Query<AnnouncementType, unknown>>("findOneAndDelete", async function (next){
     const announcementId = this.getQuery()._id

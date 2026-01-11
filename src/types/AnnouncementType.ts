@@ -2,6 +2,7 @@ import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
 import {BaseType} from "./BaseType.ts";
 import {ExchangeCurrencyMap} from "./ExchangeCurrencyType.ts";
 import {VehicleType} from "./VehicleType.ts";
+import {DealershipType} from "./DealershipType.ts";
 
 type AnnouncementType = {
     _id: string
@@ -19,11 +20,11 @@ type AnnouncementType = {
     status: string,
     vehicle: VehicleType,
     user_id: string,
-    dealershipId?: string
+    dealership?: DealershipType
 } & BaseType
 
-type CreateAnnouncementDTOType = Omit<AnnouncementType, 'user_id' | 'status' | "createdAt" | "updatedAt" | 'approve_attempts' | 'rate_date' | 'exchange_rate' | 'rate_source'>
-type CreateAnnouncementInRepositoryDTOType =  CreateAnnouncementDTOType & Pick<AnnouncementType, "exchange_rate" | "user_id" | "status" | "approve_attempts">
-type UpdateAnnouncementDTOType = Partial<Omit<AnnouncementType, 'user_id' | 'rate_date' | 'exchange_rate' | 'rate_source' | 'dealershipId'>>
+type CreateAnnouncementDTOType = Omit<AnnouncementType, 'user_id' | 'status' | "createdAt" | "updatedAt" | 'approve_attempts' | 'rate_date' | 'exchange_rate' | 'rate_source' | 'dealership_id'>
+type CreateAnnouncementInRepositoryDTOType =  CreateAnnouncementDTOType & Pick<AnnouncementType, "exchange_rate" | "user_id" | "status" | "approve_attempts"> & {dealership_id?: string}
+type UpdateAnnouncementDTOType = Partial<Omit<AnnouncementType, 'user_id' | 'rate_date' | 'exchange_rate' | 'rate_source' | 'dealership_id'>>
 
 export type {AnnouncementType, CreateAnnouncementDTOType, CreateAnnouncementInRepositoryDTOType, UpdateAnnouncementDTOType}

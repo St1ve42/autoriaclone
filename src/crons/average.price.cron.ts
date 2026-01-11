@@ -1,8 +1,6 @@
 import {announcementRepository} from "../repository/announcement.repository.ts";
 import { Utils } from "../utils/utils.ts";
 import {averagePricesRepository} from "../repository/average.price.repository.ts";
-import {regionRepository} from "../repository/region.repository.ts";
-import {Region} from "../../prisma/src/generated/prisma/client.ts";
 import {CronJob} from "cron";
 
 const calculateAveragePriceHandler = async() => {
@@ -11,7 +9,7 @@ const calculateAveragePriceHandler = async() => {
         const analyticsMap = new Map<string, {
             brand: string
             model: string
-            region: string
+            region: number
             sumPrice: number
             count: number
         }>()
@@ -36,8 +34,7 @@ const calculateAveragePriceHandler = async() => {
         }
 
         for(const [_key, {brand, model, sumPrice, region, count}] of analyticsMap){
-            const {id} = await regionRepository.getByName(region) as Region
-            await averagePricesRepository.create({brand, model, region: {connect: {id}}, avg_price: Math.trunc(sumPrice / count), cars_count: count})
+            await averagePricesRepository.create({brand, model, region: {connect: {id: region}}, avg_price: Math.trunc(sumPrice / count), cars_count: count})
         }
     }
     catch (e){
@@ -46,4 +43,4 @@ const calculateAveragePriceHandler = async() => {
 
 }
 
-export const calculateAveragePriceCron = new CronJob("* * 1 * *", calculateAveragePriceHandler)
+export const calculateAveragePriceCron = new CronJob("* * * * *", calculateAveragePriceHandler)

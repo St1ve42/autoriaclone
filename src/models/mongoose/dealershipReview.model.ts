@@ -18,4 +18,11 @@ const DealershipReviewSchema = new mongoose.Schema(
 
 DealershipReviewSchema.index({dealership_id: 1, author_id: 1}, {unique: true})
 
-export const DealershipReview = model<DealershipReviewType>("dealer_reviews", DealershipReviewSchema)
+export const DealershipReview = model<DealershipReviewType>("dealership_reviews", DealershipReviewSchema)
+
+//TODO users/reviews, users/announcement, dealership/reviews, dealership/announcement and etc
+//TODO dealership permissions
+//TODO dump marks, brands and etc
+//TODO rename field currency on average_price_currency
+//TODO check average_price realization and finish it
+//TODO delete all images when entity is deleted

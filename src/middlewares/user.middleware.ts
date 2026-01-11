@@ -56,6 +56,21 @@ class UserMiddleware{
         }
     }
 
+    public async checkActionWithSelf (req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const userId = req.params.userId
+            if(user_id === userId){
+                throw new ApiError("Operation with yourself is not allowed", StatusCodeEnum.CONFLICT)
+            }
+            next()
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+
 }
 
 export const userMiddleware = new UserMiddleware()

@@ -17,12 +17,29 @@ class AnnouncementStatisticsService {
     }
 
     public async get(announcementId: string): Promise<StatisticsType> {
-        const {total_views} = await announcementStatisticsRepository.getByAnnouncementId(announcementId) as AnnouncementStatistics
+        const announcementStatistic = await announcementStatisticsRepository.getByAnnouncementId(announcementId) as AnnouncementStatistics
+        const {total_views} = announcementStatistic ? announcementStatistic : await announcementStatisticsRepository.create(announcementId)
         const {views} = await this.getViewStatistics(announcementId)
         const {region: region_id, vehicle: {brand, model}} = await announcementService.get(announcementId)
+        const carsCountInCountry = await averagePricesRepository.getCarCount({brand, model})
+        const carsCountInRegion = await averagePricesRepository.getCarCount({brand, model, region_id})
         const averagePriceInRegion = await averagePricesRepository.getInRegion({brand, model, region_id})
-        const averagePriceInCountry = (await averagePricesRepository.getInCountry({brand, model}))[0]
-        return {total_views, views, average_price: {region: averagePriceInRegion ? Math.trunc(Number(averagePriceInRegion.avg_price)) : 0, country: averagePriceInCountry ? Math.trunc(Number(averagePriceInCountry.avg_country_price)) : 0}, currency: "USD"}
+        const averagePriceInCountry = await averagePricesRepository.getInCountry({brand, model})
+        return {
+            total_views,
+            views,
+            average_price: {
+                region: {
+                    value: averagePriceInRegion && carsCountInRegion && carsCountInRegion >= 10 ? Math.trunc(Number(averagePriceInRegion)) : null,
+                    vehicles_count: carsCountInRegion as number
+                },
+                country: {
+                    value: averagePriceInCountry && carsCountInCountry && carsCountInCountry >= 10 ? Math.trunc(Number(averagePriceInCountry)) : null,
+                    vehicles_count: carsCountInCountry as number
+                },
+                currency: "USD"
+            }
+        }
     }
 
     public async create(announcementId: string): Promise<void>{

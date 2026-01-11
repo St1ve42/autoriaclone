@@ -1,6 +1,7 @@
 import {roleRepository} from "../repository/role.repository.ts";
 import {ApiError} from "../errors/api.error.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
+import {Role} from "../../prisma/src/generated/prisma/client.ts";
 
 class RoleService{
     public async getNameById(id: number): Promise<string>{
@@ -18,6 +19,11 @@ class RoleService{
     public async getCustomerId(): Promise<number>{
         return await this.getIdByName("customer")
     }
+
+    public async getList(): Promise<Role[]>{
+        return await roleRepository.getList()
+    }
+
 }
 
 export const roleService = new RoleService()

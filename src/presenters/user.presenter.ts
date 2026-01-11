@@ -1,12 +1,11 @@
 import type {PremiumPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
-import {regionService} from "../services/region.service.ts";
-import {roleService} from "../services/role.service.ts";
 import {TokenPairType} from "../types/TokenType.ts";
 import {UserQueryType} from "../types/QueryType.ts";
+import {UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
 
 class UserPresenter{
     public async list(
-        users: User[],
+        users: UserWithIncludedRegionAndRoleType[],
         total: number,
         query: UserQueryType
     ) {
@@ -17,8 +16,7 @@ class UserPresenter{
         }
     }
 
-    public async res(user: User){
-        const [region, role] = await Promise.all([await regionService.getNameById(user.region_id), await roleService.getNameById(user.role_id)])
+    public async res(user: UserWithIncludedRegionAndRoleType){
         return {
             "id": user.id,
             "name": user.name,
@@ -29,8 +27,8 @@ class UserPresenter{
             "gender": user.gender,
             "photo": user.photo,
             "city": user.city,
-            "region": region,
-            "role": role,
+            "region": user.region.name,
+            "role": user.role.name,
             "account_type": user.account_type,
             "balance": user.balance,
             "currency": user.currency,
@@ -51,27 +49,26 @@ class UserPresenter{
     }
 
 
-    public async resUserWithTokenPair(user: User, tokenPair: TokenPairType) {
+    public async resWithTokenPair(user: UserWithIncludedRegionAndRoleType, tokenPair: TokenPairType) {
         return {user: await this.res(user), tokenPair: this.resToken(tokenPair)}
     }
 
-    public async toAnnouncementRes(user: User){
-        const region = await regionService.getNameById(user.region_id)
+    public async publicRes(user: UserWithIncludedRegionAndRoleType){
         return {
+            "id": user.id,
             "name": user.name,
             "surname": user.surname,
             "email": user.email,
             "phone": user.phone,
             "photo": user.photo,
             "city": user.city,
-            "region": region,
+            "region": user.region.name,
             "account_type": user.account_type,
         }
     }
 
-    public async WithSubscriptionRes(dto: [User, PremiumPurchase]){
+    public async resWithSubscription(dto: [UserWithIncludedRegionAndRoleType, PremiumPurchase]){
         const [user, subscription] = dto
-        const region = await regionService.getNameById(user.region_id)
         return {
             user: {
                 "name": user.name,
@@ -80,7 +77,7 @@ class UserPresenter{
                 "phone": user.phone,
                 "photo": user.photo,
                 "city": user.city,
-                "region": region,
+                "region": user.region.name,
                 "account_type": user.account_type,
             },
             subscription: {

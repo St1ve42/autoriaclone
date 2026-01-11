@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {authMiddleware} from "../middlewares/auth.middleware.ts";
+import {strictAuthMiddleware} from "../middlewares/strict.auth.middleware.ts";
 import {subscribeController} from "../controllers/subscribe.controller.ts";
 import {commonMiddleware} from "../middlewares/common.middleware.ts";
 import {SubscribeValidator} from "../vaildators/subscribe.validator.ts";
