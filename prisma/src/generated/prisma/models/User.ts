@@ -372,10 +372,10 @@ export type UserWhereInput = {
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
-  role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
-  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
-  premiumPurchase?: Prisma.PremiumPurchaseListRelationFilter
-  token?: Prisma.TokenListRelationFilter
+  Role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
+  Region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseListRelationFilter
+  Token?: Prisma.TokenListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -402,10 +402,10 @@ export type UserOrderByWithRelationInput = {
   is_deleted?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  role?: Prisma.RoleOrderByWithRelationInput
-  region?: Prisma.RegionOrderByWithRelationInput
-  premiumPurchase?: Prisma.PremiumPurchaseOrderByRelationAggregateInput
-  token?: Prisma.TokenOrderByRelationAggregateInput
+  Role?: Prisma.RoleOrderByWithRelationInput
+  Region?: Prisma.RegionOrderByWithRelationInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseOrderByRelationAggregateInput
+  Token?: Prisma.TokenOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -436,10 +436,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
-  role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
-  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
-  premiumPurchase?: Prisma.PremiumPurchaseListRelationFilter
-  token?: Prisma.TokenListRelationFilter
+  Role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
+  Region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseListRelationFilter
+  Token?: Prisma.TokenListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -524,10 +524,10 @@ export type UserCreateInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  role: Prisma.RoleCreateNestedOneWithoutUserInput
-  region: Prisma.RegionCreateNestedOneWithoutUserInput
-  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
-  token?: Prisma.TokenCreateNestedManyWithoutUserInput
+  Role: Prisma.RoleCreateNestedOneWithoutUserInput
+  Region: Prisma.RegionCreateNestedOneWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -554,8 +554,8 @@ export type UserUncheckedCreateInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
-  token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -580,10 +580,10 @@ export type UserUpdateInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
-  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
-  token?: Prisma.TokenUpdateManyWithoutUserNestedInput
+  Role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
+  Region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -610,8 +610,8 @@ export type UserUncheckedUpdateInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
-  token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -941,18 +941,18 @@ export type UserUpdateOneRequiredWithoutTokenNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTokenInput, Prisma.UserUpdateWithoutTokenInput>, Prisma.UserUncheckedUpdateWithoutTokenInput>
 }
 
-export type UserCreateNestedOneWithoutPremiumPurchaseInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPremiumPurchaseInput
+export type UserCreateNestedOneWithoutSubscriptionPurchaseInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionPurchaseInput, Prisma.UserUncheckedCreateWithoutSubscriptionPurchaseInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubscriptionPurchaseInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutPremiumPurchaseNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPremiumPurchaseInput
-  upsert?: Prisma.UserUpsertWithoutPremiumPurchaseInput
+export type UserUpdateOneRequiredWithoutSubscriptionPurchaseNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionPurchaseInput, Prisma.UserUncheckedCreateWithoutSubscriptionPurchaseInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubscriptionPurchaseInput
+  upsert?: Prisma.UserUpsertWithoutSubscriptionPurchaseInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPremiumPurchaseInput, Prisma.UserUpdateWithoutPremiumPurchaseInput>, Prisma.UserUncheckedUpdateWithoutPremiumPurchaseInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubscriptionPurchaseInput, Prisma.UserUpdateWithoutSubscriptionPurchaseInput>, Prisma.UserUncheckedUpdateWithoutSubscriptionPurchaseInput>
 }
 
 export type UserCreateWithoutRegionInput = {
@@ -977,9 +977,9 @@ export type UserCreateWithoutRegionInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  role: Prisma.RoleCreateNestedOneWithoutUserInput
-  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
-  token?: Prisma.TokenCreateNestedManyWithoutUserInput
+  Role: Prisma.RoleCreateNestedOneWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRegionInput = {
@@ -1005,8 +1005,8 @@ export type UserUncheckedCreateWithoutRegionInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
-  token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRegionInput = {
@@ -1086,9 +1086,9 @@ export type UserCreateWithoutRoleInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  region: Prisma.RegionCreateNestedOneWithoutUserInput
-  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
-  token?: Prisma.TokenCreateNestedManyWithoutUserInput
+  Region: Prisma.RegionCreateNestedOneWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoleInput = {
@@ -1114,8 +1114,8 @@ export type UserUncheckedCreateWithoutRoleInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
-  token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoleInput = {
@@ -1166,9 +1166,9 @@ export type UserCreateWithoutTokenInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  role: Prisma.RoleCreateNestedOneWithoutUserInput
-  region: Prisma.RegionCreateNestedOneWithoutUserInput
-  premiumPurchase?: Prisma.PremiumPurchaseCreateNestedManyWithoutUserInput
+  Role: Prisma.RoleCreateNestedOneWithoutUserInput
+  Region: Prisma.RegionCreateNestedOneWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTokenInput = {
@@ -1195,7 +1195,7 @@ export type UserUncheckedCreateWithoutTokenInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedCreateNestedManyWithoutUserInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTokenInput = {
@@ -1236,9 +1236,9 @@ export type UserUpdateWithoutTokenInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
-  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
+  Role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
+  Region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTokenInput = {
@@ -1265,10 +1265,10 @@ export type UserUncheckedUpdateWithoutTokenInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutPremiumPurchaseInput = {
+export type UserCreateWithoutSubscriptionPurchaseInput = {
   id?: string
   name: string
   surname: string
@@ -1290,12 +1290,12 @@ export type UserCreateWithoutPremiumPurchaseInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  role: Prisma.RoleCreateNestedOneWithoutUserInput
-  region: Prisma.RegionCreateNestedOneWithoutUserInput
-  token?: Prisma.TokenCreateNestedManyWithoutUserInput
+  Role: Prisma.RoleCreateNestedOneWithoutUserInput
+  Region: Prisma.RegionCreateNestedOneWithoutUserInput
+  Token?: Prisma.TokenCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutPremiumPurchaseInput = {
+export type UserUncheckedCreateWithoutSubscriptionPurchaseInput = {
   id?: string
   name: string
   surname: string
@@ -1319,26 +1319,26 @@ export type UserUncheckedCreateWithoutPremiumPurchaseInput = {
   is_deleted?: boolean
   created_at?: Date | string
   updated_at?: Date | string
-  token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
+  Token?: Prisma.TokenUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutPremiumPurchaseInput = {
+export type UserCreateOrConnectWithoutSubscriptionPurchaseInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionPurchaseInput, Prisma.UserUncheckedCreateWithoutSubscriptionPurchaseInput>
 }
 
-export type UserUpsertWithoutPremiumPurchaseInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPremiumPurchaseInput, Prisma.UserUncheckedUpdateWithoutPremiumPurchaseInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPremiumPurchaseInput, Prisma.UserUncheckedCreateWithoutPremiumPurchaseInput>
+export type UserUpsertWithoutSubscriptionPurchaseInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSubscriptionPurchaseInput, Prisma.UserUncheckedUpdateWithoutSubscriptionPurchaseInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubscriptionPurchaseInput, Prisma.UserUncheckedCreateWithoutSubscriptionPurchaseInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutPremiumPurchaseInput = {
+export type UserUpdateToOneWithWhereWithoutSubscriptionPurchaseInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPremiumPurchaseInput, Prisma.UserUncheckedUpdateWithoutPremiumPurchaseInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSubscriptionPurchaseInput, Prisma.UserUncheckedUpdateWithoutSubscriptionPurchaseInput>
 }
 
-export type UserUpdateWithoutPremiumPurchaseInput = {
+export type UserUpdateWithoutSubscriptionPurchaseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   surname?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1360,12 +1360,12 @@ export type UserUpdateWithoutPremiumPurchaseInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
-  token?: Prisma.TokenUpdateManyWithoutUserNestedInput
+  Role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
+  Region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  Token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPremiumPurchaseInput = {
+export type UserUncheckedUpdateWithoutSubscriptionPurchaseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   surname?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1389,7 +1389,7 @@ export type UserUncheckedUpdateWithoutPremiumPurchaseInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyRegionInput = {
@@ -1439,9 +1439,9 @@ export type UserUpdateWithoutRegionInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
-  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
-  token?: Prisma.TokenUpdateManyWithoutUserNestedInput
+  Role?: Prisma.RoleUpdateOneRequiredWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRegionInput = {
@@ -1467,8 +1467,8 @@ export type UserUncheckedUpdateWithoutRegionInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
-  token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRegionInput = {
@@ -1543,9 +1543,9 @@ export type UserUpdateWithoutRoleInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
-  premiumPurchase?: Prisma.PremiumPurchaseUpdateManyWithoutUserNestedInput
-  token?: Prisma.TokenUpdateManyWithoutUserNestedInput
+  Region?: Prisma.RegionUpdateOneRequiredWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleInput = {
@@ -1571,8 +1571,8 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  premiumPurchase?: Prisma.PremiumPurchaseUncheckedUpdateManyWithoutUserNestedInput
-  token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
+  SubscriptionPurchase?: Prisma.SubscriptionPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  Token?: Prisma.TokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -1606,13 +1606,13 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
  */
 
 export type UserCountOutputType = {
-  premiumPurchase: number
-  token: number
+  SubscriptionPurchase: number
+  Token: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  premiumPurchase?: boolean | UserCountOutputTypeCountPremiumPurchaseArgs
-  token?: boolean | UserCountOutputTypeCountTokenArgs
+  SubscriptionPurchase?: boolean | UserCountOutputTypeCountSubscriptionPurchaseArgs
+  Token?: boolean | UserCountOutputTypeCountTokenArgs
 }
 
 /**
@@ -1628,8 +1628,8 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountPremiumPurchaseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PremiumPurchaseWhereInput
+export type UserCountOutputTypeCountSubscriptionPurchaseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubscriptionPurchaseWhereInput
 }
 
 /**
@@ -1664,10 +1664,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   is_deleted?: boolean
   created_at?: boolean
   updated_at?: boolean
-  role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
-  premiumPurchase?: boolean | Prisma.User$premiumPurchaseArgs<ExtArgs>
-  token?: boolean | Prisma.User$tokenArgs<ExtArgs>
+  Role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
+  Region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  SubscriptionPurchase?: boolean | Prisma.User$SubscriptionPurchaseArgs<ExtArgs>
+  Token?: boolean | Prisma.User$TokenArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1701,20 +1701,20 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "surname" | "age" | "email" | "password" | "phone" | "gender" | "photo" | "role_id" | "region_id" | "city" | "account_type" | "balance" | "currency" | "is_active" | "is_verified" | "is_banned" | "ban_reason" | "banned_until" | "is_deleted" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
-  premiumPurchase?: boolean | Prisma.User$premiumPurchaseArgs<ExtArgs>
-  token?: boolean | Prisma.User$tokenArgs<ExtArgs>
+  Role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
+  Region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  SubscriptionPurchase?: boolean | Prisma.User$SubscriptionPurchaseArgs<ExtArgs>
+  Token?: boolean | Prisma.User$TokenArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    role: Prisma.$RolePayload<ExtArgs>
-    region: Prisma.$RegionPayload<ExtArgs>
-    premiumPurchase: Prisma.$PremiumPurchasePayload<ExtArgs>[]
-    token: Prisma.$TokenPayload<ExtArgs>[]
+    Role: Prisma.$RolePayload<ExtArgs>
+    Region: Prisma.$RegionPayload<ExtArgs>
+    SubscriptionPurchase: Prisma.$SubscriptionPurchasePayload<ExtArgs>[]
+    Token: Prisma.$TokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2080,10 +2080,10 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  role<T extends Prisma.RoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoleDefaultArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  region<T extends Prisma.RegionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RegionDefaultArgs<ExtArgs>>): Prisma.Prisma__RegionClient<runtime.Types.Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  premiumPurchase<T extends Prisma.User$premiumPurchaseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$premiumPurchaseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PremiumPurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  token<T extends Prisma.User$tokenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tokenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  Role<T extends Prisma.RoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoleDefaultArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  Region<T extends Prisma.RegionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RegionDefaultArgs<ExtArgs>>): Prisma.Prisma__RegionClient<runtime.Types.Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  SubscriptionPurchase<T extends Prisma.User$SubscriptionPurchaseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$SubscriptionPurchaseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  Token<T extends Prisma.User$TokenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$TokenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2479,33 +2479,33 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.premiumPurchase
+ * User.SubscriptionPurchase
  */
-export type User$premiumPurchaseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$SubscriptionPurchaseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the PremiumPurchase
+   * Select specific fields to fetch from the SubscriptionPurchase
    */
-  select?: Prisma.PremiumPurchaseSelect<ExtArgs> | null
+  select?: Prisma.SubscriptionPurchaseSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the PremiumPurchase
+   * Omit specific fields from the SubscriptionPurchase
    */
-  omit?: Prisma.PremiumPurchaseOmit<ExtArgs> | null
+  omit?: Prisma.SubscriptionPurchaseOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PremiumPurchaseInclude<ExtArgs> | null
-  where?: Prisma.PremiumPurchaseWhereInput
-  orderBy?: Prisma.PremiumPurchaseOrderByWithRelationInput | Prisma.PremiumPurchaseOrderByWithRelationInput[]
-  cursor?: Prisma.PremiumPurchaseWhereUniqueInput
+  include?: Prisma.SubscriptionPurchaseInclude<ExtArgs> | null
+  where?: Prisma.SubscriptionPurchaseWhereInput
+  orderBy?: Prisma.SubscriptionPurchaseOrderByWithRelationInput | Prisma.SubscriptionPurchaseOrderByWithRelationInput[]
+  cursor?: Prisma.SubscriptionPurchaseWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PremiumPurchaseScalarFieldEnum | Prisma.PremiumPurchaseScalarFieldEnum[]
+  distinct?: Prisma.SubscriptionPurchaseScalarFieldEnum | Prisma.SubscriptionPurchaseScalarFieldEnum[]
 }
 
 /**
- * User.token
+ * User.Token
  */
-export type User$tokenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$TokenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Token
    */

@@ -58,8 +58,8 @@ export const ModelName = {
   AnnouncementStatistics: 'AnnouncementStatistics',
   AnnouncementViewsDay: 'AnnouncementViewsDay',
   AveragePrices: 'AveragePrices',
-  PremiumPurchase: 'PremiumPurchase',
-  PremiumPlan: 'PremiumPlan'
+  SubscriptionPurchase: 'SubscriptionPurchase',
+  SubscriptionPlan: 'SubscriptionPlan'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -184,7 +184,7 @@ export const AveragePricesScalarFieldEnum = {
 export type AveragePricesScalarFieldEnum = (typeof AveragePricesScalarFieldEnum)[keyof typeof AveragePricesScalarFieldEnum]
 
 
-export const PremiumPurchaseScalarFieldEnum = {
+export const SubscriptionPurchaseScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
   price_paid: 'price_paid',
@@ -193,10 +193,10 @@ export const PremiumPurchaseScalarFieldEnum = {
   expires_at: 'expires_at'
 } as const
 
-export type PremiumPurchaseScalarFieldEnum = (typeof PremiumPurchaseScalarFieldEnum)[keyof typeof PremiumPurchaseScalarFieldEnum]
+export type SubscriptionPurchaseScalarFieldEnum = (typeof SubscriptionPurchaseScalarFieldEnum)[keyof typeof SubscriptionPurchaseScalarFieldEnum]
 
 
-export const PremiumPlanScalarFieldEnum = {
+export const SubscriptionPlanScalarFieldEnum = {
   id: 'id',
   code: 'code',
   price: 'price',
@@ -205,7 +205,7 @@ export const PremiumPlanScalarFieldEnum = {
   is_active: 'is_active'
 } as const
 
-export type PremiumPlanScalarFieldEnum = (typeof PremiumPlanScalarFieldEnum)[keyof typeof PremiumPlanScalarFieldEnum]
+export type SubscriptionPlanScalarFieldEnum = (typeof SubscriptionPlanScalarFieldEnum)[keyof typeof SubscriptionPlanScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -295,18 +295,19 @@ export const AveragePricesOrderByRelevanceFieldEnum = {
 export type AveragePricesOrderByRelevanceFieldEnum = (typeof AveragePricesOrderByRelevanceFieldEnum)[keyof typeof AveragePricesOrderByRelevanceFieldEnum]
 
 
-export const PremiumPurchaseOrderByRelevanceFieldEnum = {
+export const SubscriptionPurchaseOrderByRelevanceFieldEnum = {
   id: 'id',
   user_id: 'user_id'
 } as const
 
-export type PremiumPurchaseOrderByRelevanceFieldEnum = (typeof PremiumPurchaseOrderByRelevanceFieldEnum)[keyof typeof PremiumPurchaseOrderByRelevanceFieldEnum]
+export type SubscriptionPurchaseOrderByRelevanceFieldEnum = (typeof SubscriptionPurchaseOrderByRelevanceFieldEnum)[keyof typeof SubscriptionPurchaseOrderByRelevanceFieldEnum]
 
 
-export const PremiumPlanOrderByRelevanceFieldEnum = {
+export const SubscriptionPlanOrderByRelevanceFieldEnum = {
   id: 'id',
+  code: 'code',
   currency: 'currency'
 } as const
 
-export type PremiumPlanOrderByRelevanceFieldEnum = (typeof PremiumPlanOrderByRelevanceFieldEnum)[keyof typeof PremiumPlanOrderByRelevanceFieldEnum]
+export type SubscriptionPlanOrderByRelevanceFieldEnum = (typeof SubscriptionPlanOrderByRelevanceFieldEnum)[keyof typeof SubscriptionPlanOrderByRelevanceFieldEnum]
 

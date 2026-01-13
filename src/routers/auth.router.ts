@@ -9,7 +9,7 @@ import {AuthValidator} from "../vaildators/auth.validator.ts";
 
 const router = Router()
 
-router.post('/sign-up', commonMiddleware.validateBody(UserValidator.createUser), userMiddleware.checkEmailTaken, regionMiddleware.validateRegion, authController.signUp)
+router.post('/sign-up', commonMiddleware.validateBody(UserValidator.createUser), userMiddleware.checkEmailTaken, authController.signUp)
 router.post('/sign-in', commonMiddleware.validateBody(UserValidator.signIn), authController.signIn)
 router.post('/refresh', commonMiddleware.validateBody(AuthValidator.refreshToken), strictAuthMiddleware.validateRefreshToken, authController.refresh)
 router.post('/log-out', strictAuthMiddleware.validateAccessToken, authController.logOut)

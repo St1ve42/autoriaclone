@@ -2,7 +2,7 @@ import {userRepository} from "../repository/user.repository.ts";
 import type {UserCreateInput, UserUpdateInput} from "../../prisma/src/generated/prisma/models/User.ts";
 import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
 import {roleService} from "./role.service.ts";
-import {AccountTypeEnum, PlanSubscribeEnum, PremiumPlan, PremiumPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
+import {AccountTypeEnum, SubscriptionPlan, SubscriptionPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
 import {CurrencyEnum} from "../../prisma/src/generated/prisma/enums.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {RoleUpdateOneRequiredWithoutUserNestedInput} from "../../prisma/src/generated/prisma/models/Role.js";
@@ -15,10 +15,11 @@ import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {UserWithIncludedPermissionType, UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
 import {BanType} from "../types/BanType.ts";
 import {TimeHelper} from "../timeHelper/time.helper.ts";
-import {subscribeRepository} from "../repository/subscribe.repository.ts";
+import {subscriptionPlanRepository} from "../repository/subscription.plan.repository.ts";
 import {premiumPurchasesRepository} from "../repository/premium.purchases.repository.ts";
 import {UserListReturnType} from "../types/ListReturnType.ts";
 import {tokenRepository} from "../repository/token.repository.ts";
+import {GlobalRoleEnums} from "../enums/globalRoleEnums/globalRoleEnums.ts";
 
 class UserService{
     public async getList(query: UserQueryType): Promise<UserListReturnType>{
@@ -34,8 +35,9 @@ class UserService{
     }
 
     public async create(dto: UserCreateDTOType): Promise<UserWithIncludedRegionAndRoleType>{
-        const roleId = await roleService.getCustomerId()
-        const userCreateData: UserCreateInput = {...dto, role: {connect: {id: roleId}}, region: {connect: {id: dto.region}}}
+        const roleId = await roleService.getIdByName(GlobalRoleEnums.USER)
+        const {region, ...rest} = dto
+        const userCreateData: UserCreateInput = {...rest, Role: {connect: {id: roleId}}, Region: {connect: {id: region}}}
         return await userRepository.create(userCreateData)
     }
 
@@ -103,7 +105,7 @@ class UserService{
 
     public async isHasPermission(id: string, permissionName: string){
         const user = await userRepository.getNestedPermissions(id) as UserWithIncludedPermissionType
-        return user.role.RolePermission.some(rolePermission => rolePermission.permission.name === permissionName)
+        return user.Role.RolePermission.some(rolePermission => rolePermission.Permission.name === permissionName)
     }
 
     public async ban(id: string, body: BanType){
@@ -128,7 +130,7 @@ class UserService{
             throw new ApiError("User can not update itself", StatusCodeEnum.FORBIDDEN)
         }
         const managerId = await roleService.getIdByName("manager")
-        return await userRepository.updateByIdAndParams(id, {role: {connect: {id: managerId}}}) as UserWithIncludedRegionAndRoleType
+        return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: managerId}}}) as UserWithIncludedRegionAndRoleType
     }
 
     public async unassignManager(id: string, user_id: string){
@@ -136,16 +138,16 @@ class UserService{
             throw new ApiError("User can not update itself", StatusCodeEnum.FORBIDDEN)
         }
         const sellerId = await roleService.getIdByName("seller")
-        return await userRepository.updateByIdAndParams(id, {role: {connect: {id: sellerId}}}) as UserWithIncludedRegionAndRoleType
+        return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: sellerId}}}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async buySubscribe(id: string, code: PlanSubscribeEnum): Promise<[UserWithIncludedRegionAndRoleType, PremiumPurchase]>{
+    public async buySubscribe(id: string, code: string): Promise<[UserWithIncludedRegionAndRoleType, SubscriptionPurchase]>{
         const subscription = await premiumPurchasesRepository.findByUserId(id)
         if(subscription){
             throw new ApiError("User has already active subscribe", StatusCodeEnum.CONFLICT)
         }
         const user = await userService.get(id)
-        const subscribe = await subscribeRepository.get(code) as PremiumPlan
+        const subscribe = await subscriptionPlanRepository.get(code) as SubscriptionPlan
         const diff = user.balance - Number(subscribe.price)
         if(diff < 0){
             throw new ApiError("Transcation is failed. Not enough funds", StatusCodeEnum.PAYMENT_REQUIRED)

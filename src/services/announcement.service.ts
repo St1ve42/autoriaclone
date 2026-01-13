@@ -16,7 +16,7 @@ import {dealershipMemberRepository} from "../repository/dealership.member.reposi
 import {AccountTypeEnum} from "../../prisma/src/generated/prisma/enums.ts";
 
 class AnnouncementService{
-    public async getList(query: AnnouncementQueryType, filterInput?: Partial<AnnouncementType>): Promise<AnnouncementListReturnType>{
+    public async getList(query: AnnouncementQueryType, filterInput?: Partial<AnnouncementType> & {dealership_id?: string}): Promise<AnnouncementListReturnType>{
         return await announcementRepository.getList(query, filterInput)
     }
 

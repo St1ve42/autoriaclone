@@ -196,15 +196,15 @@ export type RolePermissionWhereInput = {
   NOT?: Prisma.RolePermissionWhereInput | Prisma.RolePermissionWhereInput[]
   role_id?: Prisma.IntFilter<"RolePermission"> | number
   permission_id?: Prisma.IntFilter<"RolePermission"> | number
-  role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
-  permission?: Prisma.XOR<Prisma.PermissionScalarRelationFilter, Prisma.PermissionWhereInput>
+  Role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
+  Permission?: Prisma.XOR<Prisma.PermissionScalarRelationFilter, Prisma.PermissionWhereInput>
 }
 
 export type RolePermissionOrderByWithRelationInput = {
   role_id?: Prisma.SortOrder
   permission_id?: Prisma.SortOrder
-  role?: Prisma.RoleOrderByWithRelationInput
-  permission?: Prisma.PermissionOrderByWithRelationInput
+  Role?: Prisma.RoleOrderByWithRelationInput
+  Permission?: Prisma.PermissionOrderByWithRelationInput
 }
 
 export type RolePermissionWhereUniqueInput = Prisma.AtLeast<{
@@ -214,8 +214,8 @@ export type RolePermissionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.RolePermissionWhereInput | Prisma.RolePermissionWhereInput[]
   role_id?: Prisma.IntFilter<"RolePermission"> | number
   permission_id?: Prisma.IntFilter<"RolePermission"> | number
-  role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
-  permission?: Prisma.XOR<Prisma.PermissionScalarRelationFilter, Prisma.PermissionWhereInput>
+  Role?: Prisma.XOR<Prisma.RoleScalarRelationFilter, Prisma.RoleWhereInput>
+  Permission?: Prisma.XOR<Prisma.PermissionScalarRelationFilter, Prisma.PermissionWhereInput>
 }, "role_id_permission_id">
 
 export type RolePermissionOrderByWithAggregationInput = {
@@ -237,8 +237,8 @@ export type RolePermissionScalarWhereWithAggregatesInput = {
 }
 
 export type RolePermissionCreateInput = {
-  role: Prisma.RoleCreateNestedOneWithoutRolePermissionInput
-  permission: Prisma.PermissionCreateNestedOneWithoutRolePermissionInput
+  Role: Prisma.RoleCreateNestedOneWithoutRolePermissionInput
+  Permission: Prisma.PermissionCreateNestedOneWithoutRolePermissionInput
 }
 
 export type RolePermissionUncheckedCreateInput = {
@@ -247,8 +247,8 @@ export type RolePermissionUncheckedCreateInput = {
 }
 
 export type RolePermissionUpdateInput = {
-  role?: Prisma.RoleUpdateOneRequiredWithoutRolePermissionNestedInput
-  permission?: Prisma.PermissionUpdateOneRequiredWithoutRolePermissionNestedInput
+  Role?: Prisma.RoleUpdateOneRequiredWithoutRolePermissionNestedInput
+  Permission?: Prisma.PermissionUpdateOneRequiredWithoutRolePermissionNestedInput
 }
 
 export type RolePermissionUncheckedUpdateInput = {
@@ -395,7 +395,7 @@ export type RolePermissionUncheckedUpdateManyWithoutPermissionNestedInput = {
 }
 
 export type RolePermissionCreateWithoutRoleInput = {
-  permission: Prisma.PermissionCreateNestedOneWithoutRolePermissionInput
+  Permission: Prisma.PermissionCreateNestedOneWithoutRolePermissionInput
 }
 
 export type RolePermissionUncheckedCreateWithoutRoleInput = {
@@ -437,7 +437,7 @@ export type RolePermissionScalarWhereInput = {
 }
 
 export type RolePermissionCreateWithoutPermissionInput = {
-  role: Prisma.RoleCreateNestedOneWithoutRolePermissionInput
+  Role: Prisma.RoleCreateNestedOneWithoutRolePermissionInput
 }
 
 export type RolePermissionUncheckedCreateWithoutPermissionInput = {
@@ -475,7 +475,7 @@ export type RolePermissionCreateManyRoleInput = {
 }
 
 export type RolePermissionUpdateWithoutRoleInput = {
-  permission?: Prisma.PermissionUpdateOneRequiredWithoutRolePermissionNestedInput
+  Permission?: Prisma.PermissionUpdateOneRequiredWithoutRolePermissionNestedInput
 }
 
 export type RolePermissionUncheckedUpdateWithoutRoleInput = {
@@ -491,7 +491,7 @@ export type RolePermissionCreateManyPermissionInput = {
 }
 
 export type RolePermissionUpdateWithoutPermissionInput = {
-  role?: Prisma.RoleUpdateOneRequiredWithoutRolePermissionNestedInput
+  Role?: Prisma.RoleUpdateOneRequiredWithoutRolePermissionNestedInput
 }
 
 export type RolePermissionUncheckedUpdateWithoutPermissionInput = {
@@ -507,8 +507,8 @@ export type RolePermissionUncheckedUpdateManyWithoutPermissionInput = {
 export type RolePermissionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   role_id?: boolean
   permission_id?: boolean
-  role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
-  permission?: boolean | Prisma.PermissionDefaultArgs<ExtArgs>
+  Role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
+  Permission?: boolean | Prisma.PermissionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["rolePermission"]>
 
 
@@ -520,15 +520,15 @@ export type RolePermissionSelectScalar = {
 
 export type RolePermissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"role_id" | "permission_id", ExtArgs["result"]["rolePermission"]>
 export type RolePermissionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
-  permission?: boolean | Prisma.PermissionDefaultArgs<ExtArgs>
+  Role?: boolean | Prisma.RoleDefaultArgs<ExtArgs>
+  Permission?: boolean | Prisma.PermissionDefaultArgs<ExtArgs>
 }
 
 export type $RolePermissionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RolePermission"
   objects: {
-    role: Prisma.$RolePayload<ExtArgs>
-    permission: Prisma.$PermissionPayload<ExtArgs>
+    Role: Prisma.$RolePayload<ExtArgs>
+    Permission: Prisma.$PermissionPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     role_id: number
@@ -873,8 +873,8 @@ readonly fields: RolePermissionFieldRefs;
  */
 export interface Prisma__RolePermissionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  role<T extends Prisma.RoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoleDefaultArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  permission<T extends Prisma.PermissionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionDefaultArgs<ExtArgs>>): Prisma.Prisma__PermissionClient<runtime.Types.Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  Role<T extends Prisma.RoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoleDefaultArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  Permission<T extends Prisma.PermissionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionDefaultArgs<ExtArgs>>): Prisma.Prisma__PermissionClient<runtime.Types.Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

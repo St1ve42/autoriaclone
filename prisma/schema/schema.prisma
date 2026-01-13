@@ -9,33 +9,33 @@ datasource db {
 }
 
 model User {
-  id              String              @id @default(uuid(7))
-  name            String              @db.VarChar(100)
-  surname         String              @db.VarChar(100)
-  age             Int
-  email           String              @unique @db.VarChar(150)
-  password        String              @db.VarChar(150)
-  phone           String?             @db.VarChar(100)
-  gender          GenderEnum?
-  photo           String?             @db.VarChar(100)
-  role_id         Int
-  region_id       Int
-  city            String              @db.VarChar(100)
-  account_type    AccountTypeEnum     @default(basic)
-  balance         Int                 @default(0)
-  currency        CurrencyEnum        @default(UAH)
-  is_active       Boolean             @default(false)
-  is_verified     Boolean             @default(false)
-  is_banned       Boolean             @default(false)
-  ban_reason      String?             @db.VarChar(100)
-  banned_until    DateTime?
-  is_deleted      Boolean             @default(false)
-  created_at      DateTime            @default(now())
-  updated_at      DateTime            @updatedAt
-  role            Role                @relation(references: [id], fields: [role_id])
-  region          Region              @relation(references: [id], fields: [region_id])
-  premiumPurchase SubscribePurchase[]
-  token           Token[]
+  id                   String                 @id @default(uuid(7))
+  name                 String                 @db.VarChar(100)
+  surname              String                 @db.VarChar(100)
+  age                  Int
+  email                String                 @unique @db.VarChar(150)
+  password             String                 @db.VarChar(150)
+  phone                String?                @db.VarChar(100)
+  gender               GenderEnum?
+  photo                String?                @db.VarChar(100)
+  role_id              Int
+  region_id            Int
+  city                 String                 @db.VarChar(100)
+  account_type         AccountTypeEnum        @default(basic)
+  balance              Int                    @default(0)
+  currency             CurrencyEnum           @default(UAH)
+  is_active            Boolean                @default(false)
+  is_verified          Boolean                @default(false)
+  is_banned            Boolean                @default(false)
+  ban_reason           String?                @db.VarChar(100)
+  banned_until         DateTime?
+  is_deleted           Boolean                @default(false)
+  created_at           DateTime               @default(now())
+  updated_at           DateTime               @updatedAt
+  Role                 Role                   @relation(references: [id], fields: [role_id])
+  Region               Region                 @relation(references: [id], fields: [region_id])
+  SubscriptionPurchase SubscriptionPurchase[]
+  Token                Token[]
 
   @@map("users")
 }
@@ -60,7 +60,7 @@ model Region {
   id            Int             @id @default(autoincrement())
   name          String          @unique @db.VarChar(100)
   User          User[]
-  averagePrices AveragePrices[]
+  AveragePrices AveragePrices[]
 
   @@map("regions")
 }
@@ -85,8 +85,8 @@ model Permission {
 model RolePermission {
   role_id       Int
   permission_id Int
-  role          Role       @relation(references: [id], fields: [role_id], onDelete: Cascade, onUpdate: Cascade)
-  permission    Permission @relation(references: [id], fields: [permission_id], onDelete: Cascade, onUpdate: Cascade)
+  Role          Role       @relation(references: [id], fields: [role_id], onDelete: Cascade, onUpdate: Cascade)
+  Permission    Permission @relation(references: [id], fields: [permission_id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([role_id, permission_id])
 }
@@ -98,7 +98,7 @@ model Token {
   refresh_token String   @unique @db.VarChar(512)
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
-  user          User     @relation(references: [id], fields: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  User          User     @relation(references: [id], fields: [user_id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("tokens")
 }
@@ -130,36 +130,32 @@ model AveragePrices {
   avg_price     Decimal  @db.Decimal(10, 2)
   cars_count    Int
   calculated_at DateTime @default(now())
-  region        Region?  @relation(fields: [region_id], references: [id])
+  Region        Region?  @relation(fields: [region_id], references: [id])
 
   @@unique([brand, model, region_id])
   @@map("average_prices")
 }
 
-model SubscribePurchase {
+model SubscriptionPurchase {
   id           String       @id @default(uuid(7))
   user_id      String       @unique @db.VarChar(100)
   price_paid   Decimal      @db.Decimal(10, 2)
   currency     CurrencyEnum
   purchased_at DateTime
   expires_at   DateTime
-  User         User         @relation(fields: [user_id], references: [id])
+  User         User         @relation(fields: [user_id], references: [id], onDelete: Restrict)
 
   @@index([user_id])
-  @@map("subscribe_purchases")
+  @@map("subscription_purchases")
 }
 
-model SubscribePlan {
-  id            String            @id @default(uuid(7))
-  code          SubscribePlanEnum @unique
-  price         Decimal           @db.Decimal(10, 2)
-  currency      String?           @default("UAH")
-  duration_days Int?              @default(30)
-  is_active     Boolean?          @default(true)
+model SubscriptionPlan {
+  id            String   @id @default(uuid(7))
+  code          String   @unique
+  price         Decimal  @db.Decimal(10, 2)
+  currency      String?  @default("UAH")
+  duration_days Int?     @default(30)
+  is_active     Boolean? @default(true)
 
-  @@map("subscribe_plans")
-}
-
-enum SubscribePlanEnum {
-  premium
+  @@map("subscription_plans")
 }

@@ -8,6 +8,7 @@ const BASE_MESSAGES = {
     'string.min': '{{#label}} requires at least {{#limit}} characters',
     'string.max': '{{#label}} exceeds the maximum length of {{#limit}} characters',
     'any.only': 'Invalid value for {{#label}}. Allowed options: {{#valids}}',
+    'any.conflict': '{{#label}} already exists with this value',
     'any.existent': `{{#label}} not found`,
     'string.email': '{{#label}} must be a valid email address',
     'string.unique.taken': '{{#label}} is taken',

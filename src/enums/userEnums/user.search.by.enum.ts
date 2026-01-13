@@ -3,6 +3,5 @@ export enum UserSearchByEnum{
     SURNAME = "surname",
     EMAIL = "email",
     CITY = "city",
-    REGION = "region",
     GENDER = "gender"
 }

@@ -16,27 +16,28 @@ class UserRepository{
         if(orderBy && order){
             sort[orderBy] = order
         }
-        return await Promise.all([prisma.user.findMany({take: limit, skip: limit*(page-1) + skip, where: filter, orderBy: sort, include: {role: true, region: true}}), prisma.user.count({where: filter})])
+        return await Promise.all([prisma.user.findMany({take: limit, skip: limit*(page-1) + skip, where: filter, orderBy: sort, include: {Role: true, Region: true}}), prisma.user.count({where: filter})])
     }
 
     public async getById(id: string): Promise<UserWithIncludedRegionAndRoleType | null>{
-        return await prisma.user.findUnique({where: {id}, include: {role: true, region: true}})
+        return await prisma.user.findUnique({where: {id}, include: {Role: true, Region: true}})
     }
 
     public async getByParams(params: Partial<User>){
-        return await prisma.user.findFirst({where: params, include: {role: true, region: true}})
+        return await prisma.user.findFirst({where: params, include: {Role: true, Region: true}})
     }
 
     public async create(dto: UserCreateInput){
-        return await prisma.user.create({data: dto, include: {role: true, region: true}})
+        console.log(dto)
+        return await prisma.user.create({data: dto, include: {Role: true, Region: true}})
     }
 
     public async updateByIdAndParams(id: string, dto: UserUpdateInput): Promise<UserWithIncludedRegionAndRoleType | null>{
-        return await prisma.user.update({where: {id}, data: dto, include: {role: true, region: true}})
+        return await prisma.user.update({where: {id}, data: dto, include: {Role: true, Region: true}})
     }
 
     public async deleteById(id: string){
-        return await prisma.user.update({where: {id}, data: {is_deleted: true}, include: {role: true, region: true}})
+        return await prisma.user.update({where: {id}, data: {is_deleted: true}, include: {Role: true, Region: true}})
     }
 
     public async getNestedPermissions(id: string): Promise<UserWithIncludedPermissionType | null>{
@@ -45,11 +46,11 @@ class UserRepository{
                 id
             },
             include: {
-                role: {
+                Role: {
                     include: {
                         RolePermission: {
                             include: {
-                                permission: true
+                                Permission: true
                             }
                         }
                     }

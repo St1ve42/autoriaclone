@@ -190,7 +190,7 @@ export type TokenWhereInput = {
   refresh_token?: Prisma.StringFilter<"Token"> | string
   created_at?: Prisma.DateTimeFilter<"Token"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Token"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type TokenOrderByWithRelationInput = {
@@ -200,7 +200,7 @@ export type TokenOrderByWithRelationInput = {
   refresh_token?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
+  User?: Prisma.UserOrderByWithRelationInput
   _relevance?: Prisma.TokenOrderByRelevanceInput
 }
 
@@ -214,7 +214,7 @@ export type TokenWhereUniqueInput = Prisma.AtLeast<{
   user_id?: Prisma.StringFilter<"Token"> | string
   created_at?: Prisma.DateTimeFilter<"Token"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Token"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "access_token" | "refresh_token">
 
 export type TokenOrderByWithAggregationInput = {
@@ -247,7 +247,7 @@ export type TokenCreateInput = {
   refresh_token: string
   created_at?: Date | string
   updated_at?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutTokenInput
+  User: Prisma.UserCreateNestedOneWithoutTokenInput
 }
 
 export type TokenUncheckedCreateInput = {
@@ -265,7 +265,7 @@ export type TokenUpdateInput = {
   refresh_token?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutTokenNestedInput
+  User?: Prisma.UserUpdateOneRequiredWithoutTokenNestedInput
 }
 
 export type TokenUncheckedUpdateInput = {
@@ -483,7 +483,7 @@ export type TokenSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   refresh_token?: boolean
   created_at?: boolean
   updated_at?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["token"]>
 
 
@@ -499,13 +499,13 @@ export type TokenSelectScalar = {
 
 export type TokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "access_token" | "refresh_token" | "created_at" | "updated_at", ExtArgs["result"]["token"]>
 export type TokenInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $TokenPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Token"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    User: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -854,7 +854,7 @@ readonly fields: TokenFieldRefs;
  */
 export interface Prisma__TokenClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  User<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

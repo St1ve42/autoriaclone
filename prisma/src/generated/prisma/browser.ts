@@ -63,12 +63,12 @@ export type AnnouncementViewsDay = Prisma.AnnouncementViewsDayModel
  */
 export type AveragePrices = Prisma.AveragePricesModel
 /**
- * Model PremiumPurchase
+ * Model SubscriptionPurchase
  * 
  */
-export type PremiumPurchase = Prisma.PremiumPurchaseModel
+export type SubscriptionPurchase = Prisma.SubscriptionPurchaseModel
 /**
- * Model PremiumPlan
+ * Model SubscriptionPlan
  * 
  */
-export type PremiumPlan = Prisma.PremiumPlanModel
+export type SubscriptionPlan = Prisma.SubscriptionPlanModel

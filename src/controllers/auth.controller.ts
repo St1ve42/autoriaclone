@@ -4,7 +4,6 @@ import {authService} from "../services/auth.service.ts";
 import {userPresenter} from "../presenters/user.presenter.ts";
 import type {SignInType} from "../types/AuthType.ts";
 import {TokenPayloadType} from "../types/TokenType.ts";
-import {userService} from "../services/user.service.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 
 class AuthController{
@@ -12,8 +11,7 @@ class AuthController{
     public async signUp (req: Request, res: Response, next: NextFunction){
         try{
             const body = req.body as UserCreateDTOType
-            const {region_id} = res.locals as {region_id: number}
-            const {user, tokenPair} = await authService.signUp(body, region_id)
+            const {user, tokenPair} = await authService.signUp(body)
             res.status(StatusCodeEnum.CREATED).json(await userPresenter.resWithTokenPair(user, tokenPair))
         }
         catch(e){

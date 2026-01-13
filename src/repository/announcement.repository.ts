@@ -104,7 +104,7 @@ class AnnouncementRepository{
 
     public async create(dto: CreateAnnouncementInRepositoryDTOType): Promise<AnnouncementType>{
         const announcement = await Announcement.create(dto) as AnnouncementType
-        return await Announcement.findById(announcement._id).populate('dealership')
+        return await Announcement.findById(announcement._id).populate('dealership') as AnnouncementType
     }
 
     public async delete(id: string): Promise<AnnouncementType | null>{

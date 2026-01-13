@@ -1,7 +1,7 @@
-import type {PremiumPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
 import {TokenPairType} from "../types/TokenType.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
+import {SubscriptionPurchase} from "../../prisma/src/generated/prisma/client.ts";
 
 class UserPresenter{
     public async list(
@@ -27,8 +27,8 @@ class UserPresenter{
             "gender": user.gender,
             "photo": user.photo,
             "city": user.city,
-            "region": user.region.name,
-            "role": user.role.name,
+            "region": user.Region.name,
+            "role": user.Role.name,
             "account_type": user.account_type,
             "balance": user.balance,
             "currency": user.currency,
@@ -62,12 +62,12 @@ class UserPresenter{
             "phone": user.phone,
             "photo": user.photo,
             "city": user.city,
-            "region": user.region.name,
+            "region": user.Region.name,
             "account_type": user.account_type,
         }
     }
 
-    public async resWithSubscription(dto: [UserWithIncludedRegionAndRoleType, PremiumPurchase]){
+    public async resWithSubscription(dto: [UserWithIncludedRegionAndRoleType, SubscriptionPurchase]){
         const [user, subscription] = dto
         return {
             user: {
@@ -77,7 +77,7 @@ class UserPresenter{
                 "phone": user.phone,
                 "photo": user.photo,
                 "city": user.city,
-                "region": user.region.name,
+                "region": user.Region.name,
                 "account_type": user.account_type,
             },
             subscription: {

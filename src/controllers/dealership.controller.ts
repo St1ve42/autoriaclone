@@ -204,9 +204,9 @@ class DealershipController{
 
     public async getAnnouncements (req: Request, res: Response, next: NextFunction){
         try{
-            const query = req.query as AnnouncementQueryType
+            const query = req.query as unknown as AnnouncementQueryType
             const dealershipId = req.params.dealershipId as string
-            const [announcements, total] = await announcementService.getList(query, {dealershipId, status: AnnouncementStatusEnum.ACTIVE})
+            const [announcements, total] = await announcementService.getList(query, {dealership_id: dealershipId, status: AnnouncementStatusEnum.ACTIVE})
             res.status(StatusCodeEnum.OK).json(await announcementPresenter.userList(announcements, total, query))
         }
         catch(e){

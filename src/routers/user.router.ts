@@ -5,7 +5,7 @@ import {UserValidator} from "../vaildators/user.validator.ts";
 import {QueryValidator} from "../vaildators/query.validator.ts";
 import {fileMiddleware} from "../middlewares/file.middleware.ts";
 import {avatarConfig} from "../constants/avatar.constants.ts";
-import {SubscribeValidator} from "../vaildators/subscribe.validator.ts";
+import {SubscriptionPlanValidator} from "../vaildators/subscription.plan.validator.ts";
 import {userMiddleware} from "../middlewares/user.middleware.ts";
 import {strictAuthMiddleware} from "../middlewares/strict.auth.middleware.ts";
 
@@ -20,6 +20,6 @@ router.post('/me/avatar', fileMiddleware.validateFile('avatar', avatarConfig), u
 router.delete('/me/avatar', userController.deleteAvatar)
 router.get('/me/memberships', userController.getMemberships)
 router.get('/me/announcements', commonMiddleware.validateQuery(QueryValidator.announcementValidator), userController.getAnnouncementList)
-router.post('/me/buy/subscribe', userMiddleware.checkUserIsBanned, commonMiddleware.validateBody(SubscribeValidator.validator), userController.buySubscribe)
+router.post('/me/buy/subscribe', userMiddleware.checkUserIsBanned, commonMiddleware.validateBody(SubscriptionPlanValidator.validator), userController.buySubscribe)
 
 export const userRouter = router
