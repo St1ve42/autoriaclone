@@ -9,6 +9,7 @@ import {cronRunner} from "./crons";
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
+app.set('query parser', 'extended');
 app.use(fileUpload())
 
 app.use('/', apiRouter)

@@ -1,9 +1,9 @@
-import type {VehicleType} from "../types/VehicleType.ts";
+import type {OldVehicleType} from "../types/VehicleType.ts";
 import {VehicleQueryType} from "../types/QueryType.ts";
 
 class VehiclePresenter{
     public list(
-        vehicles: VehicleType[],
+        vehicles: OldVehicleType[],
         total: number,
         query: VehicleQueryType
     ) {
@@ -14,7 +14,7 @@ class VehiclePresenter{
         }
     }
 
-    public res(vehicle: VehicleType){
+    public res(vehicle: OldVehicleType){
         return {
             id: vehicle._id,
             brand: vehicle.brand,

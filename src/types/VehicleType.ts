@@ -1,45 +1,34 @@
-import {TransmissionTypeEnum} from "../enums/vehicleEnums/transmission.type.enum.ts";
-import {FuelTypeEnum} from "../enums/vehicleEnums/fuel.type.enum.ts";
-import {EnvironmentalStandardEnum} from "../enums/vehicleEnums/environmental.standard.enum.ts";
-import {DriveTypeEnum} from "../enums/vehicleEnums/drive.type.enum.ts";
-import {PaintConditionEnum} from "../enums/vehicleEnums/paint.condition.enum.ts";
-import {TechnicalConditionEnum} from "../enums/vehicleEnums/technical.condition.enum.ts";
-import {VehicleTypeEnum} from "../enums/vehicleEnums/vehicle.type.enum.ts";
+import {BaseType} from "./BaseType.ts";
 
-type FuelConsumptionType = {
-    city?: number;
-    highway?: number;
-    combined?: number;
+type OldModelType = {
+  model_id: number;
+  model_name: string;
+  model_styles: {};
+  vehicle_type: string;
+  years: number[];
 }
 
-type VehicleCharacteristicsType = {
-    transmission?: TransmissionTypeEnum;
-    fuel_type?: FuelTypeEnum;
-    engine_power?: number;
-    fuel_consumption?: FuelConsumptionType;
-    engine_capacity?: number;
-    environmental_standard?: EnvironmentalStandardEnum;
-    drive_type?: DriveTypeEnum;
-    door_number?: number;
-    color?: string;
-    metallic?: boolean;
-    seat_number?: number;
-    imported_from?: string;
-    accident_history?: boolean;
-    paint_condition?: PaintConditionEnum;
-    technical_condition?: TechnicalConditionEnum;
-    service_station_inspection_readiness?: boolean;
+type OldVehicleType = {
+  first_year: number;
+  last_year: number;
+  make_id: number;
+  make_name: string;
+  make_slug: string;
+  models: {[key: string]: OldModelType};
+} & BaseType
+
+type ModelType = {
+    _id: string;
+    model_name: string;
+    model_styles: {};
+    vehicle_type: string;
+    years: number[];
 }
 
-type VehicleType = {
-    _id: string,
-    brand: string;
-    model: string;
-    year: number;
-    vehicle_type: VehicleTypeEnum;
-    mileage: number;
-    characteristics?: VehicleCharacteristicsType;
-}
+type VehicleType = Pick<OldVehicleType, "_id" | "first_year" | "last_year" | "make_name" | "make_slug"> & {models: ModelType[]}
 
+type MakeType = Pick<VehicleType, "_id" | "make_name" | "make_slug">
+type ModelListType = Pick<VehicleType, "make_name"> & {models: Pick<ModelType, "_id" | "model_name">[]}
+type ModelResponseType =  Pick<VehicleType, "make_name"> & {model: ModelType}
 
-export type {VehicleType}
+export type {VehicleType, OldModelType, OldVehicleType, ModelType, MakeType, ModelListType, ModelResponseType}

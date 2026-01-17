@@ -1,7 +1,7 @@
 import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
 import {BaseType} from "./BaseType.ts";
 import {ExchangeCurrencyMap} from "./ExchangeCurrencyType.ts";
-import {VehicleType} from "./VehicleType.ts";
+import {OldVehicleType} from "./VehicleType.ts";
 import {DealershipType} from "./DealershipType.ts";
 
 type AnnouncementType = {
@@ -18,7 +18,7 @@ type AnnouncementType = {
     rate_date: Date,
     approve_attempts: number,
     status: string,
-    vehicle: VehicleType,
+    vehicle: OldVehicleType,
     user_id: string,
     dealership?: DealershipType
 } & BaseType
