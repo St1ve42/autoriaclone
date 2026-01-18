@@ -3,6 +3,8 @@ import {apiRouter} from "./routers/api.router.ts";
 import {configs} from "./configs/configs.ts";
 import {errorController} from "./controllers/error.controller.ts";
 import fileUpload from "express-fileupload";
+import swaggerUi from "swagger-ui-express"
+import swaggerJson from "../docs/swagger.json"
 import mongoose from "mongoose";
 import {cronRunner} from "./crons";
 
@@ -13,6 +15,7 @@ app.set('query parser', 'extended');
 app.use(fileUpload())
 
 app.use('/', apiRouter)
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerJson))
 app.use('/{*any}', errorController.showNonExistentApiError)
 app.use(errorController.showError)
 
