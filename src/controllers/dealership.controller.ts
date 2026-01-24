@@ -1,5 +1,5 @@
 import type {Request, Response, NextFunction} from "express";
-import {DealershipCreateWithInputDTOType} from "../types/DealershipType.ts";
+import {DealershipCreateWithInputDTOType, DealershipType} from "../types/DealershipType.ts";
 import {dealerShipService} from "../services/dealership.service.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {dealershipPresenter} from "../presenters/dealership.presenter.ts";
@@ -11,10 +11,9 @@ import {dealershipReviewPresenter} from "../presenters/dealership.review.present
 import {dealershipMemberService} from "../services/dealership.member.service.ts";
 import {dealershipMemberPresenter} from "../presenters/dealership.member.presenter.ts";
 import {DealershipMemberAddDTOType, DealershipMemberUpdateDTOType} from "../types/DealershipMemberType.ts";
-import {userService} from "../services/user.service.ts";
 import {announcementService} from "../services/announcement.service.ts";
 import {announcementPresenter} from "../presenters/announcement.presenter.ts";
-import {AnnouncementQueryType} from "../types/QueryType.ts";
+import {AnnouncementQueryType, DealershipMemberQueryType, DealershipQueryType} from "../types/QueryType.ts";
 import {AnnouncementStatusEnum} from "../enums/announcementEnums/announcement.status.enum.ts";
 
 class DealershipController{
@@ -41,10 +40,11 @@ class DealershipController{
         }
     }
 
-    public async getList (_req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async getList (req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
-            const dealership = await dealerShipService.getList()
-            res.status(StatusCodeEnum.CREATED).json(await dealershipPresenter.list(dealership))
+            const query = req.query as unknown as DealershipQueryType
+            const [dealership, total] = await dealerShipService.getList(query)
+            res.status(StatusCodeEnum.CREATED).json(await dealershipPresenter.list(dealership, total, query))
         }
         catch(e){
             next(e)
@@ -119,35 +119,12 @@ class DealershipController{
         }
     }
 
-    public async createReview (req: Request, res: Response, next: NextFunction): Promise<void>{
-        try{
-            const {user_id} = res.locals.payload as TokenPayloadType
-            const dealershipId = req.params.dealershipId as string
-            const body = req.body as DealershipReviewCreateDTOType
-            const review = await dealershipReviewService.create(body, dealershipId, user_id)
-            res.status(StatusCodeEnum.CREATED).json(await dealershipReviewPresenter.res(review))
-        }
-        catch(e){
-            next(e)
-        }
-    }
-
-    public async getReviews (req: Request, res: Response, next: NextFunction): Promise<void>{
-        try{
-            const dealershipId = req.params.dealershipId as string
-            const reviews = await dealershipReviewService.getByDealershipId(dealershipId)
-            res.status(StatusCodeEnum.CREATED).json(await dealershipReviewPresenter.list(reviews))
-        }
-        catch(e){
-            next(e)
-        }
-    }
-
     public async getMembers (req: Request, res: Response, next: NextFunction){
         try{
             const dealershipId = req.params.dealershipId as string
-            const members = await dealershipMemberService.getMembersByDealershipId(dealershipId)
-            res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.list(members))
+            const query = req.query as DealershipMemberQueryType
+            const [members, total] = await dealershipMemberService.getMembersByDealershipId(dealershipId, query)
+            res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.list(members, total, query))
         }
         catch(e){
             next(e)
@@ -207,7 +184,7 @@ class DealershipController{
             const query = req.query as unknown as AnnouncementQueryType
             const dealershipId = req.params.dealershipId as string
             const [announcements, total] = await announcementService.getList(query, {dealership_id: dealershipId, status: AnnouncementStatusEnum.ACTIVE})
-            res.status(StatusCodeEnum.OK).json(await announcementPresenter.userList(announcements, total, query))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.dealershipList(announcements, total, query))
         }
         catch(e){
             next(e)

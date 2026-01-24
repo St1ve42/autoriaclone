@@ -1,7 +1,7 @@
 export class RegExpression{
     private static basePattern = 'а-яА-яёЁіІїЇєЄҐґ'
 
-    public static alphabetPattern (isSpace: boolean = false, min: number = 3, max: number = 50): RegExp {
+    public static alphabetPattern (isSpace: boolean = false, min: number = 3, max: number = 30): RegExp {
         return new RegExp(`^[${this.basePattern + 'a-zA-z' + (isSpace ? '\\s' : '')}]{${min},${max}}$`)
     }
 

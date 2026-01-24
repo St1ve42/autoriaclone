@@ -7,15 +7,18 @@ import swaggerUi from "swagger-ui-express"
 import swaggerJson from "../docs/swagger.json"
 import mongoose from "mongoose";
 import {cronRunner} from "./crons";
+import {swaggerOptions} from "../docs/swagger.options.ts";
+import path from "node:path";
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
 app.set('query parser', 'extended');
+app.use('/assets', express.static(path.join(process.cwd(), 'docs', 'assets')));
 app.use(fileUpload())
 
 app.use('/', apiRouter)
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerJson))
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerJson, swaggerOptions))
 app.use('/{*any}', errorController.showNonExistentApiError)
 app.use(errorController.showError)
 

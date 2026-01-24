@@ -1,25 +1,32 @@
 const BASE_MESSAGES = {
-    'any.required': 'The field {{#label}} is mandatory',
-    'string.empty': 'The field {{#label}} cannot be empty',
-    'string.base': '{{#label}} must be a valid text string',
-    'number.base': '{{#label}} must be a valid number',
-    'number.min': '{{#label}} cannot be less than {{#limit}}',
-    'number.max': '{{#label}} cannot be greater than {{#limit}}',
-    'string.min': '{{#label}} requires at least {{#limit}} characters',
-    'string.max': '{{#label}} exceeds the maximum length of {{#limit}} characters',
-    'any.only': 'Invalid value for {{#label}}. Allowed options: {{#valids}}',
-    'any.conflict': '{{#label}} already exists with this value',
-    'any.existent': `{{#label}} not found`,
-    'string.email': '{{#label}} must be a valid email address',
-    'string.unique.taken': '{{#label}} is taken',
-    'string.pattern.base': '{{#label}} format is invalid',
+    'any.required': 'Поле {{#label}} є необхідним',
+    'any.only': 'Неправильне значення для поля {{#label}}. Дозволені значення: {{#valids}}',
+    'any.existent': `{{#label}} не знайдено`,
+    'string.empty': 'Поле {{#label}} має бути заповненим',
+    'string.base': '{{#label}} повинно бути стрічкою',
+    'string.min': '{{#label}} повинно містити принаймні {{#limit}} символів',
+    'string.max': '{{#label}} може містити максимально {{#limit}} символів',
+    'string.email': 'Невірний формат поштової адреси. Вона повинна мати вигляд \'username@example.com\' і може містити тільки перелічені рівні верхнього домену: com, ua',
+    'string.unique.taken': 'Значення {{#label}} має інакший запис',
+    "number.empty": "Поле {{#label}} має бути заповненим",
+    'number.base': '{{#label}} повинно бути числом',
+    'number.integer': '{{#label}} повинно бути цілим числом',
+    'number.min': '{{#label}} повинно бути більшим, ніж {{#limit}}',
+    'number.max': '{{#label}} повинно бути меншим, ніж {{#limit}}',
+    'array.empty': '{{#label}} повинно бути заповненим',
+    'array.base': '{{#label}} повинно бути масивом',
+    'array.min': 'Масив {{#label}} повинен містити мінімум {{#limit}} елементів',
+    'object.min': '{{#label}} повинен містити принаймні один ключ',
+    'object.base': '{{#label}} повинен бути об`єктом',
+    // 'string.pattern.base': '{{#label}} format is invalid',
 };
 
 export const joiOptions = {
     messages: BASE_MESSAGES,
     errors: {
         wrap: {
-            label: ''
+            label: '',
+            string: ''
         }
     }
 };

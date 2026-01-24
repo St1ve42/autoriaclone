@@ -24,18 +24,26 @@ export class VehicleValidator{
             environmental_standard:  joi.string().valid(...Object.values(EnvironmentalStandardEnum)).trim(),
             drive_type:  joi.string().valid(...Object.values(DriveTypeEnum)).trim(),
             door_number:  joi.number().min(1).max(6),
-            color:  joi.string().pattern(VehicleRegexpEnum.COLOR).trim(),
+            color:  joi.string().pattern(VehicleRegexpEnum.COLOR).trim().messages({
+                "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30 без пробілів"
+            }),
             metallic:  joi.boolean(),
             seat_number:  joi.number().min(1).max(70),
-            imported_from:  joi.string().pattern(VehicleRegexpEnum.IMPORTED_FROM).trim(),
+            imported_from:  joi.string().pattern(VehicleRegexpEnum.IMPORTED_FROM).trim().messages({
+                "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 50"
+            }),
             accident_history:  joi.boolean(),
             paint_condition:  joi.string().valid(...Object.values(PaintConditionEnum)).trim(),
             technical_condition:  joi.string().valid(...Object.values(TechnicalConditionEnum)).trim(),
             service_station_inspection_readiness:  joi.boolean(),
         })
 
-    private static brand = joi.string().pattern(VehicleRegexpEnum.BRAND).trim();
-    private static model = joi.string().pattern(VehicleRegexpEnum.MODEL).trim();
+    private static brand = joi.string().pattern(VehicleRegexpEnum.BRAND).trim().messages({
+        "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30 без пробілів"
+    });
+    private static model = joi.string().pattern(VehicleRegexpEnum.MODEL).trim().messages({
+        "string.pattern.base": "{{#field}} повинно містити тільки кирилицю та числа і бути довжиною від 3 до 30 без пробілів"
+    });
     private static year = joi.number().min(1900).max(2025);
     private static vehicle_type = joi.string().valid(...Object.values(VehicleTypeEnum)).trim();
     private static mileage = joi.number();

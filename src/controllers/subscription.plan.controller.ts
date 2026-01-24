@@ -2,8 +2,21 @@ import {Request, Response, NextFunction} from "express";
 import {subscriptionPlanService} from "../services/subscription.plan.service.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {SubscriptionPlanCreateInput, SubscriptionPlanUpdateInput} from "../../prisma/src/generated/prisma/models/SubscriptionPlan.ts";
+import {TokenPayloadType} from "../types/TokenType.ts";
+import {subscriptionPurchaseService} from "../services/subscription.purchase.service.ts";
+import {subscriptionPurchasePresenter} from "../presenters/subscription.purchase.presenter.ts";
 
 class SubscriptionPlanController{
+    public async get (req: Request, res: Response, next: NextFunction){
+        try{
+            const planId = req.params.planId as string
+            const subscribe = await subscriptionPlanService.get(planId)
+            res.status(StatusCodeEnum.OK).json(subscribe)
+        }
+        catch(e){
+            next(e)
+        }
+    }
 
     public async getList (req: Request, res: Response, next: NextFunction){
         try{
@@ -54,6 +67,18 @@ class SubscriptionPlanController{
             const subscriptionId = req.params.subscriptionId as string
             const subscribe = await subscriptionPlanService.deactivate(subscriptionId)
             res.status(StatusCodeEnum.OK).json(subscribe)
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
+    public async purchase (req: Request, res: Response, next: NextFunction){
+        try{
+            const planId = req.params.planId as string
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const purchase = await subscriptionPurchaseService.purchase(planId, user_id)
+            res.status(StatusCodeEnum.OK).json(subscriptionPurchasePresenter.subscriptionPurchaseRes(purchase))
         }
         catch(e){
             next(e)

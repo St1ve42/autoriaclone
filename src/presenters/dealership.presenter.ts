@@ -1,10 +1,15 @@
 import {DealershipType} from "../types/DealershipType.ts";
 import {userService} from "../services/user.service.ts";
 import {userPresenter} from "./user.presenter.ts";
+import {DealershipQueryType} from "../types/QueryType.ts";
 
 class DealershipPresenter{
-    public async list(dealerships: DealershipType[]){
-        return await Promise.all(dealerships.map(this.res))
+    public async list(dealerships: DealershipType[],  total: number, query: DealershipQueryType){
+        return {
+            data: await Promise.all(dealerships.map(this.res)),
+            total,
+            ...query
+        }
     }
 
     public async res(dealership: DealershipType){
@@ -16,7 +21,7 @@ class DealershipPresenter{
             address: dealership.address,
             phone: dealership.phone,
             email: dealership.email,
-            owner: await userPresenter.publicRes(user),
+            owner: userPresenter.publicRes(user),
             website: dealership.website,
             is_verified: dealership.is_verified,
             rating: dealership.rating,

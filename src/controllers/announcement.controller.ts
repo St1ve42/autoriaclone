@@ -1,7 +1,7 @@
 import type {NextFunction, Request, Response} from "express";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {announcementPresenter} from "../presenters/announcement.presenter.ts";
-import {CreateAnnouncementDTOType, UpdateAnnouncementDTOType} from "../types/AnnouncementType.ts";
+import {AnnouncementType, CreateAnnouncementDTOType, UpdateAnnouncementDTOType} from "../types/AnnouncementType.ts";
 import {announcementService} from "../services/announcement.service.ts";
 import {TokenPayloadType} from "../types/TokenType.ts";
 import {UploadedFile} from "express-fileupload";
@@ -59,7 +59,12 @@ class AnnouncementController{
         try{
             const announcementId = req.params.announcementId as string
             const announcement = await announcementService.get(announcementId)
-            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
+            let presenter = await announcementPresenter.res(announcement)
+            const hasAccess = res.locals.hasAccess as boolean
+            if(hasAccess){
+                presenter = await announcementPresenter.userRes(announcement)
+            }
+            res.status(StatusCodeEnum.OK).json(presenter)
         }
         catch(e){
             next(e)
@@ -71,7 +76,7 @@ class AnnouncementController{
             const body = req.body as CreateAnnouncementDTOType
             const {user_id} = res.locals.payload as TokenPayloadType
             const announcement = await announcementService.create(body, user_id)
-            res.status(StatusCodeEnum.CREATED).json(await announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.CREATED).json(await announcementPresenter.userRes(announcement))
         }
         catch(e){
             next(e)
@@ -82,7 +87,7 @@ class AnnouncementController{
         try{
             const announcementId = req.params.announcementId as string
             const announcement = await announcementService.delete(announcementId)
-            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.userRes(announcement))
         }
         catch(e){
             next(e)
@@ -94,7 +99,7 @@ class AnnouncementController{
             const announcementId = req.params.announcementId as string
             const body = req.body as UpdateAnnouncementDTOType
             const announcement = await announcementService.update(announcementId, body)
-            res.status(200).json(await announcementPresenter.res(announcement))
+            res.status(200).json(await announcementPresenter.userRes(announcement))
         }
         catch(e){
             next(e)
@@ -106,7 +111,7 @@ class AnnouncementController{
             const announcementId = req.params.announcementId as string
             const files = req.files?.images as UploadedFile[] | UploadedFile
             const announcement = await announcementService.upload(announcementId, Array.isArray(files) ? files : [files])
-            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.userRes(announcement))
 
         }
         catch(e){
@@ -119,7 +124,7 @@ class AnnouncementController{
             const announcementId = req.params.announcementId as string
             const images = req.body.images as string[]
             const announcement = await announcementService.deleteImages(announcementId, images)
-            res.status(StatusCodeEnum.OK).json(await announcementPresenter.res(announcement))
+            res.status(StatusCodeEnum.OK).json(await announcementPresenter.userRes(announcement))
 
         }
         catch(e){

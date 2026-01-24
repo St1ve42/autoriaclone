@@ -18,8 +18,9 @@ router.patch('/me', commonMiddleware.validateBody(UserValidator.updateUser), use
 router.delete('/me', userController.deleteMe)
 router.post('/me/avatar', fileMiddleware.validateFile('avatar', avatarConfig), userController.uploadAvatar)
 router.delete('/me/avatar', userController.deleteAvatar)
-router.get('/me/memberships', userController.getMemberships)
+router.get('/me/membership', userController.getMembership)
 router.get('/me/announcements', commonMiddleware.validateQuery(QueryValidator.announcementValidator), userController.getAnnouncementList)
-router.post('/me/buy/subscribe', userMiddleware.checkUserIsBanned, commonMiddleware.validateBody(SubscriptionPlanValidator.validator), userController.buySubscribe)
+router.get('/me/subscription', userController.getSubscription)
+
 
 export const userRouter = router

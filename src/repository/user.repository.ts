@@ -10,8 +10,13 @@ class UserRepository{
         const {page, limit, skip, search, searchBy, orderBy, order} = query
         let filter: UserWhereInput = {}
         let sort: UserOrderByWithRelationInput = {}
-        if(search && searchBy){
-            filter[searchBy] = {contains: search}
+        if(String(search) && searchBy){
+            let filterInput: object = {equals: search};
+            const enumFields = ["account_type"]
+            if(typeof search === "string" && !enumFields.includes(searchBy)){
+                filterInput = {contains: search}
+            }
+            filter[searchBy] = filterInput
         }
         if(orderBy && order){
             sort[orderBy] = order
@@ -28,7 +33,6 @@ class UserRepository{
     }
 
     public async create(dto: UserCreateInput){
-        console.log(dto)
         return await prisma.user.create({data: dto, include: {Role: true, Region: true}})
     }
 

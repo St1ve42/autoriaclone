@@ -7,11 +7,12 @@ import {s3Service} from "./s3.service.ts";
 import {FileItemTypeEnum} from "../enums/generalEnums/FileEnum.ts";
 import {dealershipMemberRepository} from "../repository/dealership.member.repository.ts";
 import {DealershipRoleEnum} from "../enums/vehicleEnums/dealership.enum.ts";
+import {DealershipQueryType} from "../types/QueryType.ts";
 
 class DealershipService{
     public async create(dto: DealershipCreateWithInputDTOType, user_id: string): Promise<DealershipType>{
-        let dealership: DealershipType[] | DealershipType = await dealershipRepository.findByParams({owner_id: user_id})
-        if(dealership.length !== 0){
+        let dealership = await dealershipRepository.findOneByParams({owner_id: user_id})
+        if(dealership){
             throw new ApiError("User has already dealership", StatusCodeEnum.CONFLICT)
         }
         dealership = await dealershipRepository.create({...dto, owner_id: user_id})
@@ -23,20 +24,20 @@ class DealershipService{
         return await dealershipRepository.get(id) as DealershipType
     }
 
-    public async getList(): Promise<DealershipType[]>{
-        return await dealershipRepository.getList()
+    public async getList(query: DealershipQueryType): Promise<[DealershipType[], number]>{
+        return await dealershipRepository.getList(query)
     }
 
     public async update(id: string, dto: DealershipUpdateWithInputDTOType): Promise<DealershipType>{
-        return await dealershipRepository.update(id, dto) as DealershipType //TODO check if exactly this user can update it
+        return await dealershipRepository.update(id, dto) as DealershipType
     }
 
     public async delete(id: string): Promise<DealershipType>{
-        return await dealershipRepository.delete(id) as DealershipType //TODO the same thing
+        return await dealershipRepository.delete(id) as DealershipType
     }
 
-    public async findByParams(params: DealershipUpdateWithoutInputDTOType): Promise<DealershipType[]>{
-        return await dealershipRepository.findByParams(params)
+    public async findOneByParams(params: DealershipUpdateWithoutInputDTOType): Promise<DealershipType | null>{
+        return await dealershipRepository.findOneByParams(params)
     }
 
     public async uploadLogo(id: string, logo: UploadedFile): Promise<DealershipType>{

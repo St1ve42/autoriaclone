@@ -1,16 +1,16 @@
 import {Vehicle} from "../models/mongoose/vehicle.model.ts";
-import type {MakeType, ModelListType, ModelType, VehicleType, ModelResponseType} from "../types/VehicleType.ts";
-import {BaseQuery} from "../types/QueryType.ts";
+import type {MakeType, ModelListType, VehicleType, ModelResponseType} from "../types/VehicleType.ts";
+import {BaseQueryType} from "../types/QueryType.ts";
 import {PipelineStage} from "mongoose";
 import {ObjectId} from "mongodb";
 
 class VehicleRepository{
-    public async getMakeList(query: BaseQuery): Promise<[MakeType[], number]>{
+    public async getMakeList(query: BaseQueryType): Promise<[MakeType[], number]>{
         const {page, limit, skip} = query
-        return await Promise.all([await Vehicle.find({}, {"_id": 1, "make_name": 1, "make_slug": 1}).skip((page-1)*limit + skip).limit(limit), await Vehicle.countDocuments({})])
+        return await Promise.all([await Vehicle.find({}, {"id": "$_id", "make_name": 1, "make_slug": 1, "_id": 0}).skip((page-1)*limit + skip).limit(limit), await Vehicle.countDocuments({})])
     }
 
-    public async getModels(makeId: string, query: BaseQuery): Promise<[ModelListType, number]> {
+    public async getModels(makeId: string, query: BaseQueryType): Promise<[ModelListType, number]> {
         const {limit, skip, page} = query
         const pipeline: PipelineStage[] = [
             {
@@ -24,7 +24,7 @@ class VehicleRepository{
                         $map: {
                             input: "$models",
                             as: "model",
-                            in: {_id: "$$model._id", model_name: "$$model.model_name"}
+                            in: {id: "$$model._id", model_name: "$$model.model_name"}
                         }
                     }
                 }
@@ -73,7 +73,7 @@ class VehicleRepository{
         return !!modelResponse.model
     }
 
-    public async getModel(makeId: string, modelId: string, query: BaseQuery): Promise<[ModelResponseType, number]>{
+    public async getModel(makeId: string, modelId: string, query: BaseQueryType): Promise<[ModelResponseType, number]>{
         const {limit, skip, page} = query
         const pipeline: PipelineStage[] = [
             {

@@ -16,7 +16,7 @@ import {UserWithIncludedPermissionType, UserWithIncludedRegionAndRoleType} from 
 import {BanType} from "../types/BanType.ts";
 import {TimeHelper} from "../timeHelper/time.helper.ts";
 import {subscriptionPlanRepository} from "../repository/subscription.plan.repository.ts";
-import {premiumPurchasesRepository} from "../repository/premium.purchases.repository.ts";
+import {subscriptionPurchaseRepository} from "../repository/subscription.purchase.repository.ts";
 import {UserListReturnType} from "../types/ListReturnType.ts";
 import {tokenRepository} from "../repository/token.repository.ts";
 import {GlobalRoleEnums} from "../enums/globalRoleEnums/globalRoleEnums.ts";
@@ -126,33 +126,13 @@ class UserService{
     }
 
     public async assignManager(id: string, user_id: string){
-        if(id === user_id){
-            throw new ApiError("User can not update itself", StatusCodeEnum.FORBIDDEN)
-        }
         const managerId = await roleService.getIdByName("manager")
         return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: managerId}}}) as UserWithIncludedRegionAndRoleType
     }
 
     public async unassignManager(id: string, user_id: string){
-        if(id === user_id){
-            throw new ApiError("User can not update itself", StatusCodeEnum.FORBIDDEN)
-        }
-        const sellerId = await roleService.getIdByName("seller")
-        return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: sellerId}}}) as UserWithIncludedRegionAndRoleType
-    }
-
-    public async buySubscribe(id: string, code: string): Promise<[UserWithIncludedRegionAndRoleType, SubscriptionPurchase]>{
-        const subscription = await premiumPurchasesRepository.findByUserId(id)
-        if(subscription){
-            throw new ApiError("User has already active subscribe", StatusCodeEnum.CONFLICT)
-        }
-        const user = await userService.get(id)
-        const subscribe = await subscriptionPlanRepository.get(code) as SubscriptionPlan
-        const diff = user.balance - Number(subscribe.price)
-        if(diff < 0){
-            throw new ApiError("Transcation is failed. Not enough funds", StatusCodeEnum.PAYMENT_REQUIRED)
-        }
-        return await Promise.all([await userRepository.updateByIdAndParams(id, {balance: diff, account_type: AccountTypeEnum.premium}) as UserWithIncludedRegionAndRoleType, await premiumPurchasesRepository.create({price_paid: subscribe.price, currency: CurrencyEnum.UAH, User: {connect: {id}}, purchased_at: new Date(), expires_at: TimeHelper.addTime(subscribe.duration_days ?? 30, "days")})])
+        const userId = await roleService.getIdByName("user")
+        return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: userId}}}) as UserWithIncludedRegionAndRoleType
     }
 
     public async deleteMe(id: string){

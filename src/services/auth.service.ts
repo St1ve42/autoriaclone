@@ -73,7 +73,11 @@ class AuthService{
     }
 
     public async recoveryRequest(email: string): Promise<void> {
-        const {id: user_id, role_id} = await userService.getByEmail(email) as User
+        const user = await userService.getByEmail(email)
+        if(!user){
+            throw new ApiError("Не існує такого користувача в системі", StatusCodeEnum.NOT_FOUND)
+        }
+        const {id: user_id, role_id} = user
         const recoveryToken = tokenService.generateActionToken({user_id, role_id}, TokenTypeEnum.RECOVERY)
         await emailService.sendEmail(EmailEnum.FORGOT_PASSWORD, email, {action_token: recoveryToken, app_host: configs.APP_HOST, app_port: configs.APP_PORT})
     }

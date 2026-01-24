@@ -14,6 +14,8 @@ import {announcementService} from "../services/announcement.service.ts";
 import {announcementPresenter} from "../presenters/announcement.presenter.ts";
 import {Announcement} from "../models/mongoose/announcement.model.ts";
 import {AnnouncementStatusEnum} from "../enums/announcementEnums/announcement.status.enum.ts";
+import {subscriptionPurchaseService} from "../services/subscription.purchase.service.ts";
+import {subscriptionPurchasePresenter} from "../presenters/subscription.purchase.presenter.ts";
 
 
 class UserController{
@@ -220,19 +222,7 @@ class UserController{
         }
     }
 
-    public async buySubscribe (req: Request, res: Response, next: NextFunction){
-        try{
-            const {user_id} = res.locals.payload as TokenPayloadType
-            const {code} = req.body as {code: PlanSubscribeEnum}
-            const subscribeInfo = await userService.buySubscribe(user_id, code)
-            res.status(StatusCodeEnum.OK).json(await userPresenter.resWithSubscription(subscribeInfo))
-        }
-        catch(e){
-            next(e)
-        }
-    }
-
-    public async getMemberships (req: Request, res: Response, next: NextFunction){
+    public async getMembership (req: Request, res: Response, next: NextFunction){
         try{
             const {user_id} = res.locals.payload as TokenPayloadType
             const membership = await dealershipMemberService.getUserMembership(user_id)
@@ -255,9 +245,23 @@ class UserController{
         }
     }
 
+    public async getSubscription (req: Request, res: Response, next: NextFunction){
+        try{
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const purchase = await subscriptionPurchaseService.findOneByParams({user_id})
+            res.status(StatusCodeEnum.OK).json(subscriptionPurchasePresenter.userSubscriptionPurchaseRes(purchase))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
 
 }
 
 export const userController = new UserController()
 
 //TODO think about using populate and types' change
+
+
+

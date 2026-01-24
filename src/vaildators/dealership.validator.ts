@@ -6,26 +6,24 @@ export class DealershipValidator{
     private static name = joi.string().trim().pattern(DealershipRegexpEnum.NAME)
     private static description = joi.string().trim().min(50).max(5000)
     private static address = joi.string().trim().pattern(DealershipRegexpEnum.ADDRESS).external(async (value, helpers) => {
-        const dealership = await dealerShipService.findByParams({address: value})
-        if(dealership.length !== 0){
+        const dealership = await dealerShipService.findOneByParams({address: value})
+        if(dealership){
             helpers.error("string.unique.taken")
         }
     })
     private static phone = joi.string().trim().pattern(DealershipRegexpEnum.PHONE).external(async (value, helpers) => {
-        const dealership = await dealerShipService.findByParams({phone: value})
-        if(dealership.length !== 0){
+        const dealership = await dealerShipService.findOneByParams({phone: value})
+        if(dealership){
             return helpers.error("string.unique.taken")
         }
     })
     private static email = joi.string().pattern(DealershipRegexpEnum.EMAIL).email({minDomainSegments: 2, tlds: { allow: ['com', 'net'] }}).external(async (value, helpers) => {
-        const dealership = await dealerShipService.findByParams({email: value})
-        if(dealership.length !== 0){
+        const dealership = await dealerShipService.findOneByParams({email: value})
+        if(dealership){
             return helpers.error("string.unique.taken")
         }
     })
     private static website = joi.string().trim().pattern(DealershipRegexpEnum.WEBSITE)
-    private static is_verified = joi.boolean().default(false)
-    private static rating = joi.number().integer().default(0)
 
     public static createValidator = joi.object({
         name: this.name.required(),

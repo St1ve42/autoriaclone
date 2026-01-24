@@ -3,7 +3,7 @@ import type {Role} from "../../prisma/src/generated/prisma/client.ts";
 
 class RoleRepository{
     public async getList(): Promise<Role[]>{
-        return await prisma.role.findMany()
+        return await prisma.role.findMany({orderBy: {id: "asc"}})
     }
 
     public async getByName(name: string): Promise<Role | null>{

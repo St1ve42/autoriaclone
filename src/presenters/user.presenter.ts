@@ -1,7 +1,9 @@
 import {TokenPairType} from "../types/TokenType.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
-import {SubscriptionPurchase} from "../../prisma/src/generated/prisma/client.ts";
+import {SubscriptionPurchaseGetPayload} from "../../prisma/src/generated/prisma/models/SubscriptionPurchase.ts";
+import {subscriptionPurchasePresenter} from "./subscription.purchase.presenter.ts";
+import {subscriptionPlanPresenter} from "./subscription.plan.presenter.ts";
 
 class UserPresenter{
     public async list(
@@ -53,41 +55,39 @@ class UserPresenter{
         return {user: await this.res(user), tokenPair: this.resToken(tokenPair)}
     }
 
-    public async publicRes(user: UserWithIncludedRegionAndRoleType){
+    public publicRes(user: UserWithIncludedRegionAndRoleType){
         return {
             "id": user.id,
             "name": user.name,
             "surname": user.surname,
-            "email": user.email,
-            "phone": user.phone,
             "photo": user.photo,
-            "city": user.city,
-            "region": user.Region.name,
-            "account_type": user.account_type,
         }
     }
 
-    public async resWithSubscription(dto: [UserWithIncludedRegionAndRoleType, SubscriptionPurchase]){
-        const [user, subscription] = dto
+    public announcementRes(user: UserWithIncludedRegionAndRoleType){
         return {
-            user: {
-                "name": user.name,
-                "surname": user.surname,
-                "email": user.email,
-                "phone": user.phone,
-                "photo": user.photo,
-                "city": user.city,
-                "region": user.Region.name,
-                "account_type": user.account_type,
-            },
-            subscription: {
-                "price_paid": subscription.price_paid,
-                "currency": subscription.currency,
-                "purchased_at": subscription.purchased_at,
-                "expires_at": subscription.expires_at
-            }
+            ...this.publicRes(user),
+            "phone": user.phone
         }
     }
+
+    public withSubscriptionRes(dto: SubscriptionPurchaseGetPayload<{ include: {SubscriptionPlan: true, User: { include: {Role: true, Region: true} }}}>){
+        const {User, SubscriptionPlan, ...subscriptionPurchase} = dto
+        return {
+            subscription_purchase: subscriptionPurchasePresenter.res(subscriptionPurchase),
+            subscription_plan: subscriptionPlanPresenter.res(SubscriptionPlan)
+        }
+    }
+
+    public reviewRes(user: UserWithIncludedRegionAndRoleType){
+        return {
+            "id": user.id,
+            "name": user.name,
+            "surname": user.surname,
+            "photo": user.photo
+        }
+    }
+
 }
 
 export const userPresenter = new UserPresenter();

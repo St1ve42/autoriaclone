@@ -137,25 +137,28 @@ model AveragePrices {
 }
 
 model SubscriptionPurchase {
-  id           String       @id @default(uuid(7))
-  user_id      String       @unique @db.VarChar(100)
-  price_paid   Decimal      @db.Decimal(10, 2)
-  currency     CurrencyEnum
-  purchased_at DateTime
-  expires_at   DateTime
-  User         User         @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  id                   String           @id @default(uuid(7))
+  user_id              String           @db.VarChar(100)
+  subscription_plan_id String
+  price_paid           Decimal          @db.Decimal(10, 2)
+  currency             CurrencyEnum
+  purchased_at         DateTime
+  expires_at           DateTime
+  SubscriptionPlan     SubscriptionPlan @relation(fields: [subscription_plan_id], references: [id], onDelete: Restrict)
+  User                 User             @relation(fields: [user_id], references: [id], onDelete: Restrict)
 
   @@index([user_id])
   @@map("subscription_purchases")
 }
 
 model SubscriptionPlan {
-  id            String   @id @default(uuid(7))
-  code          String   @unique
-  price         Decimal  @db.Decimal(10, 2)
-  currency      String?  @default("UAH")
-  duration_days Int?     @default(30)
-  is_active     Boolean? @default(true)
+  id                   String                 @id @default(uuid(7))
+  code                 String                 @unique
+  price                Decimal                @db.Decimal(10, 2)
+  currency             String?                @default("UAH")
+  duration_days        Int?                   @default(30)
+  is_active            Boolean?               @default(true)
+  SubscriptionPurchase SubscriptionPurchase[]
 
   @@map("subscription_plans")
 }

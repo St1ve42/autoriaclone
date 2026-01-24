@@ -45,7 +45,7 @@ class AnnouncementPresenter{
             rate_source: announcement.rate_source,
             rate_date: announcement.rate_date,
             vehicle: announcement.vehicle,
-            user: await userPresenter.publicRes(user),
+            user: userPresenter.announcementRes(user),
             dealership: announcement.dealership && await dealershipPresenter.res(announcement.dealership)
         }
     }
@@ -88,11 +88,33 @@ class AnnouncementPresenter{
             rate_date: announcement.rate_date,
             approve_attempts: announcement.approve_attempts,
             status: announcement.status,
-            user: await userPresenter.publicRes(user),
+            user: userPresenter.publicRes(user),
             vehicle: announcement.vehicle,
             dealership: announcement.dealership && await dealershipPresenter.res(announcement.dealership),
             created_at: announcement.createdAt,
             updated_at: announcement.updatedAt,
+        }
+    }
+
+    public async dealershipRes(announcement: AnnouncementType){
+        const user = await userService.get(announcement.user_id)
+        const region = await regionService.getNameById(announcement.region)
+        return {
+            id: announcement._id,
+            title: announcement.title,
+            description: announcement.description,
+            city: announcement.city,
+            region: region,
+            images: announcement.images,
+            price: announcement.price,
+            currency: announcement.currency,
+            exchange_rate: announcement.exchange_rate,
+            rate_source: announcement.rate_source,
+            rate_date: announcement.rate_date,
+            approve_attempts: announcement.approve_attempts,
+            status: announcement.status,
+            user: userPresenter.publicRes(user),
+            vehicle: announcement.vehicle,
         }
     }
 
@@ -115,6 +137,18 @@ class AnnouncementPresenter{
     ) {
         return {
             data: await Promise.all(announcements.map(this.adminRes)),
+            total,
+            ...query
+        }
+    }
+
+    public async dealershipList(
+        announcements: AnnouncementType[],
+        total: number,
+        query: AnnouncementQueryType
+    ) {
+        return {
+            data: await Promise.all(announcements.map(this.dealershipRes)),
             total,
             ...query
         }

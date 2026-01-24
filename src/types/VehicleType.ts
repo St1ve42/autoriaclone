@@ -25,9 +25,9 @@ type ModelType = {
     years: number[];
 }
 
-type VehicleType = Pick<OldVehicleType, "_id" | "first_year" | "last_year" | "make_name" | "make_slug"> & {models: ModelType[]}
+type VehicleType = Pick<OldVehicleType, "first_year" | "last_year" | "make_name" | "make_slug"> & {models: ModelType[]} & {"_id": string}
 
-type MakeType = Pick<VehicleType, "_id" | "make_name" | "make_slug">
+type MakeType = Pick<VehicleType, "make_name" | "make_slug"> & {id?: string}
 type ModelListType = Pick<VehicleType, "make_name"> & {models: Pick<ModelType, "_id" | "model_name">[]}
 type ModelResponseType =  Pick<VehicleType, "make_name"> & {model: ModelType}
 

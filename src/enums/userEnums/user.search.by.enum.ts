@@ -2,6 +2,14 @@ export enum UserSearchByEnum{
     NAME = "name",
     SURNAME = "surname",
     EMAIL = "email",
+    PHONE = "phone",
+    AGE = "age",
     CITY = "city",
-    GENDER = "gender"
+    REGION_ID = "region_id",
+    ROLE_ID = "role_id",
+    ACCOUNT_TYPE = "account_type",
+    IS_ACTIVE = "is_active",
+    IS_VERIFIED = "is_verified",
+    IS_BANNED = "is_banned",
+    IS_DELETED = "is_deleted",
 }

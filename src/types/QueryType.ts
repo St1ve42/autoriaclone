@@ -4,6 +4,9 @@ import {UserSearchByEnum} from "../enums/userEnums/user.search.by.enum.ts";
 import {AnnouncementSearchByEnum} from "../enums/announcementEnums/announcement.search.by.enum.ts";
 import {AnnouncementOrderByEnum} from "../enums/announcementEnums/announcement.order.by.enum.ts";
 import {AnnouncementRangeByEnum} from "../enums/announcementEnums/announcement.range.by.enum.ts";
+import {DealershipSearchByEnum} from "../enums/dealershipEnums/dealership.searchBy.enum.ts";
+import {DealershipOrderByEnum} from "../enums/dealershipEnums/dealership.orderBy.enum.ts";
+import {DealershipReviewOrderByEnum} from "../enums/dealershipReviewsEnums/dealership.review.orderBy.enum.ts";
 
 export type QueryType<T,K> = {
     page: number
@@ -18,18 +21,7 @@ export type QueryType<T,K> = {
     to?: number
 }
 
-// export type QueryTypeVehicle<T extends string, K extends string> = {
-//     page: number
-//     limit: number
-//     skip: number
-//     search?: Record<T, string | number>
-//     order: Record<K, OrderEnum>
-//     range?: AnnouncementRangeByEnum
-//     from?: number,
-//     to?: number
-// }
-
-type BaseQuery = {
+type BaseQueryType = {
     page: number
     limit: number
     skip: number
@@ -37,5 +29,9 @@ type BaseQuery = {
 
 type UserQueryType = QueryType<UserSearchByEnum, UserOrderByEnum>
 type AnnouncementQueryType = QueryType<AnnouncementSearchByEnum, AnnouncementOrderByEnum>
+type DealershipQueryType = QueryType<DealershipSearchByEnum, DealershipOrderByEnum>
+type DealershipReviewQueryType = QueryType<undefined, DealershipReviewOrderByEnum>
+type DealershipMemberQueryType = QueryType<undefined, undefined>
 
-export type {UserQueryType, BaseQuery, AnnouncementQueryType}
+
+export type {UserQueryType, BaseQueryType, AnnouncementQueryType, DealershipQueryType, DealershipReviewQueryType, DealershipMemberQueryType}

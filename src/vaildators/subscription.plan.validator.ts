@@ -1,7 +1,6 @@
 import joi from "joi";
 import {subscriptionPlanService} from "../services/subscription.plan.service.ts";
 import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
-import {SubscriptionCodeEnum} from "../enums/SubcriptionCodeEnum/subscription.code.enum.ts";
 
 export class SubscriptionPlanValidator {
     private static price = joi.number().min(0)
@@ -11,7 +10,7 @@ export class SubscriptionPlanValidator {
         if(value){
             const subscription = await subscriptionPlanService.findOneByParam({code: value})
             if(subscription){
-                return helpers.error("any.conflict")
+                return helpers.error("string.unique.taken")
             }
         }
     })
@@ -29,4 +28,9 @@ export class SubscriptionPlanValidator {
         currency: this.currency,
         duration: this.duration
     }).min(1)
+
+    public static buySubscription = joi.object({
+        code: this.code,
+    })
+
 }

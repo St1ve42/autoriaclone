@@ -187,6 +187,7 @@ export type AveragePricesScalarFieldEnum = (typeof AveragePricesScalarFieldEnum)
 export const SubscriptionPurchaseScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
+  subscription_plan_id: 'subscription_plan_id',
   price_paid: 'price_paid',
   currency: 'currency',
   purchased_at: 'purchased_at',
@@ -297,7 +298,8 @@ export type AveragePricesOrderByRelevanceFieldEnum = (typeof AveragePricesOrderB
 
 export const SubscriptionPurchaseOrderByRelevanceFieldEnum = {
   id: 'id',
-  user_id: 'user_id'
+  user_id: 'user_id',
+  subscription_plan_id: 'subscription_plan_id'
 } as const
 
 export type SubscriptionPurchaseOrderByRelevanceFieldEnum = (typeof SubscriptionPurchaseOrderByRelevanceFieldEnum)[keyof typeof SubscriptionPurchaseOrderByRelevanceFieldEnum]

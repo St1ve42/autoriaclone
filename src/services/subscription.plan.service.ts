@@ -1,11 +1,14 @@
 import {subscriptionPlanRepository} from "../repository/subscription.plan.repository.ts";
 import {SubscriptionPlan} from "../../prisma/src/generated/prisma/client.ts";
 import {SubscriptionPlanCreateInput, SubscriptionPlanUpdateInput} from "../../prisma/src/generated/prisma/models/SubscriptionPlan.ts";
-import {SubscriptionCodeEnum} from "../enums/SubcriptionCodeEnum/subscription.code.enum.ts";
+import {SubscriptionCodeEnum} from "../enums/SubcriptionCodeEnums/subscription.code.enum.ts";
 import {ApiError} from "../errors/api.error.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 
 class SubscriptionPlanService{
+    public async get(id: string): Promise<SubscriptionPlan>{
+        return await subscriptionPlanRepository.get(id) as SubscriptionPlan
+    }
 
     public async getList(): Promise<SubscriptionPlan[]>{
         return await subscriptionPlanRepository.getList()

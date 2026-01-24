@@ -1,70 +1,69 @@
 import joi from "joi"
 import {UserRegexpEnum} from "../enums/userEnums/user.regexp.enum.ts";
-import {GenderEnum} from "../../prisma/src/generated/prisma/enums.ts";
+import {AccountTypeEnum, GenderEnum} from "../../prisma/src/generated/prisma/enums.ts";
 import {regionRepository} from "../repository/region.repository.ts";
+import Joi from "joi";
+import {GlobalRoleEnums} from "../enums/globalRoleEnums/globalRoleEnums.ts";
+import {roleRepository} from "../repository/role.repository.ts";
 
 export class UserValidator{
     private static name = joi.string().regex(UserRegexpEnum.NAME).trim().messages({
-        "any.required": "name is required",
-        "string.empty": "name must not be empty",
-        "string.base": "name must be string type",
-        "string.pattern.base": "name must contain only alphabet symbols and be 3-10 characters long"
+        "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30"
     })
     private static surname = joi.string().regex(UserRegexpEnum.SURNAME).trim().messages({
-        "string.empty": "surname must not be empty",
-        "string.pattern.base": "surname must contain only alphabet symbols and be 3-10 characters long"
+        "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30"
     })
-    private static age = joi.number().min(1).integer().max(100).messages({
-        "any.required": "age is required",
-        "number.empty": "age must not be empty",
-        "number.base": "age must be number type",
-        "number.min": "age must be more than or equal to 1",
-        "number.max": "age must be less than or equal to 100"
+    private static age = joi.number().min(1).integer().max(100)
+    private static email = joi.string().regex(UserRegexpEnum.EMAIL).email({minDomainSegments: 2, tlds: { allow: ['com', 'net'] }})
+    private static password = joi.string().regex(UserRegexpEnum.PASSWORD).trim().messages({
+        "string.pattern.base": "Пароль повинен містити принаймні 1 цифру (0-9), " +
+            "1 букву з верхнім регістром, " +
+            "1 букву з нижнім регістром, " +
+            "1 не буквенно-цифровий символ" +
+            "та бути довжиною у 8-16 символів без пробілу"
     })
-    private static email = joi.string().regex(UserRegexpEnum.EMAIL).email({minDomainSegments: 2, tlds: { allow: ['com', 'net'] }}).messages({
-        "any.required": "email is required",
-        "string.empty": "email must not be empty",
-        "string.base": "email must be string",
-        "string.email": "Invalid email address. The email must look like 'username@example.com'. Only top-level domains .com and .net are allowed",
-        "string.pattern.base": "email must contain only alpha-numeric characters and dot",
-    })
-    private static password = joi.string().regex(UserRegexpEnum.PASSWORD).messages({
-        "any.required": "password is required",
-        "string.empty": "password must not be empty",
-        "string.base": "password must be string",
-        "string.pattern.base": "password must contain at least 1 number (0-9), " +
-            "1 uppercase letter, " +
-            "1 lowercase letter, " +
-            "1 non-alpha numeric number " +
-            "and be 8-16 characters long with no space"
-    })
-    private static gender = joi.string().valid(...Object.values(GenderEnum)).trim().messages({
-        "string.empty": "gender must not be empty",
-        "string.base": "gender must be string type",
-        "any.only": "gender must be either male or female"
-    })
+    private static gender = joi.string().valid(...Object.values(GenderEnum)).trim()
     private static phone = joi.string().regex(UserRegexpEnum.PHONE).trim().messages({
-        "string.empty": "phone must not be empty",
-        "string.base": "phone must be string type",
-        "string.pattern.base": "phone must look like '+38 (000) 000 00 00'"
+        "string.pattern.base": "телефон повинен бути вигляду '+38 (000) 000 00 00'"
     })
     private static city = joi.string().regex(UserRegexpEnum.CITY).trim().messages({
-        "any.required": "city is required",
-        "string.empty": "city must not be empty",
-        "string.base": "city must be string type",
-        "string.pattern.base": "city must contain only cyrillic characters and be 3-30 characters long"
+        "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30"
     })
     private static region = joi.number().min(1).integer().messages({
-        "any.required": "region is required",
-        "string.empty": "region must not be empty",
-        "string.base": "region must be string type",
-        "string.pattern.base": "region must contain only cyrillic characters and be 3-30 characters long"
+        "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30"
     }).external(async (value, helpers) => {
+        if(!value){
+            return
+        }
         const region = await regionRepository.getById(value)
         if(!region){
             return helpers.error("any.existent")
         }
     })
+    private static role = joi.string().valid(...Object.values(GlobalRoleEnums)).trim()
+    private static account_type = joi.string().valid(...Object.values(AccountTypeEnum)).trim()
+    private static boolean_field = joi.boolean()
+
+    private static userSearchRules = {
+        name: this.name,
+        surname: this.surname,
+        email: this.email,
+        phone: this.phone,
+        age: this.age,
+        city: this.city,
+        region_id: this.region,
+        role_id: this.role,
+        account_type: this.account_type,
+        is_active: this.boolean_field,
+        is_verified: this.boolean_field,
+        is_banned: this.boolean_field,
+        is_deleted: this.boolean_field,
+    };
+
+    public static userSearchCases = Object.entries(this.userSearchRules).map(([key, schema]) => ({
+        is: key,
+        then: schema
+    }));
 
     public static createUser = joi.object({
         name: this.name.required(),

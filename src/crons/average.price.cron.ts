@@ -34,7 +34,7 @@ const calculateAveragePriceHandler = async() => {
         }
 
         for(const [_key, {brand, model, sumPrice, region, count}] of analyticsMap){
-            await averagePricesRepository.create({brand, model, region: {connect: {id: region}}, avg_price: Math.trunc(sumPrice / count), cars_count: count})
+            await averagePricesRepository.create({brand, model, Region: {connect: {id: region}}, avg_price: Math.trunc(sumPrice / count), cars_count: count})
         }
     }
     catch (e){

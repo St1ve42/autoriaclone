@@ -28,7 +28,7 @@ class AnnouncementService{
         const {account_type} = await userService.get(userId)
         const announcements = await announcementRepository.findByParams({user_id: userId})
         if(account_type === AccountTypeEnum.basic && announcements.length !== 0 && announcements.length >= 1){
-            throw new ApiError("User with basic account can create only one announcement", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("User with basic account can create only one announcement", StatusCodeEnum.CONFLICT)
         }
         let approve_attempts = 0
         const isObsceneLanguage = Utils.isObsceneLanguage(dto.description)
@@ -81,11 +81,11 @@ class AnnouncementService{
     public async deleteImages(id: string, imagePaths: string[]){
         const {images: announcementImages} = await announcementService.get(id)
         if(announcementImages.length === 0){
-            throw new ApiError("Announcement doesn't contain images", StatusCodeEnum.NOT_FOUND)
+            throw new ApiError("Announcement doesn't contain images", StatusCodeEnum.CONFLICT)
         }
         imagePaths.forEach(imagePath => {
             if(!announcementImages.includes(imagePath)){
-                throw new ApiError(`Image ${imagePath.split('/').at(-1)} not found`, StatusCodeEnum.NOT_FOUND)
+                throw new ApiError(`Image ${imagePath.split('/').at(-1)} not found`, StatusCodeEnum.CONFLICT)
             }
         })
         await s3Service.deleteManyFiles(imagePaths)
@@ -93,15 +93,15 @@ class AnnouncementService{
     }
 
     public async activate (id: string){
-        return await announcementRepository.update(id, {status: AnnouncementStatusEnum.ACTIVE})
+        return await announcementRepository.update(id, {status: AnnouncementStatusEnum.ACTIVE}) as AnnouncementType
     }
 
     public async deactivate (id: string){
-        return await announcementRepository.update(id, {status: AnnouncementStatusEnum.INACTIVE})
+        return await announcementRepository.update(id, {status: AnnouncementStatusEnum.INACTIVE}) as AnnouncementType
     }
 
     public async resetApproveAttempts (id: string){
-        return await announcementRepository.update(id, {approve_attempts: 0})
+        return await announcementRepository.update(id, {approve_attempts: 0}) as AnnouncementType
     }
 
     private static getStatus(approve_attempts: number): string{

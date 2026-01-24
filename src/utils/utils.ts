@@ -3,6 +3,10 @@ import {RegExpression} from "../regExp/regExp.ts";
 import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
 import {ExchangeCurrencyMap} from "../types/ExchangeCurrencyType.ts";
 import {whitelist} from "../constants/general.constants.ts";
+import {PrivatBank} from "../publicAPI/PrivatBank.ts";
+import {ApiError} from "../errors/api.error.ts";
+import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
+import { Decimal } from "@prisma/client/runtime/library";
 
 
 export class Utils{
@@ -35,6 +39,34 @@ export class Utils{
         }
         return value
     }
+
+    public static async normalizeToCurrency(value: Decimal, inputCurrency: CurrencyEnum, outputCurrency: CurrencyEnum): Promise<{value: number, currency: CurrencyEnum | null}>{
+        const normalizedCurrency: {value: number, currency: CurrencyEnum | null} = {value: value.toNumber(), currency: outputCurrency}
+        if(inputCurrency !== outputCurrency){
+            const exchange_rate = await PrivatBank.getExchangeRate()
+            if(inputCurrency === CurrencyEnum.UAH){
+                const outputCurrencyExchangeRate = exchange_rate[outputCurrency]
+                const {sale} = outputCurrencyExchangeRate
+                normalizedCurrency["value"] = value.div(sale).toNumber()
+            }
+            else if(outputCurrency === CurrencyEnum.UAH){
+                const inputCurrencyExchangeRate = exchange_rate[inputCurrency]
+                const {buy} = inputCurrencyExchangeRate
+                normalizedCurrency["value"] = value.times(buy).toNumber()
+            }
+            else{
+                const inputCurrencyExchangeRate = exchange_rate[inputCurrency]
+                const outputCurrencyExchangeRate = exchange_rate[outputCurrency]
+                const {buy} = inputCurrencyExchangeRate
+                const {sale} = outputCurrencyExchangeRate
+                normalizedCurrency["value"] = value.times(buy).div(sale).toNumber()
+            }
+        }
+        return normalizedCurrency
+
+    }
+    
+    
 
 }
 
