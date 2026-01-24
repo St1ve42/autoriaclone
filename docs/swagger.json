@@ -1,0 +1,1814 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Документація API",
+    "version": "1.0.0",
+    "description": "Інтегрована документація API.\n\n### Стандартні помилки авторизації\n| Код | Опис |\n|---|---|\n| **400** | Відсутній токен доступу (Bad Request) |\n| **401** | Токен невалідний, прострочений або відсутній в базі (Unauthorized) |\n| **403** | Доступ заборонено: акаунт не активовано, видалено або недостатньо прав (Forbidden) |"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Помилка валідації даних",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "NotFoundError": {
+        "description": "Ресурс не знайдено",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "ConflictError": {
+        "description": "Конфлікт даних",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "AuthForbidden": {
+        "description": "Доступ заборонено (Forbidden)",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "PaymentError": {
+        "description": "Недостатньо коштів (Payment Required)",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "number", "example": 400 },
+          "message": { "type": "string", "example": "Опис помилки" }
+        }
+      },
+      "MessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "example": "Успішна дія" }
+        }
+      },
+      "TokenPair": {
+        "type": "object",
+        "properties": {
+          "access_token": { "type": "string" },
+          "refresh_token": { "type": "string" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "description": "Повна модель користувача (Private)",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string", "example": "Олексій" },
+          "surname": { "type": "string", "example": "Ковальов" },
+          "age": { "type": "integer", "example": 35 },
+          "email": { "type": "string", "format": "email", "example": "oleksiy@gmail.com" },
+          "phone": { "type": "string", "example": "+38 (050) 111 22 33" },
+          "gender": { "type": "string", "enum": ["male", "female"], "example": "male" },
+          "photo": { "type": "string", "nullable": true, "example": "https://s3.aws.../avatar.jpg" },
+          "city": { "type": "string", "example": "Київ" },
+          "region": { "type": "string", "description": "Назва регіону", "example": "Київська область" },
+          "role": { "type": "string", "example": "user" },
+          "account_type": { "type": "string", "example": "basic" },
+          "balance": { "type": "number", "default": 0 },
+          "currency": { "type": "string", "default": "UAH" },
+          "is_active": { "type": "boolean" },
+          "is_verified": { "type": "boolean" },
+          "is_banned": { "type": "boolean" },
+          "ban_reason": { "type": "string", "nullable": true },
+          "banned_until": { "type": "string", "format": "date-time", "nullable": true },
+          "is_deleted": { "type": "boolean" }
+        }
+      },
+      "UserListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/User" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" },
+          "searchBy": { "type": "string" },
+          "search": { "type": "string" }
+        }
+      },
+      "AdminCreateUserRequest": {
+        "type": "object",
+        "required": ["name", "surname", "age", "email", "password", "city", "region"],
+        "properties": {
+          "name": { "type": "string", "minLength": 3, "maxLength": 30, "description": "Кирилиця" },
+          "surname": { "type": "string", "minLength": 3, "maxLength": 30, "description": "Кирилиця" },
+          "age": { "type": "integer", "minimum": 1, "maximum": 100 },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "description": "8-16 символів, 1 цифра, 1 Upper, 1 Lower, 1 спецсимвол" },
+          "city": { "type": "string", "minLength": 3, "maxLength": 30, "description": "Кирилиця" },
+          "region": { "type": "integer", "description": "ID регіону" },
+          "gender": { "type": "string", "enum": ["male", "female"] },
+          "phone": { "type": "string", "pattern": "^\\+38 \\(\\d{3}\\) \\d{3} \\d{2} \\d{2}$" }
+        }
+      },
+      "BanUserRequest": {
+        "type": "object",
+        "properties": {
+          "time": { "type": "string", "description": "Формат: [value][unit] (y,w,d,h,m,s). Наприклад: 2d" },
+          "reason": { "type": "string", "minLength": 3, "maxLength": 100 }
+        }
+      },
+      "PublicUser": {
+        "type": "object",
+        "description": "Публічна модель користувача (Short)",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string", "example": "Олексій" },
+          "surname": { "type": "string", "example": "Ковальов" },
+          "photo": { "type": "string", "nullable": true, "example": "https://s3.aws.../avatar.jpg" }
+        }
+      },
+      "AnnouncementUser": {
+        "type": "object",
+        "description": "Модель користувача в оголошенні (з телефоном)",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string", "example": "Олексій" },
+          "surname": { "type": "string", "example": "Ковальов" },
+          "photo": { "type": "string", "nullable": true, "example": "https://s3.aws.../avatar.jpg" },
+          "phone": { "type": "string", "example": "+38 (050) 111 22 33" }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "user": { "$ref": "#/components/schemas/User" },
+          "tokenPair": { "$ref": "#/components/schemas/TokenPair" }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "user" }
+        }
+      },
+      "Dealership": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "address": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "owner": { "$ref": "#/components/schemas/PublicUser" },
+          "is_verified": { "type": "boolean" },
+          "rating": { "type": "number" }
+        }
+      },
+      "DealershipListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Dealership" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "user": { "$ref": "#/components/schemas/PublicUser" },
+          "rating": { "type": "integer", "example": 10 },
+          "text": { "type": "string" }
+        }
+      },
+      "ReviewListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Review" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "user": { "$ref": "#/components/schemas/PublicUser" },
+          "role": { "type": "string", "example": "owner" },
+          "joinedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "MemberListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Member" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "MembershipResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "dealership": { "$ref": "#/components/schemas/Dealership" },
+          "role": { "type": "string", "example": "owner" },
+          "joinedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "FuelConsumption": {
+        "type": "object",
+        "properties": {
+          "city": { "type": "number", "maximum": 80 },
+          "highway": { "type": "number", "maximum": 80 },
+          "combined": { "type": "number", "maximum": 80 }
+        }
+      },
+      "VehicleCharacteristics": {
+        "type": "object",
+        "properties": {
+          "transmission": { "type": "string", "description": "Enum: TransmissionTypeEnum" },
+          "fuel_type": { "type": "string", "description": "Enum: FuelTypeEnum" },
+          "engine_power": { "type": "number", "minimum": 20, "maximum": 2000, "description": "Horsepower" },
+          "fuel_consumption": { "$ref": "#/components/schemas/FuelConsumption" },
+          "engine_capacity": { "type": "number", "description": "Liters" },
+          "environmental_standard": { "type": "string", "description": "Enum: EnvironmentalStandardEnum" },
+          "drive_type": { "type": "string", "description": "Enum: DriveTypeEnum" },
+          "door_number": { "type": "number", "minimum": 1, "maximum": 6 },
+          "color": { "type": "string" },
+          "metallic": { "type": "boolean" },
+          "seat_number": { "type": "number", "minimum": 1, "maximum": 70 },
+          "imported_from": { "type": "string" },
+          "accident_history": { "type": "boolean" },
+          "paint_condition": { "type": "string", "description": "Enum: PaintConditionEnum" },
+          "technical_condition": { "type": "string", "description": "Enum: TechnicalConditionEnum" },
+          "service_station_inspection_readiness": { "type": "boolean" }
+        }
+      },
+      "Vehicle": {
+        "type": "object",
+        "properties": {
+          "brand": { "type": "string" },
+          "model": { "type": "string" },
+          "mileage": { "type": "number" },
+          "year": { "type": "number", "minimum": 1900, "maximum": 2025 },
+          "vehicle_type": { "type": "string", "description": "Enum: VehicleTypeEnum" },
+          "characteristics": { "$ref": "#/components/schemas/VehicleCharacteristics" }
+        }
+      },
+      "ExchangeRates": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": { "buy": { "type": "number" }, "sale": { "type": "number" } }
+        }
+      },
+      "Announcement": {
+        "type": "object",
+        "description": "Базова модель оголошення (публічна)",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "city": { "type": "string" },
+          "region": { "type": "string" },
+          "images": { "type": "array", "items": { "type": "string" } },
+          "price": { "type": "number" },
+          "currency": { "type": "string" },
+          "exchange_rate": { "$ref": "#/components/schemas/ExchangeRates" },
+          "rate_source": { "type": "string" },
+          "rate_date": { "type": "string", "format": "date-time" },
+          "vehicle": { "$ref": "#/components/schemas/Vehicle" },
+          "user": { "$ref": "#/components/schemas/AnnouncementUser" },
+          "dealership": { "$ref": "#/components/schemas/Dealership", "nullable": true }
+        }
+      },
+      "FullAnnouncement": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Announcement" },
+          {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string", "example": "active" },
+              "approve_attempts": { "type": "integer" },
+              "created_at": { "type": "string", "format": "date-time" },
+              "updated_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        ]
+      },
+      "AnnouncementListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Announcement" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "CreateDealershipRequest": {
+        "type": "object",
+        "required": ["name", "description", "address", "phone", "email"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string", "minLength": 50, "maxLength": 5000 },
+          "address": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "website": { "type": "string" }
+        }
+      },
+      "UpdateDealershipRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string", "minLength": 50, "maxLength": 5000 },
+          "address": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "website": { "type": "string" }
+        }
+      },
+      "CreateReviewRequest": {
+        "type": "object",
+        "required": ["rating", "text"],
+        "properties": {
+          "rating": { "type": "integer", "minimum": 0, "maximum": 10 },
+          "text": { "type": "string", "minLength": 50, "maxLength": 500 }
+        }
+      },
+      "UpdateReviewRequest": {
+        "type": "object",
+        "properties": {
+          "rating": { "type": "integer", "minimum": 0, "maximum": 10 },
+          "text": { "type": "string", "minLength": 50, "maxLength": 500 }
+        }
+      },
+      "CreateMemberRequest": {
+        "type": "object",
+        "required": ["email", "role"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string", "description": "Окрім Owner" }
+        }
+      },
+      "UpdateMemberRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string" }
+        }
+      },
+      "CreateVehicleRequest": {
+        "type": "object",
+        "required": ["brand", "model", "year", "vehicle_type", "mileage", "characteristics"],
+        "properties": {
+          "brand": { "type": "string" },
+          "model": { "type": "string" },
+          "year": { "type": "number" },
+          "vehicle_type": { "type": "string" },
+          "mileage": { "type": "number" },
+          "characteristics": { "$ref": "#/components/schemas/VehicleCharacteristics" }
+        }
+      },
+      "CreateAnnouncementRequest": {
+        "type": "object",
+        "required": ["title", "description", "city", "region", "price", "currency", "vehicle"],
+        "properties": {
+          "title": { "type": "string", "description": "Кирилиця та числа, 3-100 символів" },
+          "description": { "type": "string", "minLength": 30, "maxLength": 2000 },
+          "city": { "type": "string", "description": "Кирилиця, 3-30 символів" },
+          "region": { "type": "integer", "description": "ID регіону" },
+          "price": { "type": "number", "minimum": 0 },
+          "currency": { "type": "string", "enum": ["UAH", "USD", "EUR"] },
+          "vehicle": { "$ref": "#/components/schemas/CreateVehicleRequest" }
+        }
+      },
+      "UpdateAnnouncementRequest": {
+        "type": "object",
+        "description": "Часткове оновлення (всі поля опціональні)",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "city": { "type": "string" },
+          "region": { "type": "integer" },
+          "price": { "type": "number" },
+          "currency": { "type": "string" }
+        }
+      },
+      "DeleteImagesRequest": {
+        "type": "object",
+        "required": ["images"],
+        "properties": {
+          "images": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+        }
+      },
+      "SignUpRequest": {
+        "type": "object",
+        "required": ["name", "surname", "age", "email", "password", "city", "region"],
+        "properties": {
+          "name": { "type": "string" },
+          "surname": { "type": "string" },
+          "age": { "type": "integer" },
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "city": { "type": "string" },
+          "region": { "type": "integer" },
+          "gender": { "type": "string" },
+          "phone": { "type": "string" }
+        }
+      },
+      "SignInRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": ["refreshToken"],
+        "properties": { "refreshToken": { "type": "string" } }
+      },
+      "PasswordRecoveryRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": { "email": { "type": "string" } }
+      },
+      "PasswordResetRequest": {
+        "type": "object",
+        "required": ["password"],
+        "properties": { "password": { "type": "string" } }
+      },
+      "PasswordChangeRequest": {
+        "type": "object",
+        "required": ["oldPassword", "password"],
+        "properties": { "oldPassword": { "type": "string" }, "password": { "type": "string" } }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "name": { "type": "string" },
+          "surname": { "type": "string" },
+          "age": { "type": "integer" },
+          "city": { "type": "string" },
+          "region": { "type": "integer" },
+          "gender": { "type": "string" },
+          "phone": { "type": "string" }
+        }
+      },
+      "AnnouncementStatistics": {
+        "type": "object",
+        "properties": {
+          "total_views": { "type": "integer" },
+          "views": {
+            "type": "object",
+            "properties": {
+              "day": { "type": "integer" },
+              "week": { "type": "integer" },
+              "month": { "type": "integer" }
+            }
+          },
+          "average_price": {
+            "type": "object",
+            "properties": {
+              "region": { "type": "object", "properties": { "value": { "type": "number" }, "vehicles_count": { "type": "integer" } } },
+              "country": { "type": "object", "properties": { "value": { "type": "number" }, "vehicles_count": { "type": "integer" } } },
+              "currency": { "type": "string" }
+            }
+          }
+        }
+      },
+      "SubscriptionPurchase": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "price_paid": { "type": "string" },
+          "currency": { "type": "string" },
+          "purchased_at": { "type": "string", "format": "date-time" },
+          "expires_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SubscriptionPlan": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "code": { "type": "string" },
+          "price": { "type": "string" },
+          "currency": { "type": "string" },
+          "duration_days": { "type": "integer" },
+          "is_active": { "type": "boolean" }
+        }
+      },
+      "UpdateSubscriptionPlanRequest": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "code": { "type": "string" },
+          "price": { "type": "number", "minimum": 0 },
+          "currency": { "type": "string" },
+          "duration": { "type": "integer", "minimum": 0, "description": "Duration in days" }
+        }
+      },
+      "UserSubscriptionResponse": {
+        "type": "object",
+        "properties": {
+          "subscription_purchase": { "$ref": "#/components/schemas/SubscriptionPurchase" },
+          "subscription_plan": { "$ref": "#/components/schemas/SubscriptionPlan" }
+        }
+      },
+      "SubscriptionPurchaseResponse": {
+        "type": "object",
+        "properties": {
+          "subscription_purchase": { "$ref": "#/components/schemas/SubscriptionPurchase" },
+          "subscription_plan": { "$ref": "#/components/schemas/SubscriptionPlan" },
+          "user": { "$ref": "#/components/schemas/PublicUser" }
+        }
+      },
+      "Region": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Вінницька область" }
+        }
+      },
+      "RegionListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Region" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "Make": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "make_name": { "type": "string" },
+          "make_slug": { "type": "string" }
+        }
+      },
+      "MakeListResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Make" } },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "Model": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "model_name": { "type": "string" }
+        }
+      },
+      "ModelListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "make_name": { "type": "string" },
+              "models": { "type": "array", "items": { "$ref": "#/components/schemas/Model" } }
+            }
+          },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      },
+      "ModelDetail": {
+        "type": "object",
+        "properties": {
+          "model_name": { "type": "string" },
+          "model_styles": { "type": "object" },
+          "vehicle_type": { "type": "string" },
+          "years": { "type": "array", "items": { "type": "integer" } }
+        }
+      },
+      "ModelDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "make_name": { "type": "string" },
+              "model": { "$ref": "#/components/schemas/ModelDetail" }
+            }
+          },
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "skip": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/sign-up": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Реєстрація користувача",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SignUpRequest" } } }
+        },
+        "responses": {
+          "201": { "description": "Успішна реєстрація", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/auth/sign-in": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Вхід в систему",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SignInRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Успішний вхід", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "description": "Невірний логін/пароль або бан", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/auth/activate": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "Активація акаунту",
+        "parameters": [
+          { "name": "token", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Акаунт активовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } }
+        }
+      }
+    },
+    "/auth/log-out": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Вихід з системи",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "204": { "description": "Успішний вихід" } }
+      }
+    },
+    "/auth/log-out-all": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Вихід з усіх сесій",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "204": { "description": "Успішний вихід з усіх пристроїв" } }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Оновлення токенів",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RefreshTokenRequest" } } }
+        },
+        "responses": {
+          "201": { "description": "Токени оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TokenPair" } } } }
+        }
+      }
+    },
+    "/auth/password/recovery": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Відновлення пароля (запит)",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PasswordRecoveryRequest" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Інструкції надіслано",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageResponse" }, "example": { "message": "Check email" } } }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/auth/password/recovery/{token}": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Встановлення нового пароля",
+        "parameters": [
+          { "name": "token", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PasswordResetRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Пароль змінено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/auth/password/change": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Зміна пароля",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PasswordChangeRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Пароль змінено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "description": "Невірний старий пароль", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Інформація про себе",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Інформація про користувача", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Оновлення профілю",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Профіль оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Видалення акаунту",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Акаунт видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } }
+        }
+      }
+    },
+    "/users/me/avatar": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Завантаження аватара",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": { "type": "object", "properties": { "avatar": { "type": "string", "format": "binary" } } }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Аватар оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Видалення аватара",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Аватар видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/users/me/membership": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Членство в автосалоні",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Інформація про членство", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MembershipResponse" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/users/me/announcements": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Мої оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 }, "description": "Сторінка" },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 }, "description": "Кількість" },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Список оголошень", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnnouncementListResponse" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/users/me/subscription": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Поточна підписка",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Підписка", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSubscriptionResponse" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/announcements": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "Отримання активних оголошень",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 }, "description": "Сторінка" },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 }, "description": "Кількість" },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 }, "description": "Пропуск" },
+          { "name": "search", "in": "query", "schema": { "type": "string" }, "description": "Пошук" },
+          {
+            "name": "searchBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["title", "description", "city", "region", "vehicle.brand", "vehicle.model", "vehicle.vehicle_type", "vehicle.characteristics.transmission", "vehicle.characteristics.fuel_type", "vehicle.characteristics.environmental_standard", "vehicle.characteristics.drive_type", "vehicle.characteristics.color", "vehicle.characteristics.metallic", "vehicle.characteristics.imported_from", "vehicle.characteristics.accident_history", "vehicle.characteristics.paint_condition", "vehicle.characteristics.technical_condition", "vehicle.characteristics.service_station_inspection_readiness"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["price", "vehicle.year", "vehicle.mileage", "vehicle.characteristics.engine_power", "vehicle.characteristics.fuel_consumption.city", "vehicle.characteristics.fuel_consumption.highway", "vehicle.characteristics.fuel_consumption.combined", "vehicle.characteristics.engine_capacity"]
+            }
+          },
+          { "name": "order", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          {
+            "name": "rangeBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["price", "vehicle.year", "vehicle.mileage", "vehicle.characteristics.engine_power", "vehicle.characteristics.fuel_consumption.city", "vehicle.characteristics.fuel_consumption.highway", "vehicle.characteristics.fuel_consumption.combined", "vehicle.characteristics.engine_capacity"]
+            }
+          },
+          { "name": "from", "in": "query", "schema": { "type": "number" } },
+          { "name": "to", "in": "query", "schema": { "type": "number" } }
+        ],
+        "responses": {
+          "200": { "description": "Список оголошень", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnnouncementListResponse" } } } }
+        }
+      },
+      "post": {
+        "tags": ["Announcements"],
+        "summary": "Створення оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateAnnouncementRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оголошення створено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/announcements/{announcementId}": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "Деталі оголошення",
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Деталі оголошення",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "patch": {
+        "tags": ["Announcements"],
+        "summary": "Оновлення оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateAnnouncementRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оголошення оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "delete": {
+        "tags": ["Announcements"],
+        "summary": "Видалення оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Оголошення видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/announcements/{announcementId}/images": {
+      "post": {
+        "tags": ["Announcements"],
+        "summary": "Завантаження фото",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": { "type": "object", "properties": { "images": { "type": "array", "items": { "type": "string", "format": "binary" } } } }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Фото завантажено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/announcements/{announcementId}/images/delete": {
+      "post": {
+        "tags": ["Announcements"],
+        "summary": "Видалення фото",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteImagesRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Фото видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/announcements/{announcementId}/statistics": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "Статистика оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Статистика", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnnouncementStatistics" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/announcements/{announcementId}/increase_views": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "Збільшення переглядів",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Перегляди збільшено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnnouncementStatistics" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/dealerships": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Список автосалонів",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "searchBy", "in": "query", "schema": { "type": "string", "enum": ["name", "description"] } },
+          { "name": "orderBy", "in": "query", "schema": { "type": "string", "enum": ["rating"] } },
+          { "name": "order", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"] } }
+        ],
+        "responses": {
+          "200": { "description": "Список салонів", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DealershipListResponse" } } } }
+        }
+      },
+      "post": {
+        "tags": ["Dealerships"],
+        "summary": "Створити автосалон",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateDealershipRequest" } } }
+        },
+        "responses": {
+          "201": { "description": "Салон створено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Деталі автосалону",
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Інформація про салон", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "patch": {
+        "tags": ["Dealerships"],
+        "summary": "Оновлення автосалону",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateDealershipRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "delete": {
+        "tags": ["Dealerships"],
+        "summary": "Видалення автосалону",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}/logo": {
+      "post": {
+        "tags": ["Dealerships"],
+        "summary": "Завантаження лого",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": { "type": "object", "properties": { "logo": { "type": "string", "format": "binary" } } }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Лого завантажено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "delete": {
+        "tags": ["Dealerships"],
+        "summary": "Видалення лого",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Лого видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}/reviews": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Список відгуків",
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } },
+          { "name": "orderBy", "in": "query", "schema": { "type": "string", "enum": ["rating"] } }
+        ],
+        "responses": {
+          "200": { "description": "Відгуки", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReviewListResponse" } } } }
+        }
+      },
+      "post": {
+        "tags": ["Dealerships"],
+        "summary": "Створити відгук",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateReviewRequest" } } }
+        },
+        "responses": {
+          "201": { "description": "Створено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Review" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}/reviews/{reviewId}": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Отримати один відгук",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "reviewId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Відгук", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Review" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      },
+      "patch": {
+        "tags": ["Dealerships"],
+        "summary": "Оновити відгук",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "reviewId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateReviewRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Review" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      },
+      "delete": {
+        "tags": ["Dealerships"],
+        "summary": "Видалити відгук",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "reviewId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Review" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}/members": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Список членів",
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": { "description": "Список", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MemberListResponse" } } } }
+        }
+      },
+      "post": {
+        "tags": ["Dealerships"],
+        "summary": "Додати члена",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateMemberRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Додано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}/members/{memberId}": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Отримати члена",
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "memberId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Член", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member" } } } },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      },
+      "patch": {
+        "tags": ["Dealerships"],
+        "summary": "Оновити члена",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "memberId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateMemberRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      },
+      "delete": {
+        "tags": ["Dealerships"],
+        "summary": "Видалити члена",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "memberId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/dealerships/{dealershipId}/announcements": {
+      "get": {
+        "tags": ["Dealerships"],
+        "summary": "Оголошення автосалону",
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Список оголошень", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnnouncementListResponse" } } } }
+        }
+      }
+    },
+    "/regions": {
+      "get": {
+        "tags": ["Regions"],
+        "summary": "Список регіонів",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": { "description": "Список регіонів", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegionListResponse" } } } }
+        }
+      }
+    },
+    "/vehicles/makes": {
+      "get": {
+        "tags": ["Vehicles"],
+        "summary": "Список виробників (марок)",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": { "description": "Список виробників", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MakeListResponse" } } } }
+        }
+      }
+    },
+    "/vehicles/makes/{makeId}/models": {
+      "get": {
+        "tags": ["Vehicles"],
+        "summary": "Список моделей",
+        "parameters": [
+          { "name": "makeId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": { "description": "Список моделей", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ModelListResponse" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/vehicles/makes/{makeId}/models/{modelId}": {
+      "get": {
+        "tags": ["Vehicles"],
+        "summary": "Деталі моделі",
+        "parameters": [
+          { "name": "makeId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "modelId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Інформація про модель", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ModelDetailResponse" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/subscriptions-plans": {
+      "get": {
+        "tags": ["Subscription Plans"],
+        "summary": "Список планів підписки",
+        "responses": {
+          "200": {
+            "description": "Список планів",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SubscriptionPlan" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions-plans/{planId}": {
+      "get": {
+        "tags": ["Subscription Plans"],
+        "summary": "Інформація про план",
+        "parameters": [
+          { "name": "planId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "План знайдено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriptionPlan" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/subscriptions-plans/{planId}/purchase": {
+      "post": {
+        "tags": ["Subscription Plans"],
+        "summary": "Придбати підписку",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "planId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Успішна покупка", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriptionPurchaseResponse" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "402": { "$ref": "#/components/responses/PaymentError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/admins/roles": {
+      "get": {
+        "tags": ["Admin: Roles"],
+        "summary": "Список ролей",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Ролі", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Role" } } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" }
+        }
+      }
+    },
+    "/admins/subscription-plans/{planId}": {
+      "patch": {
+        "tags": ["Admin: Subscription Plans"],
+        "summary": "Оновити план",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "planId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateSubscriptionPlanRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriptionPlan" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" }
+        }
+      }
+    },
+    "/admins/subscription-plans/{planId}/activate": {
+      "post": {
+        "tags": ["Admin: Subscription Plans"],
+        "summary": "Активація плану",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "planId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Активовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriptionPlan" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/subscription-plans/{planId}/deactivate": {
+      "post": {
+        "tags": ["Admin: Subscription Plans"],
+        "summary": "Деактивація плану",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "planId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Деактивовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriptionPlan" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/dealerships/{dealershipId}/verify": {
+      "post": {
+        "tags": ["Admin: Dealerships"],
+        "summary": "Підтвердження салону",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Підтверджено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/dealerships/{dealershipId}/unverify": {
+      "post": {
+        "tags": ["Admin: Dealerships"],
+        "summary": "Скасування підтвердження",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "dealershipId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Скасовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dealership" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/announcements": {
+      "get": {
+        "tags": ["Admin: Announcements"],
+        "summary": "Список оголошень (Адмін)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": { "description": "Список", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnnouncementListResponse" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" }
+        }
+      }
+    },
+    "/admins/announcements/{announcementId}": {
+      "get": {
+        "tags": ["Admin: Announcements"],
+        "summary": "Деталі оголошення (Адмін)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Деталі", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/announcements/{announcementId}/activate": {
+      "post": {
+        "tags": ["Admin: Announcements"],
+        "summary": "Активувати оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Активовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/announcements/{announcementId}/deactivate": {
+      "post": {
+        "tags": ["Admin: Announcements"],
+        "summary": "Деактивувати оголошення",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Деактивовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/announcements/{announcementId}/reset-approves": {
+      "post": {
+        "tags": ["Admin: Announcements"],
+        "summary": "Скинути спроби підтвердження",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "announcementId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Скинуто", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FullAnnouncement" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users": {
+      "get": {
+        "tags": ["Admin: Users"],
+        "summary": "Список користувачів",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 } },
+          { "name": "searchBy", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" }, "description": "Залежить від searchBy: account_type (valid enums), region_id (ID)" },
+          { "name": "orderBy", "in": "query", "schema": { "type": "string" } },
+          { "name": "rangeBy", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Список", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserListResponse" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" }
+        }
+      },
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Створити користувача",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AdminCreateUserRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Створено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" }
+        }
+      }
+    },
+    "/admins/users/{userId}": {
+      "get": {
+        "tags": ["Admin: Users"],
+        "summary": "Деталі користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Користувач", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "patch": {
+        "tags": ["Admin: Users"],
+        "summary": "Оновити користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Оновлено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "delete": {
+        "tags": ["Admin: Users"],
+        "summary": "Видалити користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Видалено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/activate": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Активувати користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Активовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/deactivate": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Деактивувати користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Деактивовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/verify": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Верифікувати користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Верифіковано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/unverify": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Скасувати верифікацію",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Скасовано", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/ban": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Забанити користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BanUserRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Забанено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/unban": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Розбанити користувача",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Розбанено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/assign-manager": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Призначити менеджера",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Призначено", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/admins/users/{userId}/unassign-manager": {
+      "post": {
+        "tags": ["Admin: Users"],
+        "summary": "Зняти роль менеджера",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Знято", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "403": { "$ref": "#/components/responses/AuthForbidden" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    }
+  }
+}

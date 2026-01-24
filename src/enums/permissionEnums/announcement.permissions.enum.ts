@@ -1,0 +1,5 @@
+export enum AnnouncementPermissionsEnum{
+    READ = "ANNOUNCEMENT.READ",
+    MANAGE = "ANNOUNCEMENT.MANAGE",
+    MODERATE = "ANNOUNCEMENT.MODERATE"
+}
