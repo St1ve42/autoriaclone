@@ -3,7 +3,7 @@ import type {MakeType, ModelListType, VehicleType, ModelResponseType, ModelType}
 import {BaseQueryType} from "../types/QueryType.ts";
 import {FilterQuery, PipelineStage, UpdateQuery} from "mongoose";
 import {ObjectId} from "mongodb";
-import {CreateReportedVehicleDTOType, ReportedVehicleModelType, ReportedVehicleType, UpdateReportedVehicleDTOType} from "../types/ReportedVehicleType.ts";
+import {CreateReportedVehicleDTOType, ReportedVehicleModelType, ReportedVehicleType} from "../types/ReportedVehicleType.ts";
 
 class VehicleRepository{
     public async getMakeList(query: BaseQueryType): Promise<[MakeType[], number]>{

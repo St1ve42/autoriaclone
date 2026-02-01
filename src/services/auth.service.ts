@@ -104,6 +104,7 @@ class AuthService{
             throw new ApiError("Новий пароль не повинен збігатись зі старим", StatusCodeEnum.CONFLICT)
         }
         const newHashedPassword = await passwordService.hash(password)
+        await userRepository.updateByIdAndParams(id, {password: newHashedPassword})
         await tokenRepository.deleteManyByParams({user_id: user.id})
     }
 

@@ -26,6 +26,7 @@ DealershipSchema.pre<Query<DealershipType, unknown>>("findOneAndDelete", async f
     const dealership_id = this.getQuery()._id
     await dealershipMemberRepository.deleteByParams({dealership_id})
     await dealershipReviewRepository.deleteByParams({dealership_id})
+    next()
 })
 
 export const Dealership = model<DealershipType>("dealerships", DealershipSchema)

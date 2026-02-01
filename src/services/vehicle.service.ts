@@ -1,4 +1,4 @@
-import type {MakeType, ModelListType, ModelResponseType, ModelType, VehicleType} from "../types/VehicleType.ts";
+import type {MakeType, ModelListType, ModelResponseType, VehicleType} from "../types/VehicleType.ts";
 import {vehicleRepository} from "../repository/vehicle.repository.ts";
 import {BaseQueryType} from "../types/QueryType.ts";
 import {ApiError} from "../errors/api.error.ts";

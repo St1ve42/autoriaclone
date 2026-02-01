@@ -11,7 +11,6 @@ import {DealershipSearchByEnum} from "../enums/dealershipEnums/dealership.search
 import {DealershipOrderByEnum} from "../enums/dealershipEnums/dealership.orderBy.enum.ts";
 import {DealershipReviewOrderByEnum} from "../enums/dealershipReviewsEnums/dealership.review.orderBy.enum.ts";
 import {UserValidator} from "./user.validator.ts";
-import {BASE_MESSAGES} from "../constants/joi.constants.ts";
 import {Utils} from "../utils/utils.ts";
 import {DealershipReviewSearchByEnum} from "../enums/dealershipReviewsEnums/dealership.review.searchBy.enum.ts";
 import {DealershipReviewValidator} from "./dealership.review.validator.ts";

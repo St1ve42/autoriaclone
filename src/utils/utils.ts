@@ -1,7 +1,6 @@
 import type {Request} from "express"
 import {RegExpression} from "../regExp/regExp.ts";
 import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
-import {ExchangeCurrencyMap} from "../types/ExchangeCurrencyType.ts";
 import {whitelist} from "../constants/general.constants.ts";
 import {PrivatBank} from "../publicAPI/PrivatBank.ts";
 import { Decimal } from "@prisma/client/runtime/library";

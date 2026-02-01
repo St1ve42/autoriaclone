@@ -104,9 +104,7 @@ class AuthController{
             const {user_id} = res.locals.payload as TokenPayloadType
             const body = req.body as Record<"password" | "oldPassword", string>
             await authService.change(body, user_id)
-            res.status(StatusCodeEnum.OK).json({
-                message: "Пароль успішно змінений"
-            })
+            res.status(StatusCodeEnum.NO_CONTENT).json({})
         }
         catch(e){
             next(e)

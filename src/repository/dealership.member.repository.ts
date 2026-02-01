@@ -2,7 +2,6 @@ import {DealershipMemberCreateWithUniqueFieldsDTOType, DealershipMemberType, Dea
 import {DealershipMember} from "../models/mongoose/dealershipMember.model.ts";
 import {FilterQuery, PipelineStage} from "mongoose";
 import {DealershipMemberQueryType} from "../types/QueryType.ts";
-import {DealershipReviewType} from "../types/DealershipReviewType.ts";
 
 class DealershipMemberRepository{
     public async get(memberId: string): Promise<DealershipMemberType | null>{

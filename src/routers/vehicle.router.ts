@@ -3,7 +3,7 @@ import {vehicleController} from "../controllers/vehicle.controller.ts";
 import {commonMiddleware} from "../middlewares/common.middleware.ts";
 import {QueryValidator} from "../vaildators/query.validator.ts";
 import {vehicleService} from "../services/vehicle.service.ts";
-import {MakeType, ModelType} from "../types/VehicleType.ts";
+import {MakeType} from "../types/VehicleType.ts";
 
 const router = Router()
 
