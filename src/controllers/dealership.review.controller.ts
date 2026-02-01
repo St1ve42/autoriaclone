@@ -14,19 +14,19 @@ class DealershipReviewController{
             const dealershipId = req.params.dealershipId as string
             const body = req.body as DealershipReviewCreateDTOType
             const review = await dealershipReviewService.create(body, dealershipId, user_id)
-            res.status(StatusCodeEnum.CREATED).json(await dealershipReviewPresenter.res(review))
+            res.status(StatusCodeEnum.CREATED).json(await dealershipReviewPresenter.dealershipRes(review))
         }
         catch(e){
             next(e)
         }
     }
 
-    public async getList (req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async getDealershipReviews (req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
             const dealershipId = req.params.dealershipId as string
-            const query = req.query as DealershipReviewQueryType
-            const [reviews, total] = await dealershipReviewService.getListByDealershipId(dealershipId, query)
-            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.list(reviews, total, query))
+            const query = req.query as unknown as DealershipReviewQueryType
+            const [reviews, total] = await dealershipReviewService.getList(query, {dealership_id: dealershipId})
+            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.dealershipList(reviews, total, query))
         }
         catch(e){
             next(e)
@@ -37,7 +37,7 @@ class DealershipReviewController{
         try{
             const reviewId = req.params.reviewId as string
             const review = await dealershipReviewService.get(reviewId)
-            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.res(review))
+            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.dealershipRes(review))
         }
         catch(e){
             next(e)
@@ -49,7 +49,7 @@ class DealershipReviewController{
             const reviewId = req.params.reviewId as string
             const body = req.body as Partial<DealershipType>
             const review = await dealershipReviewService.update(reviewId, body)
-            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.res(review))
+            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.dealershipRes(review))
         }
         catch(e){
             next(e)
@@ -60,7 +60,7 @@ class DealershipReviewController{
         try{
             const reviewId = req.params.reviewId as string
             const review = await dealershipReviewService.delete(reviewId)
-            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.res(review))
+            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.dealershipRes(review))
         }
         catch(e){
             next(e)

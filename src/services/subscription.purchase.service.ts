@@ -42,7 +42,7 @@ class SubscriptionPurchaseService{
         if(!isActive){
             throw new ApiError("Користувач не має активної підписки", StatusCodeEnum.NOT_FOUND)
         }
-        return await subscriptionPurchaseRepository.findOneByParams(dto)
+        return await subscriptionPurchaseRepository.findOneByParams(dto) as SubscriptionPurchaseWithPlanAndUserType
     }
 
     private static checkSubscriptionIsActive(subscription: SubscriptionPurchaseWithPlanAndUserType){

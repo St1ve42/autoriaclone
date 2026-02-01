@@ -1,4 +1,4 @@
-const BASE_MESSAGES = {
+export const BASE_MESSAGES = {
     'any.required': 'Поле {{#label}} є необхідним',
     'any.only': 'Неправильне значення для поля {{#label}}. Дозволені значення: {{#valids}}',
     'any.existent': `{{#label}} не знайдено`,
@@ -13,12 +13,12 @@ const BASE_MESSAGES = {
     'number.integer': '{{#label}} повинно бути цілим числом',
     'number.min': '{{#label}} повинно бути більшим, ніж {{#limit}}',
     'number.max': '{{#label}} повинно бути меншим, ніж {{#limit}}',
+    'boolean.base': "Поле {{#label}} має бути типу boolean",
     'array.empty': '{{#label}} повинно бути заповненим',
     'array.base': '{{#label}} повинно бути масивом',
     'array.min': 'Масив {{#label}} повинен містити мінімум {{#limit}} елементів',
     'object.min': '{{#label}} повинен містити принаймні один ключ',
     'object.base': '{{#label}} повинен бути об`єктом',
-    // 'string.pattern.base': '{{#label}} format is invalid',
 };
 
 export const joiOptions = {
@@ -26,6 +26,7 @@ export const joiOptions = {
     errors: {
         wrap: {
             label: '',
+            array: '',
             string: ''
         }
     }

@@ -7,6 +7,7 @@ import {userMiddleware} from "../../middlewares/user.middleware.ts";
 import {adminAnnouncementsRouter} from "./admin.announcements.router.ts";
 import {adminSubscriptionsRouter} from "./admin.subscriptions.router.ts";
 import {adminRolesRouter} from "./admin.roles.router.ts";
+import {adminReportedVehicleRouter} from "./admin.reported.vehicle.router.ts";
 
 const router = Router()
 
@@ -17,5 +18,7 @@ router.use('/dealerships', adminDealershipsRouter)
 router.use('/announcements', adminAnnouncementsRouter)
 router.use('/subscriptions', adminSubscriptionsRouter)
 router.use('/roles', adminRolesRouter)
+router.use('/reported-vehicles', adminReportedVehicleRouter)
+
 
 export const adminRouter = router

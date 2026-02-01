@@ -22,7 +22,6 @@ class VehicleController{
     public async getModelList(req: Request, res: Response, next: NextFunction){
         try{
             const query = req.query as unknown as BaseQueryType
-            console.log(query)
             const makeId = req.params.makeId as string
             const [models, total] = await vehicleService.getModelList(makeId, query)
             res.status(StatusCodeEnum.OK).json({

@@ -89,6 +89,7 @@ model RolePermission {
   Permission    Permission @relation(references: [id], fields: [permission_id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([role_id, permission_id])
+  @@map("role_permissions")
 }
 
 model Token {

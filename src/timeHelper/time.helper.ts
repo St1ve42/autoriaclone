@@ -9,14 +9,6 @@ export class TimeHelper{
         return dayjs().subtract(value, unit).toDate()
     }
 
-    public static getISOStringDate(date: Date){
-        return date.toISOString().slice(0, 10)
-    }
-
-    public static getISOStringDateNow(){
-        return new Date().toISOString().slice(0, 10)
-    }
-
     public static toDateNowOnlyUTC(): Date {
         const now = new Date()
         return new Date(Date.UTC(

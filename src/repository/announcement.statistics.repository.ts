@@ -11,11 +11,6 @@ class AnnouncementStatisticsRepository{
     }
 
     public async increaseViewCount(id: string): Promise<AnnouncementStatistics | null>{
-        // return await prisma.announcementStatistics.upsert({
-        //     where: {announcement_id: id},
-        //     update: {total_views: {increment: 1}},
-        //     create: {announcement_id: id, total_views: 1},
-        // })
         return await prisma.announcementStatistics.update({where: {announcement_id: id}, data: {total_views: {increment: 1}}})
     }
 

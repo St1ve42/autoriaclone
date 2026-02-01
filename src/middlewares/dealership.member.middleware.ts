@@ -15,10 +15,10 @@ class DealershipMemberMiddleware{
             const memberId = req.params.memberId
             const member = await dealershipMemberService.get(memberId)
             if(member.user_id === user_id){
-                throw new ApiError("User can not do action with self", StatusCodeEnum.CONFLICT)
+                throw new ApiError("Користувач не може робити цю дію над самим собою", StatusCodeEnum.CONFLICT)
             }
             if(member.dealership_id.toString() !== dealershipId){
-                throw new ApiError("Member doesn't belong to this dealership", StatusCodeEnum.CONFLICT)
+                throw new ApiError("Співробітник не є членом поточного автосалону", StatusCodeEnum.CONFLICT)
             }
             next()
         }
@@ -33,7 +33,7 @@ class DealershipMemberMiddleware{
             const reviewId = req.params.reviewId
             const {dealership_id: reviewDealershipId, author_id: reviewAuthorId} = await dealershipReviewService.get(reviewId)
             if(reviewDealershipId.toString() !== dealershipId){
-                throw new ApiError("Відгук не належить цьому автосалону", StatusCodeEnum.CONFLICT)
+                throw new ApiError("Відгук не належить цьому автосалону", StatusCodeEnum.NOT_FOUND)
             }
             const {user_id} = res.locals.payload as TokenPayloadType
             const {Role: {name: roleName}} = await userService.get(user_id)

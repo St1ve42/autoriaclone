@@ -4,9 +4,10 @@ import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
 import {ExchangeCurrencyMap} from "../types/ExchangeCurrencyType.ts";
 import {whitelist} from "../constants/general.constants.ts";
 import {PrivatBank} from "../publicAPI/PrivatBank.ts";
-import {ApiError} from "../errors/api.error.ts";
-import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import { Decimal } from "@prisma/client/runtime/library";
+import {AlternativesSchema, BooleanSchema, NumberSchema, StringSchema} from "joi";
+import {BASE_MESSAGES} from "../constants/joi.constants.ts";
+import {ExchangeRateResultType} from "../types/ExchangeRateResultType.ts";
 
 
 export class Utils{
@@ -29,21 +30,10 @@ export class Utils{
         return !!text.toLowerCase().split(' ').find(word => RegExpression.obsceneLanguagePattern().test(word) && !whitelist.includes(word))
     }
 
-    public static normalizeToUSD(value: number, currency: CurrencyEnum, exchange_rate: ExchangeCurrencyMap){
-        const USDSale = exchange_rate.get(CurrencyEnum.USD)?.sale as number
-        if(currency === CurrencyEnum.UAH){
-            return value / USDSale
-        }
-        else if(currency === CurrencyEnum.EUR){
-            return value * exchange_rate.get(CurrencyEnum.EUR)?.buy as number / USDSale
-        }
-        return value
-    }
-
-    public static async normalizeToCurrency(value: Decimal, inputCurrency: CurrencyEnum, outputCurrency: CurrencyEnum): Promise<{value: number, currency: CurrencyEnum | null}>{
+    public static async normalizeToCurrency(value: Decimal, inputCurrency: CurrencyEnum, outputCurrency: CurrencyEnum, input_exchange_rate?: ExchangeRateResultType): Promise<{value: number, currency: CurrencyEnum | null}>{
         const normalizedCurrency: {value: number, currency: CurrencyEnum | null} = {value: value.toNumber(), currency: outputCurrency}
         if(inputCurrency !== outputCurrency){
-            const exchange_rate = await PrivatBank.getExchangeRate()
+            const exchange_rate = input_exchange_rate || await PrivatBank.getExchangeRate()
             if(inputCurrency === CurrencyEnum.UAH){
                 const outputCurrencyExchangeRate = exchange_rate[outputCurrency]
                 const {sale} = outputCurrencyExchangeRate
@@ -65,8 +55,20 @@ export class Utils{
         return normalizedCurrency
 
     }
-    
-    
+
+    public static addBaseMessages (schema: StringSchema | NumberSchema | BooleanSchema | AlternativesSchema) {
+        return schema.messages(BASE_MESSAGES).options({
+            errors: {
+                wrap: {
+                    label: false,
+                    array: false,
+                    string: false
+                }
+            }
+        })
+    }
+
+
 
 }
 

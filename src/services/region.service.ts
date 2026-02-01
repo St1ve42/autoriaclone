@@ -5,13 +5,13 @@ import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {ApiError} from "../errors/api.error.ts";
 
 class RegionService{
-    public async getList(query: BaseQueryType): Promise<Region[]>{
+    public async getList(query: BaseQueryType): Promise<[Region[], number]>{
         return await regionRepository.getList(query)
     }
 
     public async getNameById(id: number): Promise<string>{
         const regionRecord = await regionRepository.getById(id)
-        if(!regionRecord) throw new ApiError("Region not found", StatusCodeEnum.NOT_FOUND)
+        if(!regionRecord) throw new ApiError("Регіон не знайдено", StatusCodeEnum.NOT_FOUND)
         return regionRecord.name
     }
 

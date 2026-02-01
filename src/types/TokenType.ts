@@ -5,7 +5,7 @@ type RefreshTokenType = {refreshToken: string}
 type TokenPayloadType = {
     user_id: string,
     role_id: number,
-    iat?: number, //Date?
+    iat?: number,
     exp?: number
 }
 

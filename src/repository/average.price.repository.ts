@@ -15,7 +15,7 @@ class AveragePriceRepository{
     public async create(dto: AveragePricesCreateInput): Promise<AveragePrices>{
         return await prisma.averagePrices.upsert(
             {
-                where: {brand_model_region_id: {brand: dto.brand, model: dto.model, region_id: dto.Region?.connect?.id || 1}}, //TODO fix
+                where: {brand_model_region_id: {brand: dto.brand, model: dto.model, region_id: dto.Region?.connect?.id || 1}},
                 update: {avg_price: dto.avg_price, cars_count: dto.cars_count, calculated_at: new Date()},
                 create: dto
             }

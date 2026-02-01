@@ -9,10 +9,10 @@ import {AnnouncementPermissionsEnum} from "../../enums/permissionEnums/announcem
 const router = Router()
 
 router.get('/', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.READ), commonMiddleware.validateQuery(QueryValidator.announcementValidator), announcementController.getListByAdmin)
-router.get('/:announcementId', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.READ), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Announcement", "announcementId"), announcementController.getByAdmin)
-router.post('/:announcementId/reset-approve-attempts', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.MODERATE), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Announcement", "announcementId"),announcementController.resetApproveAttempts)
-router.post('/:announcementId/activate', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.MODERATE), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Announcement", "announcementId"), announcementController.activate)
-router.post('/:announcementId/deactivate', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.MODERATE), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Announcement", "announcementId"), announcementController.deactivate)
+router.get('/:announcementId', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.READ), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Оголошення", "announcementId"), announcementController.getByAdmin)
+router.post('/:announcementId/reset-approve-attempts', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.MODERATE), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Оголошення", "announcementId"),announcementController.resetApproveAttempts)
+router.post('/:announcementId/activate', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.MODERATE), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Оголошення", "announcementId"), announcementController.activate)
+router.post('/:announcementId/deactivate', commonMiddleware.validateUserPermission(AnnouncementPermissionsEnum.MODERATE), commonMiddleware.validateId("announcementId", "mongo"), commonMiddleware.validateEntityExisting<AnnouncementType>(announcementService, "Оголошення", "announcementId"), announcementController.deactivate)
 
 
 export const adminAnnouncementsRouter = router

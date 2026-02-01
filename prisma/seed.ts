@@ -4,6 +4,7 @@ import {UserPermissionsEnum} from "../src/enums/permissionEnums/user.permissions
 import {DealershipPermissionsEnum} from "../src/enums/permissionEnums/dealership.permission.enum.ts";
 import {BillingPermissionsEnum} from "../src/enums/permissionEnums/billing.permissions.enum.ts";
 import {SubscriptionCodeEnum} from "../src/enums/SubcriptionCodeEnums/subscription.code.enum.ts";
+import {ReportedVehiclesPermissionsEnum} from "../src/enums/permissionEnums/reported.vehicles.permissions.enum.ts";
 
 export default async function main() {
 
@@ -64,6 +65,9 @@ export default async function main() {
 
         //Billing
         ...Object.values(BillingPermissionsEnum),
+
+        //REPORTED VEHICLES
+        ...Object.values(ReportedVehiclesPermissionsEnum)
     ];
 
     const roles = [
@@ -78,6 +82,8 @@ export default async function main() {
         AnnouncementPermissionsEnum.READ,
         AnnouncementPermissionsEnum.MANAGE,
         AnnouncementPermissionsEnum.MODERATE,
+        ReportedVehiclesPermissionsEnum.READ,
+        ReportedVehiclesPermissionsEnum.MODERATE,
     ];
 
     const rolePermissionsMap: {[p: string]: string[]} = {

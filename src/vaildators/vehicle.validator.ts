@@ -7,20 +7,24 @@ import {TechnicalConditionEnum} from "../enums/vehicleEnums/technical.condition.
 import joi from "joi";
 import {VehicleTypeEnum} from "../enums/vehicleEnums/vehicle.type.enum.ts";
 import {VehicleRegexpEnum} from "../enums/vehicleEnums/vehicle.regexp.enum.ts";
+import {EngineCapacityUnits} from "../enums/vehicleEnums/engine.capacity.units.ts";
+import {FuelConsumptionUnits} from "../enums/vehicleEnums/fuel.consumption.units.ts";
+import {EnginePowerUnits} from "../enums/vehicleEnums/engine.power.units.ts";
 
 export class VehicleValidator{
     private static fuelConsumption = joi.object({
         city:  joi.number().max(80),
         highway:  joi.number().max(80),
-        combined:  joi.number().max(80)
-    }) // 1 л / 100 км
+        combined:  joi.number().max(80),
+        unit: joi.string().valid(...Object.values(FuelConsumptionUnits)).trim().required()
+    })
 
     private static vehicleCharacteristics = joi.object({
             transmission:  joi.string().valid(...Object.values(TransmissionTypeEnum)).trim(),
             fuel_type:  joi.string().valid(...Object.values(FuelTypeEnum)).trim(),
-            engine_power:  joi.number().min(20).max(2000), //к.с.
+            engine_power:  {value: joi.number().min(20).max(2000).required(), unit: joi.string().required().valid(...Object.values(EnginePowerUnits)).trim()},
             fuel_consumption: this.fuelConsumption,
-            engine_capacity:  joi.number(), //л
+            engine_capacity: {value: joi.number().required(), unit: joi.string().required().valid(...Object.values(EngineCapacityUnits)).trim()},
             environmental_standard:  joi.string().valid(...Object.values(EnvironmentalStandardEnum)).trim(),
             drive_type:  joi.string().valid(...Object.values(DriveTypeEnum)).trim(),
             door_number:  joi.number().min(1).max(6),

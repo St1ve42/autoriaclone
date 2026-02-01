@@ -7,6 +7,7 @@ import {AnnouncementRangeByEnum} from "../enums/announcementEnums/announcement.r
 import {DealershipSearchByEnum} from "../enums/dealershipEnums/dealership.searchBy.enum.ts";
 import {DealershipOrderByEnum} from "../enums/dealershipEnums/dealership.orderBy.enum.ts";
 import {DealershipReviewOrderByEnum} from "../enums/dealershipReviewsEnums/dealership.review.orderBy.enum.ts";
+import {DealershipReviewSearchByEnum} from "../enums/dealershipReviewsEnums/dealership.review.searchBy.enum.ts";
 
 export type QueryType<T,K> = {
     page: number
@@ -30,7 +31,7 @@ type BaseQueryType = {
 type UserQueryType = QueryType<UserSearchByEnum, UserOrderByEnum>
 type AnnouncementQueryType = QueryType<AnnouncementSearchByEnum, AnnouncementOrderByEnum>
 type DealershipQueryType = QueryType<DealershipSearchByEnum, DealershipOrderByEnum>
-type DealershipReviewQueryType = QueryType<undefined, DealershipReviewOrderByEnum>
+type DealershipReviewQueryType = QueryType<DealershipReviewSearchByEnum, DealershipReviewOrderByEnum>
 type DealershipMemberQueryType = QueryType<undefined, undefined>
 
 

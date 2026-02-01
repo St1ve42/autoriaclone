@@ -8,7 +8,7 @@ import {strictAuthMiddleware} from "../middlewares/strict.auth.middleware.ts";
 const router = Router()
 
 router.get('/', subscriptionPlanController.getList)
-router.get('/:planId', subscriptionPlanController.get)
+router.get('/:planId', commonMiddleware.validateId("planId", "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "SubscriptionPlan", "planId"), subscriptionPlanController.get)
 router.post('/:planId/purchase', strictAuthMiddleware.validateAccessToken, commonMiddleware.validateId("planId", "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "SubscriptionPlan", "planId"), subscriptionPlanController.purchase)
 
 export const subscriptionPlanRouter = router

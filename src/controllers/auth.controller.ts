@@ -79,7 +79,7 @@ class AuthController{
             const email = req.body.email as string
             await authService.recoveryRequest(email)
             res.status(StatusCodeEnum.OK).json({
-                message: "Check your email"
+                message: "Перевірте свою поштову скриньку"
             })
         }
         catch(e){
@@ -103,8 +103,10 @@ class AuthController{
         try{
             const {user_id} = res.locals.payload as TokenPayloadType
             const body = req.body as Record<"password" | "oldPassword", string>
-            const user = await authService.change(body, user_id)
-            res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
+            await authService.change(body, user_id)
+            res.status(StatusCodeEnum.OK).json({
+                message: "Пароль успішно змінений"
+            })
         }
         catch(e){
             next(e)

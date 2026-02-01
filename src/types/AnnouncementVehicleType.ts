@@ -10,14 +10,15 @@ export type FuelConsumptionDto = {
     city?: number;
     highway?: number;
     combined?: number;
+    unit?: string
 }
 
-export type VehicleCharacteristicsDto = {
+export type VehicleCharacteristics = {
     transmission?: TransmissionTypeEnum;
     fuel_type?: FuelTypeEnum;
-    engine_power?: number; // к.с.
+    engine_power?: {value: number, unit?: string};
     fuel_consumption?: FuelConsumptionDto;
-    engine_capacity?: number; // л
+    engine_capacity?: {value: number, unit?: string};
     environmental_standard?: EnvironmentalStandardEnum;
     drive_type?: DriveTypeEnum;
     door_number?: number;
@@ -37,6 +38,7 @@ export type AnnouncementVehicleType = {
     year: number;
     vehicle_type: VehicleTypeEnum;
     mileage: number;
-    characteristics?: VehicleCharacteristicsDto;
+    characteristics?: VehicleCharacteristics;
 }
+
 

@@ -1,10 +1,10 @@
-import {RegExpression} from "../../regExp/regExp.ts";
+import {RegexBuilder} from "../../regExp/regExp.ts";
 
 export const DealershipRegexpEnum = {
-    NAME: RegExpression.alphabetPattern(true),
-    ADDRESS: RegExpression.alphaNumericPattern(true), //?
+    NAME: new RegexBuilder().withCyrillic().withLatin().withSymbols(`'"`).withSpace().build(),
+    ADDRESS: new RegexBuilder(3, 50).withCyrillic().withLatin().withSymbols(',.').withSpace().withNumbers().build(),
     PHONE: /^\+38 \(\d{3}\) \d{3} \d{2} \d{2}$/,
     EMAIL: /^[^-_]+$/,
-    WEBSITE: /^http(s|):\/\/www\.\w+\.[a-zA-z]{2,3}$/,
+    WEBSITE: /^https?:\/\/([\w-]+\.)+[\w-]{2,}$/,
 }
 

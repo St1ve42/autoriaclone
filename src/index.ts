@@ -44,5 +44,4 @@ app.listen(configs.APP_PORT, async () => {
     console.log(`Server is running on http://${configs.APP_HOST}:${configs.APP_PORT}`)
 })
 
-//TODO oldpassword table and repository
 

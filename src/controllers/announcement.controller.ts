@@ -1,7 +1,7 @@
 import type {NextFunction, Request, Response} from "express";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {announcementPresenter} from "../presenters/announcement.presenter.ts";
-import {AnnouncementType, CreateAnnouncementDTOType, UpdateAnnouncementDTOType} from "../types/AnnouncementType.ts";
+import {CreateAnnouncementDTOType, UpdateAnnouncementDTOType} from "../types/AnnouncementType.ts";
 import {announcementService} from "../services/announcement.service.ts";
 import {TokenPayloadType} from "../types/TokenType.ts";
 import {UploadedFile} from "express-fileupload";
@@ -59,7 +59,7 @@ class AnnouncementController{
         try{
             const announcementId = req.params.announcementId as string
             const announcement = await announcementService.get(announcementId)
-            let presenter = await announcementPresenter.res(announcement)
+            let presenter: unknown = await announcementPresenter.res(announcement)
             const hasAccess = res.locals.hasAccess as boolean
             if(hasAccess){
                 presenter = await announcementPresenter.userRes(announcement)

@@ -10,7 +10,7 @@ class UserMiddleware{
     public async checkEmailTaken(req: Request, res: Response, next: NextFunction){
         try{
               const body = req.body as UserCreateDTOType
-              if(await userService.getByEmail(body.email)) throw new ApiError("Email is taken", StatusCodeEnum.CONFLICT)
+              if(await userService.getByEmail(body.email)) throw new ApiError("Поточний email має інакший користувач", StatusCodeEnum.CONFLICT)
               next()
         }
         catch(e){
@@ -21,7 +21,7 @@ class UserMiddleware{
     public async checkEmailExists(req: Request, res: Response, next: NextFunction){
         try{
             const body = req.body as UserCreateDTOType
-            if(!await userService.getByEmail(body.email)) throw new ApiError("Email doesn't exist", StatusCodeEnum.NOT_FOUND)
+            if(!await userService.getByEmail(body.email)) throw new ApiError("Вказаний email не знайдено", StatusCodeEnum.NOT_FOUND)
             next()
         }
         catch(e){
@@ -34,7 +34,7 @@ class UserMiddleware{
             const {user_id} = res.locals.payload as TokenPayloadType
             const {account_type} = await userService.get(user_id)
             if(account_type !== AccountTypeEnum.premium){
-                throw new ApiError("Only users with premium account can see statistics", StatusCodeEnum.FORBIDDEN)
+                throw new ApiError("Тільки користувачі з підпискою premium можуть переглядати статистику", StatusCodeEnum.FORBIDDEN)
             }
             next()
         }
@@ -47,7 +47,7 @@ class UserMiddleware{
         try{
             const {user_id} = res.locals.payload as TokenPayloadType
             if(await userService.isBanned(user_id)){
-                throw new ApiError("User is banned", StatusCodeEnum.FORBIDDEN)
+                throw new ApiError("Користувач забанений", StatusCodeEnum.FORBIDDEN)
             }
             next()
         }
@@ -61,7 +61,7 @@ class UserMiddleware{
             const {user_id} = res.locals.payload as TokenPayloadType
             const userId = req.params.userId
             if(user_id === userId){
-                throw new ApiError("Operation with yourself is not allowed", StatusCodeEnum.CONFLICT)
+                throw new ApiError("Неможливо виконати операцію для поточного користувача", StatusCodeEnum.FORBIDDEN)
             }
             next()
         }

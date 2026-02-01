@@ -1,0 +1,5 @@
+export enum ReportedVehiclesPermissionsEnum{
+    READ = "REPORTED_VEHICLES.READ",
+    MANAGE = "REPORTED_VEHICLES.MANAGE",
+    MODERATE = "REPORTED_VEHICLES.MODERATE"
+}

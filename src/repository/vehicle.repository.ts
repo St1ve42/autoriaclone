@@ -1,8 +1,9 @@
 import {Vehicle} from "../models/mongoose/vehicle.model.ts";
-import type {MakeType, ModelListType, VehicleType, ModelResponseType} from "../types/VehicleType.ts";
+import type {MakeType, ModelListType, VehicleType, ModelResponseType, ModelType} from "../types/VehicleType.ts";
 import {BaseQueryType} from "../types/QueryType.ts";
-import {PipelineStage} from "mongoose";
+import {FilterQuery, PipelineStage, UpdateQuery} from "mongoose";
 import {ObjectId} from "mongodb";
+import {CreateReportedVehicleDTOType, ReportedVehicleModelType, ReportedVehicleType, UpdateReportedVehicleDTOType} from "../types/ReportedVehicleType.ts";
 
 class VehicleRepository{
     public async getMakeList(query: BaseQueryType): Promise<[MakeType[], number]>{
@@ -44,6 +45,21 @@ class VehicleRepository{
         return [modelList, total]
     }
 
+    public async isVehicleExists(dto: Pick<CreateReportedVehicleDTOType, "make_name"> & {model?: Partial<ReportedVehicleModelType>}): Promise<boolean>{
+        const {make_name, model} = dto
+        const filter: FilterQuery<ReportedVehicleType> = {"make_name": make_name}
+        if(model){
+            const {year, ...restModel} = model
+            filter["models"] = {
+                $elemMatch: {
+                    ...restModel,
+                    ...(year ? {years: year} : {})
+                }
+            }
+        }
+        return !!(await Vehicle.findOne(filter))
+    }
+
     public async isModelBelongsToMake (makeId: string, modelId: string): Promise<boolean>{
         const pipeline: PipelineStage[] = [
             {
@@ -59,7 +75,7 @@ class VehicleRepository{
                             $filter: {
                                 input: "$models",
                                 as: "model",
-                                cond: { $eq: ["$$model._id", modelId] }
+                                cond: { $eq: ["$$model._id", new ObjectId(modelId)] }
                             }
                         }
                     }
@@ -69,7 +85,7 @@ class VehicleRepository{
                 $unset: ["_id"]
             }
         ]
-        const modelResponse: ModelResponseType & Partial<ModelResponseType, "model"> = (await Vehicle.aggregate(pipeline))[0]
+        const modelResponse: ModelResponseType & Partial<Pick<ModelResponseType, "model">> = (await Vehicle.aggregate(pipeline))[0]
         return !!modelResponse.model
     }
 
@@ -89,7 +105,7 @@ class VehicleRepository{
                             $filter: {
                                 input: "$models",
                                 as: "model",
-                                cond: { $eq: ["$$model._id", modelId] }
+                                cond: { $eq: ["$$model._id", new ObjectId(modelId)] }
                             }
                         }
                     }
@@ -113,11 +129,34 @@ class VehicleRepository{
         return await Vehicle.findById(makeId)
     }
 
+    public async create(dto: Omit<VehicleType, "_id" | "models"> & {models: Omit<ModelType, "_id">[]}){
+        return await Vehicle.create(dto)
+    }
+
+    public async update(dto: ReportedVehicleType): Promise<void>{
+        const {make_name, model} = dto
+        const {year, ...restModel} = model
+        let filter: FilterQuery<VehicleType> = {make_name, models: {$elemMatch: restModel}}
+        let update: UpdateQuery<VehicleType> = {$addToSet: {"models.$.years": year}}
+        const {matchedCount} = await Vehicle.updateOne(filter, update)
+        if(matchedCount === 0){
+            const defaultData = {
+                first_year: 0,
+                last_year: 0,
+                make_slug: make_name.toLowerCase(),
+            };
+            filter = {make_name}
+            update = {
+                $addToSet: {models: {...restModel, years: [year], model_styles: {}}},
+                $setOnInsert: {
+                    ...defaultData
+                }
+            }
+            await Vehicle.updateOne(filter, update, {upsert: true})
+        }
+    }
 
 }
 
-//TODO id for nested object
-//TODO get years using model_id
-//TODO think about vehicle list information
 
 export const vehicleRepository = new VehicleRepository()

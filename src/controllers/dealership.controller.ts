@@ -1,13 +1,10 @@
 import type {Request, Response, NextFunction} from "express";
-import {DealershipCreateWithInputDTOType, DealershipType} from "../types/DealershipType.ts";
+import {DealershipCreateWithInputDTOType} from "../types/DealershipType.ts";
 import {dealerShipService} from "../services/dealership.service.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {dealershipPresenter} from "../presenters/dealership.presenter.ts";
 import {TokenPayloadType} from "../types/TokenType.ts";
 import {UploadedFile} from "express-fileupload";
-import {dealershipReviewService} from "../services/dealership.review.service.ts";
-import {DealershipReviewCreateDTOType} from "../types/DealershipReviewType.ts";
-import {dealershipReviewPresenter} from "../presenters/dealership.review.presenter.ts";
 import {dealershipMemberService} from "../services/dealership.member.service.ts";
 import {dealershipMemberPresenter} from "../presenters/dealership.member.presenter.ts";
 import {DealershipMemberAddDTOType, DealershipMemberUpdateDTOType} from "../types/DealershipMemberType.ts";
@@ -122,7 +119,7 @@ class DealershipController{
     public async getMembers (req: Request, res: Response, next: NextFunction){
         try{
             const dealershipId = req.params.dealershipId as string
-            const query = req.query as DealershipMemberQueryType
+            const query = req.query as unknown as DealershipMemberQueryType
             const [members, total] = await dealershipMemberService.getMembersByDealershipId(dealershipId, query)
             res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.list(members, total, query))
         }
@@ -147,7 +144,7 @@ class DealershipController{
             const dealershipId = req.params.dealershipId as string
             const body = req.body as DealershipMemberAddDTOType
             const member = await dealershipMemberService.addMember(dealershipId, body)
-            res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.res(member))
+            res.status(StatusCodeEnum.CREATED).json(await dealershipMemberPresenter.res(member))
         }
         catch(e){
             next(e)
@@ -156,9 +153,8 @@ class DealershipController{
 
     public async deleteMember (req: Request, res: Response, next: NextFunction){
         try{
-            const dealershipId = req.params.dealershipId as string
             const memberId = req.params.memberId as string
-            const member = await dealershipMemberService.deleteMember(dealershipId, memberId)
+            const member = await dealershipMemberService.deleteMember(memberId)
             res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.res(member))
         }
         catch(e){
@@ -168,10 +164,9 @@ class DealershipController{
 
     public async updateMember (req: Request, res: Response, next: NextFunction){
         try{
-            const dealershipId = req.params.dealershipId as string
             const memberId = req.params.memberId as string
             const body = req.body as DealershipMemberUpdateDTOType
-            const member = await dealershipMemberService.update(dealershipId, memberId, body)
+            const member = await dealershipMemberService.update(memberId, body)
             res.status(StatusCodeEnum.OK).json(await dealershipMemberPresenter.res(member))
         }
         catch(e){
@@ -196,9 +191,3 @@ class DealershipController{
 
 export const dealershipController = new DealershipController()
 
-//TODO average dealership rating
-//TODO make dealershipMember repository
-//TODO add owner to dealershipMember db
-//TODO allow owner to assign manager role
-//TODO think about how to join to dealership
-//TODO join where dealership and its children tables are related

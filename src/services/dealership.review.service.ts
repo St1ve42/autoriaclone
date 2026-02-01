@@ -8,17 +8,13 @@ class DealershipReviewService{
     public async create(dto: DealershipReviewCreateDTOType, dealershipId: string, userId: string): Promise<DealershipReviewType>{
         const review = await dealershipReviewRepository.findOneByParams({dealership_id: dealershipId, author_id: userId})
         if(review){
-            throw new ApiError("User can post only one review", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Користувач може опублікувати лише один відгук", StatusCodeEnum.CONFLICT)
         }
         return dealershipReviewRepository.create({...dto, dealership_id: dealershipId, author_id: userId})
     }
 
-    public async getListByDealershipId(dealershipId: string, query: DealershipReviewQueryType){
-        return dealershipReviewRepository.getList(dealershipId, query)
-    }
-
-    public async getByDealershipId(dealershipId: string): Promise<DealershipReviewType[]>{
-        return dealershipReviewRepository.findManyByParams({dealership_id: dealershipId})
+    public async getList(query: DealershipReviewQueryType, filterInput: Partial<DealershipReviewType>){
+        return dealershipReviewRepository.getList(query, filterInput)
     }
 
     public async get(reviewId: string): Promise<DealershipReviewType> {

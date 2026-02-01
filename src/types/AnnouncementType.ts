@@ -1,7 +1,6 @@
 import {CurrencyEnum} from "../enums/generalEnums/currency.enum.ts";
 import {BaseType} from "./BaseType.ts";
 import {ExchangeCurrencyMap} from "./ExchangeCurrencyType.ts";
-import {OldVehicleType} from "./VehicleType.ts";
 import {DealershipType} from "./DealershipType.ts";
 import {AnnouncementVehicleType} from "./AnnouncementVehicleType.ts";
 
@@ -10,7 +9,7 @@ type AnnouncementType = {
     title: string,
     description: string,
     city: string,
-    region: number,
+    region_id: number,
     images: string[],
     price: number,
     currency: CurrencyEnum,

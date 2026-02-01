@@ -28,7 +28,7 @@ class AnnouncementService{
         const {account_type} = await userService.get(userId)
         const announcements = await announcementRepository.findByParams({user_id: userId})
         if(account_type === AccountTypeEnum.basic && announcements.length !== 0 && announcements.length >= 1){
-            throw new ApiError("User with basic account can create only one announcement", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Користувач з базовим акаунтом може мати лише 1 оголошення", StatusCodeEnum.CONFLICT)
         }
         let approve_attempts = 0
         const isObsceneLanguage = Utils.isObsceneLanguage(dto.description)
@@ -72,7 +72,7 @@ class AnnouncementService{
     public async upload(id: string, uploadedImages: UploadedFile[]){
         const {images: announcementImages} = await announcementService.get(id)
         if(announcementImages.length + uploadedImages.length > 10){
-            throw new ApiError("Announcements can not contain more than 10 images", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Оголошення не може містити більше, ніж 10 зображень", StatusCodeEnum.CONFLICT)
         }
         const paths = await s3Service.uploadManyFiles(FileItemTypeEnum.ANNOUNCEMENT, id, uploadedImages)
         return await announcementRepository.updateImages(id, paths, "upload") as AnnouncementType
@@ -81,11 +81,11 @@ class AnnouncementService{
     public async deleteImages(id: string, imagePaths: string[]){
         const {images: announcementImages} = await announcementService.get(id)
         if(announcementImages.length === 0){
-            throw new ApiError("Announcement doesn't contain images", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Оголошення не містить зображення", StatusCodeEnum.NOT_FOUND)
         }
         imagePaths.forEach(imagePath => {
             if(!announcementImages.includes(imagePath)){
-                throw new ApiError(`Image ${imagePath.split('/').at(-1)} not found`, StatusCodeEnum.CONFLICT)
+                throw new ApiError(`Зображення ${imagePath.split('/').at(-1)} не знайдено`, StatusCodeEnum.NOT_FOUND)
             }
         })
         await s3Service.deleteManyFiles(imagePaths)
@@ -105,7 +105,7 @@ class AnnouncementService{
     }
 
     private static getStatus(approve_attempts: number): string{
-        let status: AnnouncementStatusEnum | '' = ''
+        let status
         if(approve_attempts === 0){
             status = AnnouncementStatusEnum.ACTIVE
         }
@@ -122,4 +122,3 @@ class AnnouncementService{
 
 export const announcementService = new AnnouncementService()
 
-//TODO think about creating db about reported cars

@@ -2,8 +2,7 @@ import {userRepository} from "../repository/user.repository.ts";
 import type {UserCreateInput, UserUpdateInput} from "../../prisma/src/generated/prisma/models/User.ts";
 import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
 import {roleService} from "./role.service.ts";
-import {AccountTypeEnum, SubscriptionPlan, SubscriptionPurchase, User} from "../../prisma/src/generated/prisma/client.ts";
-import {CurrencyEnum} from "../../prisma/src/generated/prisma/enums.ts";
+import {User} from "../../prisma/src/generated/prisma/client.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {RoleUpdateOneRequiredWithoutUserNestedInput} from "../../prisma/src/generated/prisma/models/Role.js";
 import {RegionUpdateOneRequiredWithoutUserNestedInput} from "../../prisma/src/generated/prisma/models/Region.js";
@@ -15,8 +14,6 @@ import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 import {UserWithIncludedPermissionType, UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
 import {BanType} from "../types/BanType.ts";
 import {TimeHelper} from "../timeHelper/time.helper.ts";
-import {subscriptionPlanRepository} from "../repository/subscription.plan.repository.ts";
-import {subscriptionPurchaseRepository} from "../repository/subscription.purchase.repository.ts";
 import {UserListReturnType} from "../types/ListReturnType.ts";
 import {tokenRepository} from "../repository/token.repository.ts";
 import {GlobalRoleEnums} from "../enums/globalRoleEnums/globalRoleEnums.ts";
@@ -36,8 +33,8 @@ class UserService{
 
     public async create(dto: UserCreateDTOType): Promise<UserWithIncludedRegionAndRoleType>{
         const roleId = await roleService.getIdByName(GlobalRoleEnums.USER)
-        const {region, ...rest} = dto
-        const userCreateData: UserCreateInput = {...rest, Role: {connect: {id: roleId}}, Region: {connect: {id: region}}}
+        const {region_id, ...rest} = dto
+        const userCreateData: UserCreateInput = {...rest, Role: {connect: {id: roleId}}, Region: {connect: {id: region_id}}}
         return await userRepository.create(userCreateData)
     }
 
@@ -75,10 +72,10 @@ class UserService{
     }
 
     public async update(id: string, dto: UserUpdateDTOType): Promise<UserWithIncludedRegionAndRoleType>{
-        const {region, ...restDTO} = dto
+        const {region_id, ...restDTO} = dto
         const connection: {role?: RoleUpdateOneRequiredWithoutUserNestedInput, region?: RegionUpdateOneRequiredWithoutUserNestedInput} = {}
-        if(region){
-            connection.region = {connect: {id: region}}
+        if(region_id){
+            connection.region = {connect: {id: region_id}}
         }
         const input: UserUpdateInput = {...restDTO, ...connection}
         return await userRepository.updateByIdAndParams(id, input) as UserWithIncludedRegionAndRoleType
@@ -97,7 +94,7 @@ class UserService{
     public async deleteAvatar(id: string): Promise<UserWithIncludedRegionAndRoleType>{
         const user = await userRepository.getById(id) as User
         if(!user.photo){
-            throw new ApiError('Avatar not found', StatusCodeEnum.NOT_FOUND)
+            throw new ApiError('Аватар не знайдено', StatusCodeEnum.NOT_FOUND)
         }
         await s3Service.deleteFile(user.photo)
         return await userRepository.updateByIdAndParams(id, {photo: null}) as UserWithIncludedRegionAndRoleType
@@ -125,12 +122,12 @@ class UserService{
         return await userRepository.updateByIdAndParams(id, {is_banned: false, banned_until: null, ban_reason: null}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async assignManager(id: string, user_id: string){
+    public async assignManager(id: string){
         const managerId = await roleService.getIdByName("manager")
         return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: managerId}}}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async unassignManager(id: string, user_id: string){
+    public async unassignManager(id: string){
         const userId = await roleService.getIdByName("user")
         return await userRepository.updateByIdAndParams(id, {Role: {connect: {id: userId}}}) as UserWithIncludedRegionAndRoleType
     }

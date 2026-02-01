@@ -3,19 +3,18 @@ import {userService} from "../services/user.service.ts";
 import type {UserCreateDTOType, UserUpdateDTOType} from "../types/UserType.ts";
 import {userPresenter} from "../presenters/user.presenter.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
-import {AnnouncementQueryType, UserQueryType} from "../types/QueryType.ts";
+import {AnnouncementQueryType, DealershipReviewQueryType, UserQueryType} from "../types/QueryType.ts";
 import {UploadedFile} from "express-fileupload";
 import {TokenPayloadType} from "../types/TokenType.ts";
 import {BanType} from "../types/BanType.ts";
-import {PlanSubscribeEnum} from "../../prisma/src/generated/prisma/enums.ts";
 import {dealershipMemberService} from "../services/dealership.member.service.ts";
 import {dealershipMemberPresenter} from "../presenters/dealership.member.presenter.ts";
 import {announcementService} from "../services/announcement.service.ts";
 import {announcementPresenter} from "../presenters/announcement.presenter.ts";
-import {Announcement} from "../models/mongoose/announcement.model.ts";
-import {AnnouncementStatusEnum} from "../enums/announcementEnums/announcement.status.enum.ts";
 import {subscriptionPurchaseService} from "../services/subscription.purchase.service.ts";
 import {subscriptionPurchasePresenter} from "../presenters/subscription.purchase.presenter.ts";
+import {dealershipReviewPresenter} from "../presenters/dealership.review.presenter.ts";
+import {dealershipReviewService} from "../services/dealership.review.service.ts";
 
 
 class UserController{
@@ -34,7 +33,6 @@ class UserController{
         try{
             const userId = req.params.userId as string
             const user = await userService.get(userId)
-            console.log(user)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         }
         catch(e){
@@ -203,8 +201,7 @@ class UserController{
     public async assignManager (req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.userId as string
-            const {user_id} = res.locals.payload as TokenPayloadType
-            const user = await userService.assignManager(userId, user_id)
+            const user = await userService.assignManager(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         } catch (e) {
             next(e)
@@ -214,8 +211,7 @@ class UserController{
     public async unassignManager (req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.userId as string
-            const {user_id} = res.locals.payload as TokenPayloadType
-            const user = await userService.unassignManager(userId, user_id)
+            const user = await userService.unassignManager(userId)
             res.status(StatusCodeEnum.OK).json(await userPresenter.res(user))
         } catch (e) {
             next(e)
@@ -256,12 +252,23 @@ class UserController{
         }
     }
 
+    public async getReviews (req: Request, res: Response, next: NextFunction){
+        try{
+            const query = req.query as unknown as DealershipReviewQueryType
+            const {user_id} = res.locals.payload as TokenPayloadType
+            const [reviews, total] = await dealershipReviewService.getList(query, {author_id: user_id})
+            res.status(StatusCodeEnum.OK).json(await dealershipReviewPresenter.userList(reviews, total, query))
+        }
+        catch(e){
+            next(e)
+        }
+    }
+
 
 }
 
 export const userController = new UserController()
 
-//TODO think about using populate and types' change
 
 
 

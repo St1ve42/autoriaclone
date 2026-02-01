@@ -10,4 +10,4 @@ const removeOldTokensHandler = async() => {
     console.log(`Deleted ${count} tokens`)
 }
 
-export const removeOldTokensCron = new CronJob("0 0 8 * * * ", removeOldTokensHandler)
+export const removeOldTokensCron = new CronJob("0 0 4 * * * ", removeOldTokensHandler)

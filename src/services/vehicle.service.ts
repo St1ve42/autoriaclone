@@ -1,7 +1,6 @@
 import type {MakeType, ModelListType, ModelResponseType, ModelType, VehicleType} from "../types/VehicleType.ts";
 import {vehicleRepository} from "../repository/vehicle.repository.ts";
 import {BaseQueryType} from "../types/QueryType.ts";
-import {VehicleListReturnType} from "../types/ListReturnType.ts";
 import {ApiError} from "../errors/api.error.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
 
@@ -21,7 +20,7 @@ class VehicleService{
     public async getModel(makeId: string, modelId: string, query: BaseQueryType): Promise<[ModelResponseType, number]>{
         const isBelongs = await vehicleRepository.isModelBelongsToMake(makeId, modelId)
         if(!isBelongs){
-            throw new ApiError("Model doesn't belong to model", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Модель не належить поточному бренду", StatusCodeEnum.NOT_FOUND)
         }
         const [model, total] = await vehicleRepository.getModel(makeId, modelId, query)
         return [model, total]

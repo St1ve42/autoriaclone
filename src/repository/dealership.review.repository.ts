@@ -3,7 +3,9 @@ import {DealershipReview} from "../models/mongoose/dealershipReview.model.ts";
 import {DealershipReviewQueryType} from "../types/QueryType.ts";
 import {SortQuery} from "../types/SortQuery.ts";
 import {DealershipReviewOrderByEnum} from "../enums/dealershipReviewsEnums/dealership.review.orderBy.enum.ts";
-import {FilterQuery} from "mongoose";
+import {FilterQuery, isObjectIdOrHexString} from "mongoose";
+import {DealershipMember} from "../models/mongoose/dealershipMember.model.ts";
+import {ObjectId} from "mongodb";
 
 class DealershipReviewRepository{
     public async create(dto: DealershipReviewCreateWithUniqueFieldsDTOType): Promise<DealershipReviewType>{
@@ -22,18 +24,25 @@ class DealershipReviewRepository{
         return DealershipReview.findByIdAndDelete(reviewId)
     }
 
-    public async findManyByParams(dto: Partial<DealershipReviewType>): Promise<DealershipReviewType[]>{
-        return DealershipReview.find(dto)
+    public async deleteByParams(params: Partial<DealershipReviewType>){
+        return await DealershipMember.deleteMany(params)
     }
 
     public async findOneByParams(dto: Partial<DealershipReviewType>): Promise<DealershipReviewType| null>{
         return DealershipReview.findOne(dto)
     }
 
-    public async getList(dealership_id: string, query: DealershipReviewQueryType): [DealershipReviewType[], number]{
-        const {limit, page, skip, orderBy, order} = query
-        const sort: SortQuery<DealershipReviewOrderByEnum> = {}
-        const filter: FilterQuery<DealershipReviewType> = {dealership_id}
+    public async getList(query: DealershipReviewQueryType, filterInput: Partial<DealershipReviewType>): Promise<[DealershipReviewType[], number]>{
+        const {limit, page, skip, orderBy, order, searchBy, search} = query
+        const sort: SortQuery<typeof DealershipReviewOrderByEnum> = {}
+        const filter: FilterQuery<DealershipReviewType> = filterInput
+        if(searchBy && search){
+            let updatedSearch: ObjectId | string | undefined = search
+            if(isObjectIdOrHexString(search)){
+                updatedSearch = new ObjectId(search)
+            }
+            filter[searchBy] = updatedSearch
+        }
         if(order && orderBy){
             sort[orderBy] = order === "asc" ? 1 : -1
         }

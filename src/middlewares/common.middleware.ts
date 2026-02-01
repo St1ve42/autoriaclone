@@ -17,7 +17,7 @@ class CommonMiddleware{
         return async (req: Request, res: Response, next: NextFunction) => {
             try{
                 if(!req.body){
-                    throw new ApiError("Body is required", StatusCodeEnum.BAD_REQUEST)
+                    throw new ApiError("body є необхідним", StatusCodeEnum.BAD_REQUEST)
                 }
                 req.body = await validator.validateAsync(req.body, joiOptions)
                 next()
@@ -35,7 +35,7 @@ class CommonMiddleware{
     public validateId(idParamName: string, db: "mysql" | "mongo"){
         return async (req: Request, res: Response, next: NextFunction) => {
             try{
-                if(db === "mongo" && !isObjectIdOrHexString(req.params[idParamName]) || db === "mysql" && !validate(req.params[idParamName])) throw new ApiError("Not correct id", StatusCodeEnum.BAD_REQUEST)
+                if(db === "mongo" && !isObjectIdOrHexString(req.params[idParamName]) || db === "mysql" && !validate(req.params[idParamName])) throw new ApiError("Неправильний формат id", StatusCodeEnum.BAD_REQUEST)
                 next()
             }
             catch(e){
@@ -68,7 +68,7 @@ class CommonMiddleware{
                 const {user_id} = res.locals.payload as TokenPayloadType
                 const isHasPermission = await userService.isHasPermission(user_id, permission)
                 if(!isHasPermission){
-                    throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
+                    throw new ApiError("Недостатньо прав для здійснення операції", StatusCodeEnum.FORBIDDEN)
                 }
                 next()
             }
@@ -85,7 +85,7 @@ class CommonMiddleware{
                 const dealershipId = req.params.dealershipId
                 const isHasPermission = await dealershipMemberService.isHasPermission(permission, user_id, dealershipId)
                 if(!isHasPermission){
-                    throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
+                    throw new ApiError("Недостатньо прав для здійснення операції", StatusCodeEnum.FORBIDDEN)
                 }
                 next()
             }
@@ -101,7 +101,7 @@ class CommonMiddleware{
                 const id = req.params[idParamName] as string
                 const entity = await service.get(id)
                 if(!entity){
-                    throw new ApiError(`${entityName} not found`, StatusCodeEnum.NOT_FOUND)
+                    throw new ApiError(`${entityName} не знайдено`, StatusCodeEnum.NOT_FOUND)
                 }
                 next()
             }

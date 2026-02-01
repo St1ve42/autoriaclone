@@ -1,4 +1,4 @@
-import {BaseType} from "./BaseType.ts";
+import type {BaseType} from "./BaseType.ts";
 
 type OldModelType = {
   model_id: number;

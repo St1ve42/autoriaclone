@@ -18,7 +18,7 @@ class DealershipMemberPresenter{
         const user = await userService.get(dealershipMember.user_id)
         return {
             id: dealershipMember._id,
-            user: await userPresenter.publicRes(user),
+            user: userPresenter.publicRes(user),
             role: dealershipMember.role,
             joinedAt: dealershipMember.joinedAt,
         }

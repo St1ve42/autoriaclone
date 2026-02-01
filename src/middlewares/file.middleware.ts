@@ -11,7 +11,7 @@ class FileMiddleware{
             try{
                 const file = req.files?.[key] as UploadedFile | UploadedFile[]
                 if(Array.isArray(file)){
-                    throw new ApiError("Only one file is allowed", StatusCodeEnum.BAD_REQUEST)
+                    throw new ApiError("Кількість файлів не має бути більшим, ніж 1", StatusCodeEnum.BAD_REQUEST)
                 }
                 const errorArgs = FileValidator.validateFile(file, config)
                 if(errorArgs){

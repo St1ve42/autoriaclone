@@ -18,6 +18,7 @@ class DealershipPresenter{
             id: dealership._id,
             name: dealership.name,
             description: dealership.description,
+            logo: dealership.logo ?? null,
             address: dealership.address,
             phone: dealership.phone,
             email: dealership.email,
@@ -25,7 +26,15 @@ class DealershipPresenter{
             website: dealership.website,
             is_verified: dealership.is_verified,
             rating: dealership.rating,
-            logo: dealership.logo,
+        }
+    }
+
+    public async userRes(dealership: DealershipType){
+        return {
+            id: dealership._id,
+            name: dealership.name,
+            description: dealership.description,
+            logo: dealership.logo ?? null
         }
     }
 }

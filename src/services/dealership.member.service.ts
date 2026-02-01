@@ -20,20 +20,20 @@ class DealershipMemberService{
         const {email, role} = dto
         const user = await userService.getByEmail(email)
         if(!user){
-            throw new ApiError("User doesn't exists", StatusCodeEnum.NOT_FOUND)
+            throw new ApiError("Користувача не існує", StatusCodeEnum.NOT_FOUND)
         }
         const {id: user_id} = user
         const member = await dealershipMemberRepository.findOneByParams({dealership_id: dealershipId, user_id})
         if(member){
             if(member.dealership_id.toString() === dealershipId){
-                throw new ApiError("User is already member of current dealership", StatusCodeEnum.NOT_FOUND)
+                throw new ApiError("Користувач вже є членом поточного автосалона", StatusCodeEnum.CONFLICT)
             }
-            throw new ApiError("User already works at another dealership", StatusCodeEnum.NOT_FOUND)
+            throw new ApiError("Користувач є членом інакшого автосалона", StatusCodeEnum.CONFLICT)
         }
         return await dealershipMemberRepository.create({dealership_id: dealershipId, user_id: user.id, role})
     }
 
-    public async deleteMember(dealershipId: string, memberId: string): Promise<DealershipMemberType>{
+    public async deleteMember(memberId: string): Promise<DealershipMemberType>{
         return await dealershipMemberRepository.delete(memberId) as DealershipMemberType
     }
 
@@ -45,7 +45,7 @@ class DealershipMemberService{
         }
         const member = await dealershipMemberRepository.findOneByParams({user_id})
         if(!member || member.dealership_id.toString() !== dealership_id){
-            throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("Доступ заборонений", StatusCodeEnum.FORBIDDEN)
         }
         return DEALERSHIP_ROLE_PERMISSIONS[member.role].some(permissionInList => permissionInList === permissionName) || isAdmin
     }
@@ -53,12 +53,20 @@ class DealershipMemberService{
     public async getUserMembership(user_id: string){
         const member = await dealershipMemberRepository.findOneByParams({user_id})
         if(!member){
-            throw new ApiError("User is not member of a dealership", StatusCodeEnum.NOT_FOUND)
+            throw new ApiError("Користувач не є членом жодного автосалона", StatusCodeEnum.NOT_FOUND)
         }
         return member
     }
 
-    public async update(dealershipId: string, memberId: string, dto: DealershipMemberUpdateDTOType){
+    public async getUserReviews(user_id: string){
+        const reviews = await dealershipMemberRepository.findManyByParams({user_id})
+        if(reviews.length === 0){
+            throw new ApiError("Користувач не має відгуків", StatusCodeEnum.NOT_FOUND)
+        }
+        return reviews
+    }
+
+    public async update(memberId: string, dto: DealershipMemberUpdateDTOType){
         return await dealershipMemberRepository.update(memberId, {role: dto.role}) as DealershipMemberType
     }
 

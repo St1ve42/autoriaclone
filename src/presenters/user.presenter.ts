@@ -1,9 +1,6 @@
 import {TokenPairType} from "../types/TokenType.ts";
 import {UserQueryType} from "../types/QueryType.ts";
 import {UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
-import {SubscriptionPurchaseGetPayload} from "../../prisma/src/generated/prisma/models/SubscriptionPurchase.ts";
-import {subscriptionPurchasePresenter} from "./subscription.purchase.presenter.ts";
-import {subscriptionPlanPresenter} from "./subscription.plan.presenter.ts";
 
 class UserPresenter{
     public async list(
@@ -12,7 +9,7 @@ class UserPresenter{
         query: UserQueryType
     ) {
         return {
-            data: await Promise.all(users.map(this.res)),
+            data: await Promise.all(users.map(this.adminRes)),
             total,
             ...query
         }
@@ -39,7 +36,34 @@ class UserPresenter{
             "is_banned": user.is_banned,
             "ban_reason": user.ban_reason,
             "banned_until": user.banned_until,
+            "is_deleted": user.is_deleted
+        }
+    }
+
+    public async adminRes(user: UserWithIncludedRegionAndRoleType){
+        return {
+            "id": user.id,
+            "name": user.name,
+            "surname": user.surname,
+            "age": user.age,
+            "email": user.email,
+            "phone": user.phone,
+            "gender": user.gender,
+            "photo": user.photo,
+            "city": user.city,
+            "region": user.Region.name,
+            "role": user.Role.name,
+            "account_type": user.account_type,
+            "balance": user.balance,
+            "currency": user.currency,
+            "is_active": user.is_active,
+            "is_verified": user.is_verified,
+            "is_banned": user.is_banned,
+            "ban_reason": user.ban_reason,
+            "banned_until": user.banned_until,
             "is_deleted": user.is_deleted,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at
         }
     }
 
@@ -68,14 +92,6 @@ class UserPresenter{
         return {
             ...this.publicRes(user),
             "phone": user.phone
-        }
-    }
-
-    public withSubscriptionRes(dto: SubscriptionPurchaseGetPayload<{ include: {SubscriptionPlan: true, User: { include: {Role: true, Region: true} }}}>){
-        const {User, SubscriptionPlan, ...subscriptionPurchase} = dto
-        return {
-            subscription_purchase: subscriptionPurchasePresenter.res(subscriptionPurchase),
-            subscription_plan: subscriptionPlanPresenter.res(SubscriptionPlan)
         }
     }
 

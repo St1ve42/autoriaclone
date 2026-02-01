@@ -1,5 +1,7 @@
-import mongoose, {model} from "mongoose";
+import mongoose, {model, Query} from "mongoose";
 import {DealershipType} from "../../types/DealershipType.ts";
+import {dealershipMemberRepository} from "../../repository/dealership.member.repository.ts";
+import {dealershipReviewRepository} from "../../repository/dealership.review.repository.ts";
 
 const DealershipSchema = new mongoose.Schema(
     {
@@ -19,5 +21,11 @@ const DealershipSchema = new mongoose.Schema(
         versionKey: false
     }
 )
+
+DealershipSchema.pre<Query<DealershipType, unknown>>("findOneAndDelete", async function (next){
+    const dealership_id = this.getQuery()._id
+    await dealershipMemberRepository.deleteByParams({dealership_id})
+    await dealershipReviewRepository.deleteByParams({dealership_id})
+})
 
 export const Dealership = model<DealershipType>("dealerships", DealershipSchema)

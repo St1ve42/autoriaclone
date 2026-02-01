@@ -2,7 +2,6 @@ import {Router} from "express";
 import {UserValidator} from "../vaildators/user.validator.ts";
 import {commonMiddleware} from "../middlewares/common.middleware.ts";
 import {userMiddleware} from "../middlewares/user.middleware.ts";
-import {regionMiddleware} from "../middlewares/region.middleware.ts";
 import {authController} from "../controllers/auth.controller.ts";
 import {strictAuthMiddleware} from "../middlewares/strict.auth.middleware.ts";
 import {AuthValidator} from "../vaildators/auth.validator.ts";

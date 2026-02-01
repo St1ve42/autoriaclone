@@ -99,7 +99,7 @@ class AnnouncementRepository{
     }
 
     public async get(id: string): Promise<AnnouncementType | null>{
-        return await Announcement.findById(id).populate('dealership') //TODO active announcement can be visible
+        return await Announcement.findById(id).populate('dealership')
     }
 
     public async create(dto: CreateAnnouncementInRepositoryDTOType): Promise<AnnouncementType>{

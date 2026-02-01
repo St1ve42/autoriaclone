@@ -6,7 +6,7 @@ import {BaseQueryType} from "../types/QueryType.ts";
 class RegionController{
     public async getList (req: Request, res: Response, next: NextFunction){
         try{
-            const query = req.query as BaseQueryType
+            const query = req.query as unknown as BaseQueryType
             const [regions, total] = await regionService.getList(query)
             res.status(StatusCodeEnum.OK).json({
                 data: regions,

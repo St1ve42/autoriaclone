@@ -2,9 +2,8 @@ import joi from "joi"
 import {UserRegexpEnum} from "../enums/userEnums/user.regexp.enum.ts";
 import {AccountTypeEnum, GenderEnum} from "../../prisma/src/generated/prisma/enums.ts";
 import {regionRepository} from "../repository/region.repository.ts";
-import Joi from "joi";
 import {GlobalRoleEnums} from "../enums/globalRoleEnums/globalRoleEnums.ts";
-import {roleRepository} from "../repository/role.repository.ts";
+import { Utils } from "../utils/utils.ts";
 
 export class UserValidator{
     private static name = joi.string().regex(UserRegexpEnum.NAME).trim().messages({
@@ -24,12 +23,12 @@ export class UserValidator{
     })
     private static gender = joi.string().valid(...Object.values(GenderEnum)).trim()
     private static phone = joi.string().regex(UserRegexpEnum.PHONE).trim().messages({
-        "string.pattern.base": "телефон повинен бути вигляду '+38 (000) 000 00 00'"
+        "string.pattern.base": "Телефон повинен бути вигляду '+38 (000) 000 00 00'"
     })
     private static city = joi.string().regex(UserRegexpEnum.CITY).trim().messages({
         "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30"
     })
-    private static region = joi.number().min(1).integer().messages({
+    private static region_id = joi.number().min(1).integer().messages({
         "string.pattern.base": "{{#field}} повинно містити тільки кирилицю і бути довжиною від 3 до 30"
     }).external(async (value, helpers) => {
         if(!value){
@@ -40,24 +39,26 @@ export class UserValidator{
             return helpers.error("any.existent")
         }
     })
-    private static role = joi.string().valid(...Object.values(GlobalRoleEnums)).trim()
+    private static role_id = joi.string().valid(...Object.values(GlobalRoleEnums)).trim()
     private static account_type = joi.string().valid(...Object.values(AccountTypeEnum)).trim()
     private static boolean_field = joi.boolean()
 
+    private static addBaseMessages = Utils.addBaseMessages;
+
     private static userSearchRules = {
-        name: this.name,
-        surname: this.surname,
-        email: this.email,
-        phone: this.phone,
-        age: this.age,
-        city: this.city,
-        region_id: this.region,
-        role_id: this.role,
-        account_type: this.account_type,
-        is_active: this.boolean_field,
-        is_verified: this.boolean_field,
-        is_banned: this.boolean_field,
-        is_deleted: this.boolean_field,
+        name: this.addBaseMessages(this.name),
+        surname: this.addBaseMessages(this.surname),
+        email: this.addBaseMessages(this.email),
+        phone: this.addBaseMessages(this.phone),
+        age: this.addBaseMessages(this.age),
+        city: this.addBaseMessages(this.city),
+        region_id: this.addBaseMessages(this.region_id),
+        role_id: this.addBaseMessages(this.role_id),
+        account_type: this.addBaseMessages(this.account_type),
+        is_active: this.addBaseMessages(this.boolean_field),
+        is_verified: this.addBaseMessages(this.boolean_field),
+        is_banned: this.addBaseMessages(this.boolean_field),
+        is_deleted: this.addBaseMessages(this.boolean_field),
     };
 
     public static userSearchCases = Object.entries(this.userSearchRules).map(([key, schema]) => ({
@@ -72,7 +73,7 @@ export class UserValidator{
         email: this.email.required(),
         password: this.password.required(),
         city: this.city.required(),
-        region: this.region.required(),
+        region_id: this.region_id.required(),
         gender: this.gender,
         phone: this.phone
     })
@@ -82,7 +83,7 @@ export class UserValidator{
         surname: this.surname,
         age: this.age,
         city: this.city,
-        region: this.region,
+        region_id: this.region_id,
         gender: this.gender,
         phone: this.phone,
     }).min(1)

@@ -10,8 +10,8 @@ const router = Router()
 
 router.use(commonMiddleware.validateUserPermission(BillingPermissionsEnum.MANAGE))
 
-router.patch('/:subscriptionId', commonMiddleware.validateId('subscriptionId', "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "Subscription plan", "subscriptionId"), commonMiddleware.validateBody(SubscriptionPlanValidator.updateValidator), subscriptionPlanController.update)
-router.post('/:subscriptionId/activate', commonMiddleware.validateId('subscriptionId', "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "Subscription plan", "subscriptionId"), subscriptionPlanController.activate)
-router.post('/:subscriptionId/deactivate', commonMiddleware.validateId('subscriptionId', "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "Subscription plan", "subscriptionId"), subscriptionPlanController.deactivate)
+router.patch('/:subscriptionId', commonMiddleware.validateId('subscriptionId', "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "Підписку", "subscriptionId"), commonMiddleware.validateBody(SubscriptionPlanValidator.updateValidator), subscriptionPlanController.update)
+router.post('/:subscriptionId/activate', commonMiddleware.validateId('subscriptionId', "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "Підписку", "subscriptionId"), subscriptionPlanController.activate)
+router.post('/:subscriptionId/deactivate', commonMiddleware.validateId('subscriptionId', "mysql"), commonMiddleware.validateEntityExisting<SubscriptionPlan>(subscriptionPlanService, "Підписку", "subscriptionId"), subscriptionPlanController.deactivate)
 
 export const adminSubscriptionsRouter = router

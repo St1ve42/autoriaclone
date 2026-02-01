@@ -3,7 +3,7 @@ import {ApiError} from "../errors/api.error.ts";
 import {tokenService} from "../services/token.service.ts";
 import {TokenTypeEnum} from "../enums/authEnums/token.type.enum.ts";
 import {StatusCodeEnum} from "../enums/generalEnums/status.code.enum.ts";
-import {RefreshTokenType, TokenPayloadType} from "../types/TokenType.ts";
+import {RefreshTokenType} from "../types/TokenType.ts";
 import {userService} from "../services/user.service.ts";
 
 
@@ -12,17 +12,17 @@ class StrictAuthMiddleware {
         try{
             const authHeader = req.headers.authorization
             if(!authHeader){
-                throw new ApiError("No access token provided", StatusCodeEnum.BAD_REQUEST)
+                throw new ApiError("Відсутній токен", StatusCodeEnum.BAD_REQUEST)
             }
 
             const accessToken = authHeader.split(' ')[1]
             if(!accessToken){
-                throw new ApiError("No access token provided", StatusCodeEnum.BAD_REQUEST)
+                throw new ApiError("Відсутній access токен", StatusCodeEnum.BAD_REQUEST)
             }
 
             const tokenRecord = await tokenService.getByParams({access_token: accessToken})
             if(!tokenRecord){
-                throw new ApiError("No existent token", StatusCodeEnum.UNAUTHORIZED)
+                throw new ApiError("Токена не існує", StatusCodeEnum.UNAUTHORIZED)
             }
 
             const payload = tokenService.verify(accessToken, TokenTypeEnum.ACCESS)
@@ -31,10 +31,10 @@ class StrictAuthMiddleware {
             const isDeleted = await userService.isDeleted(user_id);
             const isActive = await userService.isActive(user_id);
             if(!isActive){
-                throw new ApiError("User is not active", StatusCodeEnum.FORBIDDEN)
+                throw new ApiError("Користувач не активний", StatusCodeEnum.FORBIDDEN)
             }
             if(isDeleted){
-                throw new ApiError("User is deleted", StatusCodeEnum.FORBIDDEN)
+                throw new ApiError("Користувач є видалений", StatusCodeEnum.FORBIDDEN)
             }
 
             res.locals.payload = payload
@@ -51,7 +51,7 @@ class StrictAuthMiddleware {
             const {refreshToken} = req.body as RefreshTokenType
             const tokenRecord = await tokenService.getByParams({refresh_token: refreshToken})
             if(!tokenRecord){
-                throw new ApiError("No existent token", StatusCodeEnum.BAD_REQUEST)
+                throw new ApiError("Токена не існує", StatusCodeEnum.BAD_REQUEST)
             }
             res.locals.payload = tokenService.verify(refreshToken, TokenTypeEnum.REFRESH)
             res.locals.token_id = tokenRecord.id

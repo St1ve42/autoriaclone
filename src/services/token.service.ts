@@ -41,7 +41,7 @@ class TokenService{
             return jwt.verify(token, secret) as TokenPayloadType
         }
         catch{
-            throw new ApiError("Invalid token", StatusCodeEnum.UNAUTHORIZED)
+            throw new ApiError("Невалідний токен", StatusCodeEnum.UNAUTHORIZED)
         }
 
     }

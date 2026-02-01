@@ -12,7 +12,7 @@ class AdminMiddleware{
             const user = await userService.get(user_id)
             const isAdmin = Object.values(AdminRoleEnums).some(roleName => user.Role.name === roleName)
             if(!isAdmin){
-                throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
+                throw new ApiError("Доступ заборонено", StatusCodeEnum.FORBIDDEN)
             }
             next()
         }

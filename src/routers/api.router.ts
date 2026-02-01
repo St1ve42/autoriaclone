@@ -5,8 +5,9 @@ import {announcementRouter} from "./announcement.router.ts";
 import {subscriptionPlanRouter} from "./subscription.plan.router.ts";
 import {regionRouter} from "./region.router.ts";
 import {dealershipRouter} from "./dealership.router.ts";
-import {adminRouter} from "./admin/admin.router.ts";
+import {adminRouter} from "./admin/admin.index.router.ts";
 import {vehicleRouter} from "./vehicle.router.ts";
+import {reportedVehicleRouter} from "./reported.vehicle.router.ts";
 
 const router = Router()
 
@@ -17,6 +18,7 @@ router.use('/subscription-plans', subscriptionPlanRouter)
 router.use('/regions', regionRouter)
 router.use('/dealerships', dealershipRouter)
 router.use('/vehicles', vehicleRouter)
+router.use('/reported-vehicles', reportedVehicleRouter)
 router.use('/admins', adminRouter)
 
 export const apiRouter = router

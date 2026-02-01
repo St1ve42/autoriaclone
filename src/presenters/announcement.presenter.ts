@@ -4,7 +4,6 @@ import {userService} from "../services/user.service.ts";
 import {userPresenter} from "./user.presenter.ts";
 import {regionService} from "../services/region.service.ts";
 import {dealershipPresenter} from "./dealership.presenter.ts";
-import {dealerShipService} from "../services/dealership.service.ts";
 
 class AnnouncementPresenter{
     public async list(
@@ -31,7 +30,7 @@ class AnnouncementPresenter{
         if (user.is_banned || user.is_deleted || !user.is_active){
             return
         }
-        const region = await regionService.getNameById(announcement.region)
+        const region = await regionService.getNameById(announcement.region_id)
         return {
             id: announcement._id,
             title: announcement.title,
@@ -51,7 +50,7 @@ class AnnouncementPresenter{
     }
 
     public async userRes(announcement: AnnouncementType){
-        const region = await regionService.getNameById(announcement.region)
+        const region = await regionService.getNameById(announcement.region_id)
         return {
             id: announcement._id,
             title: announcement.title,
@@ -73,7 +72,7 @@ class AnnouncementPresenter{
 
     public async adminRes(announcement: AnnouncementType){
         const user = await userService.get(announcement.user_id)
-        const region = await regionService.getNameById(announcement.region)
+        const region = await regionService.getNameById(announcement.region_id)
         return {
             id: announcement._id,
             title: announcement.title,
@@ -98,7 +97,7 @@ class AnnouncementPresenter{
 
     public async dealershipRes(announcement: AnnouncementType){
         const user = await userService.get(announcement.user_id)
-        const region = await regionService.getNameById(announcement.region)
+        const region = await regionService.getNameById(announcement.region_id)
         return {
             id: announcement._id,
             title: announcement.title,

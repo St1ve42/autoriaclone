@@ -20,7 +20,7 @@ class AnnouncementStatisticsService {
         const announcementStatistic = await announcementStatisticsRepository.getByAnnouncementId(announcementId) as AnnouncementStatistics
         const {total_views} = announcementStatistic ? announcementStatistic : await announcementStatisticsRepository.create(announcementId)
         const {views} = await this.getViewStatistics(announcementId)
-        const {region: region_id, vehicle: {brand, model}} = await announcementService.get(announcementId)
+        const {region_id: region_id, vehicle: {brand, model}} = await announcementService.get(announcementId)
         const carsCountInCountry = await averagePricesRepository.getCarCount({brand, model})
         const carsCountInRegion = await averagePricesRepository.getCarCount({brand, model, region_id})
         const averagePriceInRegion = await averagePricesRepository.getInRegion({brand, model, region_id})

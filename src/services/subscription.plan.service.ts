@@ -23,7 +23,7 @@ class SubscriptionPlanService{
             const subscription = await subscriptionPlanRepository.get(id) as SubscriptionPlan
             const isSystemCode = Object.values(SubscriptionCodeEnum).some(code => code === subscription.code)
             if(isSystemCode){
-                throw new ApiError("Updating system codes/names is not allowed", StatusCodeEnum.CONFLICT)
+                throw new ApiError("Не дозволено оновлювати коди системних підписок", StatusCodeEnum.CONFLICT)
             }
         }
         return await subscriptionPlanRepository.update(id, dto)

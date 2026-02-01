@@ -16,7 +16,7 @@ class AnnouncementMiddleware{
             const announcement = await announcementService.get(announcementId)
             const hasAccess = await AnnouncementMiddleware.hasAccess(user_id, announcement)
             if(!hasAccess){
-                throw new ApiError("Access denied", StatusCodeEnum.FORBIDDEN)
+                throw new ApiError("Користувач не має право здійснювати поточну операцію", StatusCodeEnum.FORBIDDEN)
             }
             next()
         }
@@ -30,7 +30,7 @@ class AnnouncementMiddleware{
             const announcementId = req.params.announcementId
             const announcement = await announcementService.get(announcementId)
             if(announcement.status !== AnnouncementStatusEnum.ACTIVE){
-                throw new ApiError("Announcement not found", StatusCodeEnum.NOT_FOUND)
+                throw new ApiError("Оголошення не знайдено", StatusCodeEnum.NOT_FOUND)
             }
             next()
         }
@@ -49,11 +49,11 @@ class AnnouncementMiddleware{
                 const {user_id} = res.locals.payload as TokenPayloadType
                 hasAccess = await AnnouncementMiddleware.hasAccess(user_id, announcement)
                 if(!hasAccess && announcement.status !== AnnouncementStatusEnum.ACTIVE){
-                    throw new ApiError("Announcement not found", StatusCodeEnum.NOT_FOUND)
+                    throw new ApiError("Оголошення не знайдено", StatusCodeEnum.NOT_FOUND)
                 }
             }
             else if(!payload && announcement.status !== AnnouncementStatusEnum.ACTIVE){
-                throw new ApiError("Announcement not found", StatusCodeEnum.NOT_FOUND)
+                throw new ApiError("Оголошення не знайдено", StatusCodeEnum.NOT_FOUND)
             }
             res.locals.hasAccess = hasAccess
             next()

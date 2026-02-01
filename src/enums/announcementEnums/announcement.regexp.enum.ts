@@ -1,6 +1,6 @@
-import {RegExpression} from "../../regExp/regExp.ts";
+import {RegexBuilder} from "../../regExp/regExp.ts";
 
 export const AnnouncementRegexpEnum = {
-    TITLE: RegExpression.alphaNumericPattern(true, 3, 100),
-    CITY: RegExpression.alphabetPattern()
+    TITLE: new RegexBuilder(3, 100).withLatin().withCyrillic().withNumbers().withSpace().build(),
+    CITY: new RegexBuilder(3, 50).withLatin().withCyrillic().withSymbols("-").withSpace().build(),
 }

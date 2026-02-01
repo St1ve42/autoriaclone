@@ -11,7 +11,6 @@ import {TokenPairType, TokenPayloadType} from "../types/TokenType.ts";
 import {emailService} from "./email.service.ts";
 import {EmailEnum} from "../enums/generalEnums/email.enum.ts";
 import {configs} from "../configs/configs.ts";
-import {User} from "../../prisma/src/generated/prisma/client.ts";
 import {userRepository} from "../repository/user.repository.ts";
 import {GlobalRoleEnums} from "../enums/globalRoleEnums/globalRoleEnums.ts";
 import {UserWithIncludedRegionAndRoleType} from "../types/UserWithIncludeDataType.ts";
@@ -34,17 +33,17 @@ class AuthService{
         const {email, password} = dto
         const user = await userService.getByEmail(email)
         if(!user){
-            throw new ApiError("Invalid email or password", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("Неправильний email або пароль", StatusCodeEnum.FORBIDDEN)
         }
         const isValidPassword = await passwordService.compare(password, user.password)
         if(!isValidPassword){
-            throw new ApiError("Invalid email or password", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("Неправильний email або пароль", StatusCodeEnum.FORBIDDEN)
         }
         if(!await userService.isActive(user.id)){
-            throw new ApiError("User is not active", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("Користувач неактивний", StatusCodeEnum.FORBIDDEN)
         }
         if(await userService.isDeleted(user.id)){
-            throw new ApiError("User is deleted", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("Користувач видалений", StatusCodeEnum.FORBIDDEN)
         }
         const tokenPair = tokenService.generateTokenPair({user_id: user.id, role_id: user.role_id})
         await tokenRepository.create({...tokenPair, User: {connect: {id: user.id}}})
@@ -87,30 +86,28 @@ class AuthService{
         const user = await userService.get(user_id)
         const isCoincidence = await passwordService.compare(password, user.password)
         if(isCoincidence){
-            throw new ApiError("Password must not coincidence with old one", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Пароль не повинен збігатись зі старим", StatusCodeEnum.CONFLICT)
         }
         const newHashedPassword = await passwordService.hash(password)
         return await userRepository.updateByIdAndParams(user_id, {password: newHashedPassword}) as UserWithIncludedRegionAndRoleType
     }
 
-    public async change(dto: Record<"password" | "oldPassword", string>, id: string): Promise<UserWithIncludedRegionAndRoleType>{
+    public async change(dto: Record<"password" | "oldPassword", string>, id: string): Promise<void>{
         const {password, oldPassword} = dto
         const user = await userService.get(id)
         const isCoincidenceOldPassword = await passwordService.compare(oldPassword, user.password)
         if(!isCoincidenceOldPassword){
-            throw new ApiError("Invalid old password", StatusCodeEnum.FORBIDDEN)
+            throw new ApiError("Старий пароль є неправильний", StatusCodeEnum.FORBIDDEN)
         }
         const isCoincidencePassword = await passwordService.compare(password, user.password)
         if(isCoincidencePassword){
-            throw new ApiError("Password must not coincidence with old one", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Новий пароль не повинен збігатись зі старим", StatusCodeEnum.CONFLICT)
         }
         const newHashedPassword = await passwordService.hash(password)
         await tokenRepository.deleteManyByParams({user_id: user.id})
-        return await userRepository.updateByIdAndParams(id, {password: newHashedPassword}) as UserWithIncludedRegionAndRoleType
     }
 
 }
 
 export const authService = new AuthService()
 
-//Cloude service for SQL db

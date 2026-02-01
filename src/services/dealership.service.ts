@@ -13,7 +13,7 @@ class DealershipService{
     public async create(dto: DealershipCreateWithInputDTOType, user_id: string): Promise<DealershipType>{
         let dealership = await dealershipRepository.findOneByParams({owner_id: user_id})
         if(dealership){
-            throw new ApiError("User has already dealership", StatusCodeEnum.CONFLICT)
+            throw new ApiError("Користувач вже є власником автосалону", StatusCodeEnum.CONFLICT)
         }
         dealership = await dealershipRepository.create({...dto, owner_id: user_id})
         await dealershipMemberRepository.create({dealership_id: dealership._id, user_id, role: DealershipRoleEnum.OWNER})
@@ -52,7 +52,7 @@ class DealershipService{
     public async deleteLogo(id: string): Promise<DealershipType>{
         const dealership = await this.get(id)
         if(!dealership.logo){
-            throw new ApiError("Logo not found", StatusCodeEnum.NOT_FOUND)
+            throw new ApiError("Лого не знайдено", StatusCodeEnum.NOT_FOUND)
         }
         await s3Service.deleteFile(dealership.logo)
         return await this.update(id, {logo: null})
@@ -72,4 +72,3 @@ class DealershipService{
 
 export const dealerShipService= new DealershipService()
 
-//TODO dealership role permissions

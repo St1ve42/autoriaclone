@@ -7,7 +7,7 @@ import {DealershipPermissionsEnum} from "../../enums/permissionEnums/dealership.
 
 const router = Router()
 
-router.post('/:dealershipId/verify', commonMiddleware.validateUserPermission(DealershipPermissionsEnum.MODERATE), commonMiddleware.validateId("dealershipId", "mongo"), commonMiddleware.validateEntityExisting<DealershipType>(dealerShipService, "Dealership", "dealershipId"), dealershipController.verify)
-router.post('/:dealershipId/unverify', commonMiddleware.validateUserPermission(DealershipPermissionsEnum.MODERATE), commonMiddleware.validateId("dealershipId", "mongo"), commonMiddleware.validateEntityExisting<DealershipType>(dealerShipService, "Dealership", "dealershipId"), dealershipController.unverify)
+router.post('/:dealershipId/verify', commonMiddleware.validateUserPermission(DealershipPermissionsEnum.MODERATE), commonMiddleware.validateId("dealershipId", "mongo"), commonMiddleware.validateEntityExisting<DealershipType>(dealerShipService, "Автосалон", "dealershipId"), dealershipController.verify)
+router.post('/:dealershipId/unverify', commonMiddleware.validateUserPermission(DealershipPermissionsEnum.MODERATE), commonMiddleware.validateId("dealershipId", "mongo"), commonMiddleware.validateEntityExisting<DealershipType>(dealerShipService, "Автосалон", "dealershipId"), dealershipController.unverify)
 
 export const adminDealershipsRouter = router

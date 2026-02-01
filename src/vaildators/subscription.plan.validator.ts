@@ -15,22 +15,11 @@ export class SubscriptionPlanValidator {
         }
     })
 
-    public static createValidator = joi.object({
-        code: this.code.required(),
-        price: this.price.required(),
-        currency: this.currency,
-        duration: this.duration
-    })
-
     public static updateValidator = joi.object({
         code: this.code,
         price: this.price,
         currency: this.currency,
         duration: this.duration
     }).min(1)
-
-    public static buySubscription = joi.object({
-        code: this.code,
-    })
 
 }
