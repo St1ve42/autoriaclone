@@ -1,9 +1,0 @@
-export declare enum VehicleTypeEnum {
-    PASSENGER_CAR = "\u043B\u0435\u0433\u043A\u043E\u0432\u0438\u0439",
-    TRUCK = "\u0432\u0430\u043D\u0442\u0430\u0436\u0456\u0432\u043A\u0430",
-    TRAILER = "\u043F\u0440\u0438\u0447\u0435\u043F",
-    HEAVY_EQUIPMENT = "\u0441\u043F\u0435\u0446\u0442\u0435\u0445\u043D\u0456\u043A\u0430",
-    BUS = "\u0430\u0432\u0442\u043E\u0431\u0443\u0441",
-    MOTORHOME = "\u0430\u0432\u0442\u043E\u0431\u0443\u0434\u0438\u043D\u043E\u043A"
-}
-//# sourceMappingURL=vehicle.type.enum.d.ts.map
