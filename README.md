@@ -40,16 +40,32 @@
 Для запуску проєкту локально необхідно мати встановлений Node.js (v18 або вище).
 
 **1.** Клонувати репозиторій: 
-```git clone https://github.com/St1ve42/autoriaclone.git
-   cd autoriaclone```
+```
+git clone https://github.com/St1ve42/autoriaclone.git
+cd autoriaclone
+```
 **2.** Завантажити залежності: 
-```npm i``` або ```npm install```
-**3.** Налаштувати змінні оточення за зразком файлу .env.example
+```
+npm i
+```
+або
+```
+npm install
+```
+**3.** Налаштувати змінні оточення за зразком файлу: .env.example
 **4.** Для запуску проєкту в режимі розробника: 
-```npm run start:dev``` або ж скрипт ```start:dev```
+```
+npm run start:dev
+```
+або ж скрипт 
+```
+start:dev
+```
 **5** Для запуску скомпільнованого проєкту: 
-```npm run build
- npm start```
+```
+npm run build
+npm start
+```
 
 ## Postman колекція
 Посилання: https://www.postman.com/cryosat-astronomer-37024884-1799691/workspace/autoriaclone 
