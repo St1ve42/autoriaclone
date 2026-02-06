@@ -9,10 +9,11 @@ class AnnouncementPresenter{
     public async list(
         announcements: AnnouncementType[],
         total: number,
-        query: AnnouncementQueryType
+        query: AnnouncementQueryType,
+        res: (res: AnnouncementType) => unknown
     ) {
         const data = await Promise.all(announcements.map(async (announcement) => {
-            const presenter = await this.res(announcement)
+            const presenter = await res(announcement)
             if(!presenter){
                 total -= 1
             }
@@ -117,40 +118,28 @@ class AnnouncementPresenter{
         }
     }
 
-    public async userList(
+    public async userList (
         announcements: AnnouncementType[],
         total: number,
         query: AnnouncementQueryType
-    ) {
-        return {
-            data: await Promise.all(announcements.map(this.userRes)),
-            total,
-            ...query
-        }
+    ){
+        return this.list(announcements, total, query, this.userRes)
     }
 
-    public async adminList(
+    public async adminList (
         announcements: AnnouncementType[],
         total: number,
         query: AnnouncementQueryType
-    ) {
-        return {
-            data: await Promise.all(announcements.map(this.adminRes)),
-            total,
-            ...query
-        }
+    ){
+        return this.list(announcements, total, query, this.adminRes)
     }
 
-    public async dealershipList(
+    public async dealershipList (
         announcements: AnnouncementType[],
         total: number,
         query: AnnouncementQueryType
-    ) {
-        return {
-            data: await Promise.all(announcements.map(this.dealershipRes)),
-            total,
-            ...query
-        }
+    ){
+        return this.list(announcements, total, query, this.dealershipRes)
     }
 
 }
